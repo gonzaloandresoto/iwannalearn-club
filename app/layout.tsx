@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Titan_One } from 'next/font/google';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
+const titanOne = Titan_One({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-titan-one',
+});
 
 export const metadata: Metadata = {
   title: 'smartMe',
@@ -16,11 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <link
-        href='https://fonts.googleapis.com/css2?family=Titan+One&display=swap'
-        rel='stylesheet'
-      />
-      <body className={inter.className}>
+      <body className={`${inter.className} ${titanOne.variable}`}>
         <section className='h-screen w-screen'>{children}</section>
       </body>
     </html>

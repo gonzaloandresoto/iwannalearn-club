@@ -25,7 +25,7 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       fontFamily: {
-        titan: ['Titan One', 'cursive'],
+        titan: ['var(--font-titan-one)'],
         rounded: ['SF Pro Rounded', 'sans-serif'],
       },
     },
