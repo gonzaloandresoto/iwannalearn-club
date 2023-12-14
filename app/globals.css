@@ -2,3 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+
+.main-button {
+  @apply w-max h-[48px] flex-none flex items-center gap-2 px-4 bg-primary-blue rounded-md text-white;
+}

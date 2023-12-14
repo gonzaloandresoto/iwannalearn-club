@@ -8,7 +8,7 @@ function SearchBar() {
     setValue(e.target.value);
   };
   return (
-    <div className='w-full h-[56px] flex items-center px-2 border border-2 border-secondary-grey rounded-md'>
+    <div className='max-w-[720px] w-full h-[56px] flex items-center px-2 border border-2 border-secondary-grey rounded-md'>
       <input
         type='text'
         value={value}
