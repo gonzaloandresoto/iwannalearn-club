@@ -14,7 +14,7 @@ const config: Config = {
       'secondary-grey': '#E3E3E3',
       'tertiary-grey': '#F6F6F6',
       'primary-blue': '#3662FD',
-      'secondary-blue': '#3662FD',
+      'secondary-blue': '#B3C4FF',
       'primary-orange': '#FE8312',
       'secondary-orange': '#FE8312',
     },
