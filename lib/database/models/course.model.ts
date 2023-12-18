@@ -4,15 +4,15 @@ export interface ICourse extends Document {
   _id: string;
   title: string;
   summary: string;
-  tableOfContents: Array<string>;
+  tableOfContents: string;
 }
 
-const CourseSchema = new Schema({
+const CourseSchema = new Schema<ICourse>({
   title: { type: String, required: true },
   summary: { type: String, required: true },
-  tableOfContents: { type: Array, required: true },
+  tableOfContents: { type: String, required: true },
 });
 
 const Course = models.Course || model('Course', CourseSchema);
 
-export default CourseSchema;
+export default Course;

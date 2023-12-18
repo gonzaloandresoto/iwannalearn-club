@@ -25,4 +25,4 @@ const ElementSchema = new Schema({
 
 const Element = models.Element || model('Element', ElementSchema);
 
-export default ElementSchema;
+export default Element;

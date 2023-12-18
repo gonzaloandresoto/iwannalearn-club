@@ -19,4 +19,4 @@ const UnitSchema = new Schema({
 
 const Unit = models.Unit || model('Unit', UnitSchema);
 
-export default UnitSchema;
+export default Unit;
