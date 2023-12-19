@@ -5,7 +5,17 @@ import React from 'react';
 import CourseCard from '@/components/CourseComponents/CourseCard';
 import { unitContent } from '@/constants';
 
-export default function CourseContent() {
+interface SearchParamProps {
+  searchParams: {
+    id: string;
+  };
+}
+
+export default function CourseContent({
+  searchParams,
+}: {
+  searchParams: { id: string };
+}) {
   const [activePage, setActivePage] = React.useState(0);
   return (
     <div className='flex flex-col items-center'>

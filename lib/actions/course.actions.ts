@@ -41,8 +41,6 @@ export async function createCourse(topic: string) {
     // Create course outline and upload to database
     const course = await generateCourse(topic);
 
-    console.log('Generated Course', course);
-
     if (!course) throw new Error('Course could not be generated');
 
     const newCourse = await Course.create({
@@ -63,7 +61,7 @@ export async function createCourse(topic: string) {
 
     for (let i = 0; i < tableOfContents.length; i++) {
       const unitName = tableOfContents[i];
-      await addUnitToDatabase(unitName, newCourse._id);
+      await addUnitToDatabase(newCourse.title, unitName, newCourse._id);
     }
 
     return;
