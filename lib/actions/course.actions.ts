@@ -6,14 +6,14 @@ import Course from '../database/models/course.model';
 import openai from '../openai/index';
 import { courseSchema } from '../openai/schemas/course.schema';
 import { handleError } from '../utils';
+import { addUnitToDatabase } from './unit.actions';
 
-// Create course
 const generateCourse = async (topic: string) => {
   const prompt = [
     {
       role: 'system',
       content:
-        'Your response should be in JSON format. You are a former world-class educator and have collaborated with companies like Duolingo and Coursera to craft word-class learning experiences acrosss various subjects. You are known for your easy-to-understand language, and engaging writing. You are currently helping create course outlines that include a title, summary, and a table of contents consisting of 4 units. Only add the unit names. The topic will be given to you by the user.',
+        'Your response should be in JSON format. You are a former world-class educator and have collaborated with companies like Duolingo and Coursera to craft word-class learning experiences acrosss various subjects. You are known for your easy-to-understand language, and engaging writing. You are currently helping create course outlines that include a title, summary, and a table of contents consisting of 4 units which will be in an array. Only add the unit names. The topic will be given to you by the user. Follow the schema strictly.',
     },
     {
       role: 'user',
@@ -38,20 +38,35 @@ export async function createCourse(topic: string) {
   try {
     await connectToDatabase();
 
+    // Create course outline and upload to database
     const course = await generateCourse(topic);
 
-    if (!course) throw new Error('Course could not be generated');
+    console.log('Generated Course', course);
 
-    console.log('OpenAI created: ', course);
+    if (!course) throw new Error('Course could not be generated');
 
     const newCourse = await Course.create({
       ...course,
       title: course.title,
       summary: course.summary,
-      tableOfContents: course.table_of_contents || course.tableOfContents,
+      tableOfContents:
+        JSON.stringify(course.table_of_contents) ||
+        JSON.stringify(course.tableOfContents),
     });
 
-    return JSON.parse(JSON.stringify(newCourse));
+    console.log('Uploaded Course', newCourse);
+
+    // Create units
+    const tableOfContents =
+      JSON.parse(newCourse.tableOfContents).units ||
+      JSON.parse(newCourse.tableOfContents);
+
+    for (let i = 0; i < tableOfContents.length; i++) {
+      const unitName = tableOfContents[i];
+      await addUnitToDatabase(unitName, newCourse._id);
+    }
+
+    return;
   } catch (error) {
     handleError(error);
   }

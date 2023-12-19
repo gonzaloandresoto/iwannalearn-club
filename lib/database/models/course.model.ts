@@ -4,7 +4,7 @@ export interface ICourse extends Document {
   _id: string;
   title: string;
   summary: string;
-  tableOfContents: string;
+  tableOfContents: String;
 }
 
 const CourseSchema = new Schema<ICourse>({
