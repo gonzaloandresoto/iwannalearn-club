@@ -8,6 +8,7 @@ import { courseSchema } from '../openai/schemas/course.schema';
 import { handleError } from '../utils';
 import { addUnitToDatabase } from './unit.actions';
 
+// Generate course outline
 const generateCourse = async (topic: string) => {
   const prompt = [
     {
@@ -17,7 +18,9 @@ const generateCourse = async (topic: string) => {
     },
     {
       role: 'user',
-      content: `I want to learn about ${topic}. Use this schema for your response: ${courseSchema}`,
+      content: `I want to learn about ${topic}. Use this schema for your response: ${JSON.stringify(
+        courseSchema
+      )}`,
     },
   ] as any;
 
@@ -34,6 +37,7 @@ const generateCourse = async (topic: string) => {
   return courseObject;
 };
 
+// Create course and upload to database
 export async function createCourse(topic: string) {
   try {
     await connectToDatabase();
@@ -60,12 +64,29 @@ export async function createCourse(topic: string) {
       JSON.parse(newCourse.tableOfContents);
 
     for (let i = 0; i < tableOfContents.length; i++) {
-      const unitName = tableOfContents[i];
+      const unitName = tableOfContents[i].title;
       await addUnitToDatabase(newCourse.title, unitName, newCourse._id);
     }
 
     return;
   } catch (error) {
     handleError(error);
+  }
+}
+
+// Get course details by id
+
+export async function getCourseById(id: string) {
+  try {
+    console.log('Getting course by id', id);
+    await connectToDatabase();
+
+    const course = await Course.findById(id);
+
+    if (!course) throw new Error('Course not found');
+
+    return JSON.parse(JSON.stringify(course));
+  } catch (error) {
+    console.log(error);
   }
 }

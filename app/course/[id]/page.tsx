@@ -1,28 +1,22 @@
-'use client';
-
 import React from 'react';
 
 import CourseCard from '@/components/CourseComponents/CourseCard';
 import { unitContent } from '@/constants';
+import { getCourseById } from '@/lib/actions/course.actions';
+import CourseCover from '@/components/CourseComponents/CourseCover';
 
-interface SearchParamProps {
-  searchParams: {
-    id: string;
-  };
-}
-
-export default function CourseContent({
-  searchParams,
+export default async function CourseContent({
+  params: { id },
 }: {
-  searchParams: { id: string };
+  params: { id: string };
 }) {
-  const [activePage, setActivePage] = React.useState(0);
+  const course = await getCourseById(id);
   return (
     <div className='flex flex-col items-center'>
-      <CourseCard
-        unitContent={unitContent}
-        activePage={activePage}
-        setActivePage={setActivePage}
+      <CourseCover
+        title={course.title}
+        summary={course.summary}
+        tableOfContents={course.tableOfContents}
       />
     </div>
   );
