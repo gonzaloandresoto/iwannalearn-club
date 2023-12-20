@@ -69,12 +69,8 @@ export async function createCourse(topic: string) {
 
     for (let i = 0; i < tableOfContents.length; i++) {
       const unitName = tableOfContents[i].title;
-      await addUnitToDatabase(
-        newCourse.title,
-        unitName,
-        newCourse._id,
-        newCourse.id
-      );
+      const unitId = (i + 1).toString();
+      await addUnitToDatabase(newCourse.title, unitName, newCourse._id, unitId);
     }
 
     return newCourse._id;
@@ -104,7 +100,6 @@ export async function getCourseById(id: string) {
 export async function getCourseProgressById(id: string) {
   try {
     await connectToDatabase();
-    console.log('Getting course progress by id: ', id);
 
     const units = await Unit.find({
       courseId: { $in: id },
