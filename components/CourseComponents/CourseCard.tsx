@@ -1,5 +1,5 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import QuizContent from './QuizContent';
@@ -20,16 +20,21 @@ interface CourseCardProps {
   unitContent: UnitContentItems[];
   activePage: number;
   setActivePage: (page: number) => void;
+  unitId: string;
+  courseId: string;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
+  unitId,
+  courseId,
   unitContent,
   activePage,
   setActivePage,
 }) => {
+  const router = useRouter();
   const handleNext = () => {
     if (activePage === unitContent.length - 1) {
-      //   here we want to set unitContent.status = 'completed' in our database;
+      router.push(`/course/${courseId}/${unitId}/completed`);
       return null;
     }
     setActivePage(activePage + 1);

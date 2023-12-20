@@ -14,6 +14,7 @@ export async function addUnitToDatabase(
 ) {
   try {
     await connectToDatabase();
+
     const newUnit = await Unit.create({
       title: unitName,
       courseId: courseId,
@@ -22,9 +23,26 @@ export async function addUnitToDatabase(
     });
 
     const unitId = newUnit._id;
+
     createElement(courseTopic, unitName, unitId);
 
     return JSON.parse(JSON.stringify(newUnit));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function getUnitContentById(unitId: string) {
+  try {
+    await connectToDatabase();
+
+    const unit = await Unit.findById(unitId);
+
+    if (!unit) {
+      return { message: 'No unit found' };
+    }
+
+    return unit;
   } catch (error) {
     handleError(error);
   }

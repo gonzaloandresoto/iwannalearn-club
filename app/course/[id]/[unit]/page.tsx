@@ -27,6 +27,8 @@ export default function UnitContent() {
   return (
     <div className='flex flex-col items-center'>
       <CourseCard
+        unitId={params.unit}
+        courseId={params.id}
         unitContent={unitContent}
         activePage={activePage}
         setActivePage={setActivePage}
