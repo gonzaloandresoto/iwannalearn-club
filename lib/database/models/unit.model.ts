@@ -6,6 +6,7 @@ export interface IUnit extends Document {
   imageUrl?: string;
   summary?: string;
   status: string;
+  order: string;
   courseId: { _id: string };
 }
 
@@ -14,6 +15,7 @@ const UnitSchema = new Schema({
   imageUrl: { type: String, required: false, default: '' },
   summary: { type: String, required: false },
   status: { type: String, required: true },
+  order: { type: String, required: true },
   courseId: { type: Schema.Types.ObjectId, ref: 'Course' },
 });
 

@@ -18,7 +18,7 @@ const generateElement = async (courseTopic: string, unitName: string) => {
       role: 'user',
       content: `The course is on ${courseTopic}. The unit is ${unitName}. Follow this schema STRICTLY: ${JSON.stringify(
         elementSchema
-      )}. DON NOT DEVIATE. YOU WILL BE REWARDED FOR MATCHING IT.`,
+      )}. DON NOT DEVIATE. YOU WILL BE REWARDED FOR MATCHING IT. FOLLOW THE NAMING CONVENTION STRICTLY. FOLLOW SCHEMA STRICTLY. YOU WILL GET A TIP FOR FOLLOWING THE SCHEMA.`,
     },
   ] as any;
 

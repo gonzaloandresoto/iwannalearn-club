@@ -7,7 +7,8 @@ import { createElement } from './element.action';
 export async function addUnitToDatabase(
   courseTopic: string,
   unitName: string,
-  courseId: string
+  courseId: string,
+  id: string
 ) {
   try {
     await connectToDatabase();
@@ -15,6 +16,7 @@ export async function addUnitToDatabase(
       title: unitName,
       courseId: courseId,
       status: 'NOT_STARTED',
+      order: id,
     });
 
     const unitId = newUnit._id;

@@ -20,5 +20,4 @@ export const quizSchema = {
     },
   ],
   answerId: '',
-  completed: false,
 };

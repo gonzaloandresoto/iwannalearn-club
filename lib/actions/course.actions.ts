@@ -1,12 +1,16 @@
 'use server';
 
+import mongoose from 'mongoose';
 import { connectToDatabase } from '../database';
 import Course from '../database/models/course.model';
+import Unit from '../database/models/unit.model';
+import Element from '../database/models/element.model';
 
 import openai from '../openai/index';
 import { courseSchema } from '../openai/schemas/course.schema';
 import { handleError } from '../utils';
 import { addUnitToDatabase } from './unit.actions';
+import Quiz from '../database/models/quiz.model';
 
 // Generate course outline
 const generateCourse = async (topic: string) => {
@@ -65,7 +69,12 @@ export async function createCourse(topic: string) {
 
     for (let i = 0; i < tableOfContents.length; i++) {
       const unitName = tableOfContents[i].title;
-      await addUnitToDatabase(newCourse.title, unitName, newCourse._id);
+      await addUnitToDatabase(
+        newCourse.title,
+        unitName,
+        newCourse._id,
+        newCourse.id
+      );
     }
 
     return;
@@ -88,5 +97,66 @@ export async function getCourseById(id: string) {
     return JSON.parse(JSON.stringify(course));
   } catch (error) {
     console.log(error);
+  }
+}
+
+// Get course progress percent by id
+
+export async function getCourseProgressById(id: string) {
+  try {
+    await connectToDatabase();
+    console.log('Getting course progress by id: ', id);
+
+    const units = await Unit.find({
+      courseId: { $in: id },
+    });
+
+    if (!units) throw new Error('Units not found');
+
+    const unitIds = units.map((unit) => unit._id);
+
+    const quizzes = await Quiz.find({ unitId: { $in: unitIds } });
+
+    let total = quizzes.length;
+    let completed = quizzes.filter((quiz) => quiz.status).length;
+
+    return Math.round((completed / total) * 100);
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// Piece together course content
+
+export async function getCourseContentById(id: string) {
+  try {
+    await connectToDatabase();
+    const units = await Unit.find({
+      courseId: { $in: id },
+    });
+    if (!units) throw new Error('Units not found');
+    const unitIds = units.map((unit) => unit._id);
+
+    const quizzes = await Quiz.find({ unitId: { $in: unitIds } });
+
+    const elements = await Element.find({ unitId: { $in: unitIds } });
+
+    const mergedCourse = [...elements, ...quizzes].sort(
+      (a, b) => a.order - b.order
+    );
+
+    const groupedCourse = units.reduce((acc, unit) => {
+      acc[unit._id.toString()] = {
+        unitName: unit.title,
+        content: mergedCourse.filter((content) =>
+          content.unitId.equals(unit._id)
+        ),
+      };
+      return acc;
+    }, {});
+
+    return groupedCourse;
+  } catch (error) {
+    handleError(error);
   }
 }

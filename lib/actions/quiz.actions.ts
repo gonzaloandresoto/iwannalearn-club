@@ -53,7 +53,7 @@ export async function createQuiz(
       question: quiz.question,
       choices: JSON.stringify(quiz.choices),
       answer: quiz.answerId,
-      status: quiz.status,
+      status: false,
       unitId: unitId,
     });
 
