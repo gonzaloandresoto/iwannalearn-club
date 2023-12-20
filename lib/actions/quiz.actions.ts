@@ -70,6 +70,11 @@ export async function markQuizCompleted(quizId: string) {
   try {
     await connectToDatabase();
 
+    const checkedQuiz = await Quiz.findById(quizId);
+    if (checkedQuiz && checkedQuiz.status === true) {
+      return { message: 'Quiz already marked as completed' };
+    }
+
     const quiz = await Quiz.findOneAndUpdate(
       { _id: quizId },
       { status: true },
