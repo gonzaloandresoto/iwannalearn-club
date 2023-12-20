@@ -57,6 +57,10 @@ export async function getNextUncompletedUnit(courseId: string) {
       status: 'NOT_STARTED',
     }).sort({ order: 1 });
 
+    if (!unit) {
+      return { message: 'No uncompleted units' };
+    }
+
     return unit._id;
   } catch (error) {
     handleError(error);
@@ -80,7 +84,6 @@ export async function updateUnitStatusBasedOnQuizCompletion(unitId: string) {
     let newStatus;
     if (completedQuizzes === quizzes.length) {
       newStatus = 'COMPLETED';
-      return { message: 'Unit completed' };
     } else if (completedQuizzes > 0) {
       newStatus = 'IN-PROGRESS';
     } else {

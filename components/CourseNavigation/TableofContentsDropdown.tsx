@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface TableOfContentsProps {
@@ -10,6 +11,7 @@ interface TableOfContentsProps {
       title: string;
       type: string;
       unitId: string;
+      status: boolean;
     }[];
   }[];
   dropdownRef: any;
@@ -38,10 +40,10 @@ export default function TableOfContentsDropdown({
             <p className='text-lg font-semibold'>{unit.unitName}</p>
             <div className='flex flex-col gap-2'>
               {unit.content.map((lesson, lessonIndex) => (
-                <button
+                <Link
                   key={lessonIndex}
-                  onClick={() => handleNavigation(lesson.unitId, unit.courseId)}
-                  className='px-4 py-2 bg-tertiary-grey rounded-md '
+                  href={`/course/${unit.courseId}/${lesson.unitId}`}
+                  className='flex flex-row justify-between px-4 py-2 bg-tertiary-grey rounded-md '
                 >
                   {lesson.type === 'text' && (
                     <p className='text-base font-regular text-left'>
@@ -49,9 +51,24 @@ export default function TableOfContentsDropdown({
                     </p>
                   )}
                   {lesson.type === 'quiz' && (
-                    <p className='text-sm font-semibold text-left'>QUIZ</p>
+                    <>
+                      <p className='text-sm font-semibold text-left'>QUIZ</p>
+                      {lesson.status === false ? (
+                        <img
+                          src='/course-icons/uncompleted.svg'
+                          width={20}
+                          height={20}
+                        />
+                      ) : (
+                        <img
+                          src='/course-icons/completed.svg'
+                          width={20}
+                          height={20}
+                        />
+                      )}
+                    </>
                   )}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
