@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 interface TableOfContentsProps {
   tableOfContents: {
@@ -21,11 +20,6 @@ export default function TableOfContentsDropdown({
   tableOfContents,
   dropdownRef,
 }: TableOfContentsProps) {
-  const router = useRouter();
-
-  const handleNavigation = (unitId: string, courseId: string) => {
-    router.push(`/course/${courseId}/${unitId}`);
-  };
   return (
     <div
       ref={dropdownRef}
