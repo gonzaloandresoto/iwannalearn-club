@@ -9,6 +9,7 @@ export default function CourseProgress({
   progressPercent,
   setIsDropdownOpen,
 }: CourseProgressProps) {
+  const progressBarWidth = progressPercent && 88 * (progressPercent / 100);
   return (
     <button
       onClick={() => {
@@ -18,7 +19,10 @@ export default function CourseProgress({
     >
       <p className='text-sm font-medium text-black'>Course Progress</p>
       <div className='w-[88px] h-[10px] bg-white border border-secondary-grey rounded-full'>
-        <div className='w-[20px] h-full bg-primary-blue rounded-full'></div>
+        <div
+          style={{ width: `${progressBarWidth}px` }}
+          className='h-full bg-primary-blue rounded-full'
+        ></div>
       </div>
       <p className='text-sm font-medium text-black'>{progressPercent || 0}%</p>
     </button>
