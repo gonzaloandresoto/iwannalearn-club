@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import CourseProgress from './CourseProgress';
 import TableOfContentsDropdown from './TableofContentsDropdown';
+import useOutsideClick from '@/lib/hooks/useOutsideClick';
 
 export default function NavigationBar() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function NavigationBar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [courseProgress, setCourseProgress] = useState(0);
   const [tableOfContents, setTableOfContents] = useState([]);
+  const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
 
   useEffect(() => {
     fetch('/api/course-progress', {
@@ -63,8 +65,16 @@ export default function NavigationBar() {
           ⭐️
         </button>
         <div className='relative'>
-          <CourseProgress progressPercent={courseProgress} />
-          <TableOfContentsDropdown tableOfContents={tableOfContents} />
+          <CourseProgress
+            progressPercent={courseProgress}
+            setIsDropdownOpen={setIsDropdownOpen}
+          />
+          {isDropdownOpen && (
+            <TableOfContentsDropdown
+              tableOfContents={tableOfContents}
+              dropdownRef={dropdownRef}
+            />
+          )}
         </div>
       </div>
     </div>

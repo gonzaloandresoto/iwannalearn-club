@@ -6,14 +6,19 @@ interface TableOfContentsProps {
       type: string;
     }[];
   }[];
+  dropdownRef: any;
 }
 
 export default function TableOfContentsDropdown({
   tableOfContents,
+  dropdownRef,
 }: TableOfContentsProps) {
   console.log(tableOfContents);
   return (
-    <div className='absolute right-0 z-20 my-3 max-h-[680px] overflow-y-scroll'>
+    <div
+      ref={dropdownRef}
+      className='absolute right-0 z-20 my-3 max-h-[680px] overflow-y-scroll'
+    >
       <div className='w-max h-full flex flex-col gap-4'>
         {Object.values(tableOfContents).map((unit, unitIndex) => (
           <div
