@@ -7,12 +7,14 @@ interface TextLessonContentProps {
   item: Content;
   handleNext: () => void;
   handlePrev: () => void;
+  activePage?: number;
 }
 
 const TextLessonContent: React.FC<TextLessonContentProps> = ({
   item,
   handleNext,
   handlePrev,
+  activePage,
 }) => {
   return (
     <div className='w-full h-max flex flex-col items-center'>
@@ -24,13 +26,14 @@ const TextLessonContent: React.FC<TextLessonContentProps> = ({
       <div className='fixed bottom-16 flex gap-2'>
         <button
           onClick={handlePrev}
-          className='main-button'
+          className='main-button disabled:opacity-50'
+          disabled={activePage === 0}
         >
           Prev
         </button>
         <button
           onClick={handleNext}
-          className='main-button'
+          className='main-button '
         >
           Next
         </button>

@@ -5,6 +5,7 @@ import { handleError } from '../utils';
 import { quizSchema } from '../openai/schemas/quiz.schema';
 import openai from '../openai';
 
+// Generate quiz
 const generateQuiz = async (lessonContent: string) => {
   const prompt = [
     {
@@ -34,6 +35,7 @@ const generateQuiz = async (lessonContent: string) => {
   return elementObject;
 };
 
+// Create quiz
 export async function createQuiz(
   lessonContent: string,
   unitId: string,
@@ -58,6 +60,23 @@ export async function createQuiz(
     });
 
     return newQuiz;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// Mark quiz completed
+export async function markQuizCompleted(quizId: string) {
+  try {
+    await connectToDatabase();
+
+    const quiz = await Quiz.findOneAndUpdate(
+      { _id: quizId },
+      { status: true },
+      { new: true }
+    );
+
+    return { updatedQuiz: quiz };
   } catch (error) {
     handleError(error);
   }

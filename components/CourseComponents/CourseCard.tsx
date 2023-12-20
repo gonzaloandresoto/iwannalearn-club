@@ -12,6 +12,7 @@ interface UnitContentItems {
   content?: string;
   question?: string;
   answer?: string;
+  _id: string;
 }
 
 interface CourseCardProps {
@@ -50,6 +51,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                         item={item}
                         handleNext={handleNext}
                         handlePrev={handlePrev}
+                        activePage={activePage}
                       />
                     )}
                     {item.type === 'quiz' && (

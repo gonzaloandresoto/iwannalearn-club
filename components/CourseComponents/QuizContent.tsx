@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import { useState } from 'react';
 
 interface Choice {
   id: string;
@@ -6,6 +8,7 @@ interface Choice {
 }
 
 interface Content {
+  _id: string;
   question?: string;
   choices?: string;
   answer?: string;
@@ -17,18 +20,24 @@ interface QuizContentProps {
 }
 
 const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
-  const [selectedAnswer, setSelectedAnswer] = React.useState<string>('');
+  const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const correctAnswer = item.answer;
 
-  let parsedChoices: Choice[] = [];
+  const parsedChoices: Choice[] =
+    (item.choices && (JSON.parse(item.choices) as Choice[])) || [];
 
-  if (item.choices) {
-    try {
-      parsedChoices = JSON.parse(item.choices) as Choice[];
-    } catch (error) {
-      console.error('Error parsing choices:', error);
-    }
-  }
+  console.log(item._id);
+
+  const continueClick = () => {
+    handleNext();
+    fetch('/api/quiz-completed', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ quizId: item._id }),
+    }).then((response) => response.json());
+  };
 
   return (
     <div className='w-full h-max flex flex-col items-center gap-8'>
@@ -52,7 +61,7 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
           })}
       </div>
       <button
-        onClick={handleNext}
+        onClick={continueClick}
         className='fixed bottom-16 main-button disabled:bg-secondary-blue'
         disabled={selectedAnswer !== correctAnswer}
       >
