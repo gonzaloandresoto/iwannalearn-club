@@ -1,5 +1,6 @@
 'use client';
 
+import { markQuizCompleted, updateUnitStatus } from '@/lib/courseServices';
 import { useState } from 'react';
 
 interface Choice {
@@ -12,6 +13,7 @@ interface Content {
   question?: string;
   choices?: string;
   answer?: string;
+  unitId: string;
 }
 
 interface QuizContentProps {
@@ -26,17 +28,10 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
   const parsedChoices: Choice[] =
     (item.choices && (JSON.parse(item.choices) as Choice[])) || [];
 
-  console.log(item._id);
-
   const continueClick = () => {
+    markQuizCompleted(item._id);
+    updateUnitStatus(item.unitId);
     handleNext();
-    fetch('/api/quiz-completed', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ quizId: item._id }),
-    }).then((response) => response.json());
   };
 
   return (

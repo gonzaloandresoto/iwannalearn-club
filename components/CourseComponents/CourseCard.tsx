@@ -13,6 +13,7 @@ interface UnitContentItems {
   question?: string;
   answer?: string;
   _id: string;
+  unitId: string;
 }
 
 interface CourseCardProps {
