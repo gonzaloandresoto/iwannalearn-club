@@ -1,28 +1,21 @@
+'use client';
+
 import React from 'react';
 
 import QuizContent from './QuizContent';
 import TextLessonContent from './TextLessonContent';
 
-interface UnitContent {
+interface UnitContentItems {
   title: string;
-  thumbnail?: string;
-  description?: string;
   status?: string;
-  content: {
-    type: string;
-    title?: string;
-    content?: string;
-    question?: string;
-    options?: {
-      id?: string;
-      text?: string;
-    }[];
-  }[];
+  type: string;
+  content?: string;
+  question?: string;
   answer?: string;
 }
 
 interface CourseCardProps {
-  unitContent: UnitContent;
+  unitContent: UnitContentItems[];
   activePage: number;
   setActivePage: (page: number) => void;
 }
@@ -32,8 +25,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
   activePage,
   setActivePage,
 }) => {
+  console.log('UNIT CONTENT', unitContent);
   const handleNext = () => {
-    if (activePage === unitContent.content.length - 1) {
+    if (activePage === unitContent.length - 1) {
       //   here we want to set unitContent.status = 'completed' in our database;
       return null;
     }
@@ -47,7 +41,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
     <div className='fixed bottom-0 w-[720px] h-5/6 flex flex-col items-center px-8 pt-8 bg-tertiary-grey rounded-t-xl overflow-y-auto'>
       <div className='w-full h-max flex flex-col gap-8'>
         <div>
-          {unitContent.content.map((item, index) => {
+          {Object.values(unitContent).map((item, index) => {
+            console.log('ITEM', item);
             return (
               <div key={index}>
                 {activePage === index && (

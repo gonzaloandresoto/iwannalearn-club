@@ -87,14 +87,13 @@ export async function createCourse(topic: string) {
 
 export async function getCourseById(id: string) {
   try {
-    console.log('Getting course by id', id);
     await connectToDatabase();
 
     const course = await Course.findById(id);
 
     if (!course) throw new Error('Course not found');
 
-    return JSON.parse(JSON.stringify(course));
+    return course;
   } catch (error) {
     console.log(error);
   }

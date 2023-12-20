@@ -1,11 +1,13 @@
 import React from 'react';
 
+interface Choice {
+  id: string;
+  option: string;
+}
+
 interface Content {
   question?: string;
-  options?: {
-    id?: string;
-    text?: string;
-  }[];
+  choices?: string;
   answer?: string;
 }
 
@@ -17,12 +19,23 @@ interface QuizContentProps {
 const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
   const [selectedAnswer, setSelectedAnswer] = React.useState<string>('');
   const correctAnswer = item.answer;
+
+  let parsedChoices: Choice[] = [];
+
+  if (item.choices) {
+    try {
+      parsedChoices = JSON.parse(item.choices) as Choice[];
+    } catch (error) {
+      console.error('Error parsing choices:', error);
+    }
+  }
+
   return (
     <div className='w-full h-max flex flex-col items-center gap-8'>
       <p className='text-2xl font-bold text-left'>{item.question}</p>
       <div className='w-full h-max flex flex-col gap-2'>
-        {item.options &&
-          item.options.map((quizItem, index) => {
+        {item.choices &&
+          parsedChoices.map((quizItem, index) => {
             return (
               <button
                 key={index}
@@ -33,7 +46,7 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
                     : 'bg-white text-black'
                 }`}
               >
-                <p className='text-lg text-left'>{quizItem.text}</p>
+                <p className='text-lg text-left'>{quizItem.option}</p>
               </button>
             );
           })}
