@@ -16,7 +16,7 @@ export default async function CourseContent({
       <CourseCover
         title={course.title}
         summary={course.summary}
-        tableOfContents={course.tableOfContents}
+        tableOfContents={course?.tableOfContents}
       />
     </div>
   );

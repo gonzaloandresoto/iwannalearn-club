@@ -134,7 +134,9 @@ export async function getCourseContentById(id: string) {
     const units = await Unit.find({
       courseId: { $in: id },
     });
+
     if (!units) throw new Error('Units not found');
+
     const unitIds = units.map((unit) => unit._id);
 
     const quizzes = await Quiz.find({ unitId: { $in: unitIds } });
