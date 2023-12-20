@@ -62,3 +62,39 @@ export async function getNextUncompletedUnit(courseId: string) {
     handleError(error);
   }
 }
+
+export async function updateUnitStatusBasedOnQuizCompletion(unitId: string) {
+  try {
+    await connectToDatabase();
+
+    const quizzes = await Quiz.find({ unitId: unitId });
+
+    if (quizzes.length === 0) {
+      return { message: 'No quizzes to evaluate' };
+    }
+
+    const completedQuizzes = quizzes.filter(
+      (quiz) => quiz.status === true
+    ).length;
+
+    let newStatus;
+    if (completedQuizzes === quizzes.length) {
+      newStatus = 'COMPLETED';
+      return { message: 'Unit completed' };
+    } else if (completedQuizzes > 0) {
+      newStatus = 'IN-PROGRESS';
+    } else {
+      return { message: 'No quizzes completed' };
+    }
+
+    const updatedUnit = await Unit.findByIdAndUpdate(
+      unitId,
+      { status: newStatus },
+      { new: true }
+    );
+
+    return updatedUnit;
+  } catch (error) {
+    handleError(error);
+  }
+}
