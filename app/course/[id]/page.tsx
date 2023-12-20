@@ -14,6 +14,7 @@ export default async function CourseContent({
   return (
     <div className='flex flex-col items-center'>
       <CourseCover
+        courseId={course._id}
         title={course.title}
         summary={course.summary}
         tableOfContents={course?.tableOfContents}

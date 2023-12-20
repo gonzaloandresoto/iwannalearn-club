@@ -47,3 +47,18 @@ export async function getUnitElementsById(id: string) {
     handleError(error);
   }
 }
+
+export async function getNextUncompletedUnit(courseId: string) {
+  try {
+    await connectToDatabase();
+
+    const unit = await Unit.findOne({
+      courseId: courseId,
+      status: 'NOT_STARTED',
+    }).sort({ order: 1 });
+
+    return unit._id;
+  } catch (error) {
+    handleError(error);
+  }
+}
