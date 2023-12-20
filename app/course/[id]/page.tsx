@@ -1,7 +1,3 @@
-import React from 'react';
-
-import CourseCard from '@/components/CourseComponents/CourseCard';
-import { unitContent } from '@/constants';
 import { getCourseById } from '@/lib/actions/course.actions';
 import CourseCover from '@/components/CourseComponents/CourseCover';
 
