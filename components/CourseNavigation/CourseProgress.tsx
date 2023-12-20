@@ -20,7 +20,7 @@ export default function CourseProgress({
       <div className='w-[88px] h-[10px] bg-white border border-secondary-grey rounded-full'>
         <div className='w-[20px] h-full bg-primary-blue rounded-full'></div>
       </div>
-      <p className='text-sm font-medium text-black'>{progressPercent}%</p>
+      <p className='text-sm font-medium text-black'>{progressPercent || 0}%</p>
     </button>
   );
 }

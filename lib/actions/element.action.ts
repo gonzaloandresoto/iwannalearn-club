@@ -8,17 +8,16 @@ import { handleError } from '../utils';
 import { createQuiz } from './quiz.actions';
 
 const generateElement = async (courseTopic: string, unitName: string) => {
+  const stringifiedSchema = JSON.stringify(elementSchema);
   const prompt = [
     {
       role: 'system',
       content:
-        'Your response should be in JSON format. You are currently creating a lesson on the unit given to you. Be informative and easy to understand.',
+        'You are a helpful assistant. Your response should be in JSON format and should match the schema given to you.',
     },
     {
       role: 'user',
-      content: `The course is on ${courseTopic}. The unit is ${unitName}. Follow this schema STRICTLY: ${JSON.stringify(
-        elementSchema
-      )}. DON NOT DEVIATE. YOU WILL BE REWARDED FOR MATCHING IT. FOLLOW THE NAMING CONVENTION STRICTLY. FOLLOW SCHEMA STRICTLY. YOU WILL GET A TIP FOR FOLLOWING THE SCHEMA.`,
+      content: `You are currently creating an informative summary about ${unitName} in the context of ${courseTopic}. Follow this schema for your response: ${stringifiedSchema}.`,
     },
   ] as any;
 
@@ -28,11 +27,11 @@ const generateElement = async (courseTopic: string, unitName: string) => {
     response_format: { type: 'json_object' },
   });
 
-  const elementObject =
-    JSON.parse(openaiResponse.choices[0].message.content || '').content ||
-    JSON.parse(openaiResponse.choices[0].message.content || '').lessons ||
-    JSON.parse(openaiResponse.choices[0].message.content || '').data ||
-    JSON.parse(openaiResponse.choices[0].message.content || '');
+  const contentString = openaiResponse.choices[0].message.content || '{}';
+  const parsedContent = JSON.parse(contentString);
+  const elementObject = Object.values(parsedContent)[0] || parsedContent;
+
+  console.log('Generated Object', elementObject);
 
   return elementObject;
 };
@@ -51,17 +50,33 @@ export async function createElement(
 
     if (!element.length) return;
 
-    for (let i = 0; i < element.length; i++) {
-      await Element.create({
-        ...element[i],
-        type: element[i].type,
-        order: element[i].id,
-        title: element[i].title,
-        content: element[i].content,
-        unitId: unitId,
-      });
+    if (Array.isArray(element)) {
+      for (let i = 0; i < element.length; i++) {
+        await Element.create({
+          ...element[i],
+          type: element[i].type,
+          order: element[i].id,
+          title: element[i].title,
+          content: element[i].content,
+          unitId: unitId,
+        });
 
-      createQuiz(element[i].content, unitId, element[i].id);
+        createQuiz(element[i].content, unitId, element[i].id);
+      }
+    } else if (element && typeof element === 'object') {
+      for (const key of Object.keys(element)) {
+        const item = element[key];
+        await Element.create({
+          ...item,
+          type: item.type,
+          order: item.id,
+          title: item.title,
+          content: item.content,
+          unitId: unitId,
+        });
+
+        createQuiz(item.content, unitId, item.id);
+      }
     }
 
     console.log('Uploaded Element', element);

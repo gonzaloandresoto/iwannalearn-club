@@ -77,7 +77,7 @@ export async function createCourse(topic: string) {
       );
     }
 
-    return;
+    return newCourse._id;
   } catch (error) {
     handleError(error);
   }
@@ -118,8 +118,9 @@ export async function getCourseProgressById(id: string) {
 
     let total = quizzes.length;
     let completed = quizzes.filter((quiz) => quiz.status).length;
+    const progress = Math.round((completed / total) * 100);
 
-    return Math.round((completed / total) * 100);
+    return { progress: progress };
   } catch (error) {
     handleError(error);
   }
@@ -149,6 +150,7 @@ export async function getCourseContentById(id: string) {
     const groupedCourse = units.reduce((acc, unit) => {
       acc[unit._id.toString()] = {
         unitName: unit.title,
+        courseId: unit.courseId,
         content: mergedCourse.filter((content) =>
           content.unitId.equals(unit._id)
         ),

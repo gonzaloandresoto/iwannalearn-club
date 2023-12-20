@@ -27,7 +27,7 @@ export default function NavigationBar() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setCourseProgress(data);
+        setCourseProgress(data.progress);
       });
   }, []);
 

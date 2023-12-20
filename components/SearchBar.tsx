@@ -1,17 +1,35 @@
 'use client';
 
 import { createCourse } from '@/lib/actions/course.actions';
-import React from 'react';
+import { handleError } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 function SearchBar() {
-  const [topic, setTopic] = React.useState('');
+  const router = useRouter();
+  const [topic, setTopic] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTopic(e.target.value);
   };
 
-  const handleSubmit = () => {
-    createCourse(topic);
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/api/create-course', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ topic: topic }),
+      });
+
+      const data = await response.json();
+      if (data) {
+        router.push(`/course/${data}`);
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (

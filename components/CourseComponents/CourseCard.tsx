@@ -25,7 +25,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   activePage,
   setActivePage,
 }) => {
-  console.log('UNIT CONTENT', unitContent);
   const handleNext = () => {
     if (activePage === unitContent.length - 1) {
       //   here we want to set unitContent.status = 'completed' in our database;
@@ -42,7 +41,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
       <div className='w-full h-max flex flex-col gap-8'>
         <div>
           {Object.values(unitContent).map((item, index) => {
-            console.log('ITEM', item);
             return (
               <div key={index}>
                 {activePage === index && (

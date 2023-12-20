@@ -6,7 +6,6 @@ import { useParams } from 'next/navigation';
 
 export default function UnitContent() {
   const params = useParams<{ id: string; unit: string }>();
-  //   const unitContent = await getUnitElementsById(params.unit);
 
   const [unitContent, setUnitContent] = useState([]);
   const [activePage, setActivePage] = useState(0);
@@ -21,7 +20,6 @@ export default function UnitContent() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('DATA', data);
         setUnitContent(data);
       });
   }, []);
