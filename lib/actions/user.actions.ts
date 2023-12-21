@@ -80,5 +80,3 @@ export async function deleteUser(clerkId: string) {
     handleError(error);
   }
 }
-
-const name = () => {};

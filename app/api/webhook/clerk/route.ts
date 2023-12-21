@@ -6,7 +6,6 @@ import { clerkClient } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
@@ -55,54 +54,57 @@ export async function POST(req: Request) {
   const { id } = evt.data;
   const eventType = evt.type;
 
-  if (eventType === 'user.created') {
-    const { id, email_addresses, image_url, first_name, last_name, username } =
-      evt.data;
+  console.log('Event type:', eventType);
+  console.log('Event ID:', id);
 
-    const user = {
-      clerkId: id,
-      email: email_addresses[0].email_address,
-      username: username!,
-      firstName: first_name,
-      lastName: last_name,
-      photo: image_url,
-    };
+  // if (eventType === 'user.created') {
+  //   const { id, email_addresses, image_url, first_name, last_name, username } =
+  //     evt.data;
 
-    const newUser = await createUser(user);
+  //   const user = {
+  //     clerkId: id,
+  //     email: email_addresses[0].email_address,
+  //     username: username!,
+  //     firstName: first_name,
+  //     lastName: last_name,
+  //     photo: image_url,
+  //   };
 
-    if (newUser) {
-      await clerkClient.users.updateUserMetadata(id, {
-        publicMetadata: {
-          userId: newUser._id,
-        },
-      });
-    }
+  //   const newUser = await createUser(user);
 
-    return NextResponse.json({ message: 'OK', user: newUser });
-  }
+  //   if (newUser) {
+  //     await clerkClient.users.updateUserMetadata(id, {
+  //       publicMetadata: {
+  //         userId: newUser._id,
+  //       },
+  //     });
+  //   }
 
-  if (eventType === 'user.updated') {
-    const { id, image_url, first_name, last_name, username } = evt.data;
+  //   return NextResponse.json({ message: 'OK', user: newUser });
+  // }
 
-    const user = {
-      firstName: first_name,
-      lastName: last_name,
-      username: username!,
-      photo: image_url,
-    };
+  // if (eventType === 'user.updated') {
+  //   const { id, image_url, first_name, last_name, username } = evt.data;
 
-    const updatedUser = await updateUser(id, user);
+  //   const user = {
+  //     firstName: first_name,
+  //     lastName: last_name,
+  //     username: username!,
+  //     photo: image_url,
+  //   };
 
-    return NextResponse.json({ message: 'OK', user: updatedUser });
-  }
+  //   const updatedUser = await updateUser(id, user);
 
-  if (eventType === 'user.deleted') {
-    const { id } = evt.data;
+  //   return NextResponse.json({ message: 'OK', user: updatedUser });
+  // }
 
-    const deletedUser = await deleteUser(id!);
+  // if (eventType === 'user.deleted') {
+  //   const { id } = evt.data;
 
-    return NextResponse.json({ message: 'OK', user: deletedUser });
-  }
+  //   const deletedUser = await deleteUser(id!);
+
+  //   return NextResponse.json({ message: 'OK', user: deletedUser });
+  // }
 
   return new Response('', { status: 200 });
 }
