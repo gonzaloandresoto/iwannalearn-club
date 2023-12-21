@@ -1,5 +1,3 @@
-import { courseCover } from '@/constants';
-
 interface TableofContentsItem {
   id: string;
   title: string;
