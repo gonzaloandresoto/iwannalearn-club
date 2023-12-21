@@ -18,9 +18,11 @@ interface CreateUserParams {
 
 export async function createUser(user: CreateUserParams) {
   try {
+    console.log('Creating user IN FUNCTION:', user);
     await connectToDatabase();
 
     const newUser = await User.create(user);
+    console.log('Created user IN FUNCTION:', newUser);
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
     handleError(error);

@@ -57,31 +57,35 @@ export async function POST(req: Request) {
   console.log('Event type:', eventType);
   console.log('Event ID:', id);
 
-  // if (eventType === 'user.created') {
-  //   const { id, email_addresses, image_url, first_name, last_name, username } =
-  //     evt.data;
+  if (eventType === 'user.created') {
+    const { id, email_addresses, image_url, first_name, last_name, username } =
+      evt.data;
 
-  //   const user = {
-  //     clerkId: id,
-  //     email: email_addresses[0].email_address,
-  //     username: username!,
-  //     firstName: first_name,
-  //     lastName: last_name,
-  //     photo: image_url,
-  //   };
+    const user = {
+      clerkId: id,
+      email: email_addresses[0].email_address,
+      username: username!,
+      firstName: first_name,
+      lastName: last_name,
+      photo: image_url,
+    };
 
-  //   const newUser = await createUser(user);
+    console.log('Clerk User:', user);
 
-  //   if (newUser) {
-  //     await clerkClient.users.updateUserMetadata(id, {
-  //       publicMetadata: {
-  //         userId: newUser._id,
-  //       },
-  //     });
-  //   }
+    const newUser = await createUser(user);
 
-  //   return NextResponse.json({ message: 'OK', user: newUser });
-  // }
+    console.log('DB user:', newUser);
+
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser._id,
+        },
+      });
+    }
+
+    return NextResponse.json({ message: 'OK', user: newUser });
+  }
 
   // if (eventType === 'user.updated') {
   //   const { id, image_url, first_name, last_name, username } = evt.data;
