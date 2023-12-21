@@ -1,19 +1,24 @@
 'use client';
 
+import { Dispatch, SetStateAction } from 'react';
+
 interface CourseProgressProps {
   progressPercent: number;
-  setIsDropdownOpen: any;
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function CourseProgress({
   progressPercent,
+  isDropdownOpen,
   setIsDropdownOpen,
 }: CourseProgressProps) {
   const progressBarWidth = progressPercent && 88 * (progressPercent / 100);
   return (
     <button
-      onClick={() => {
-        setIsDropdownOpen(true);
+      onClick={(e) => {
+        e.stopPropagation();
+        setIsDropdownOpen(!isDropdownOpen);
       }}
       className='h-[48px] flex items-center gap-3 px-4 bg-tertiary-grey rounded-md cursor-pointer'
     >

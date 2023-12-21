@@ -20,9 +20,9 @@ export default function CourseCompletion({
 }: CourseCompletionProps) {
   let route;
   if (!nextUnit) {
-    route = `/course/${unitContent.courseId}/${nextUnit}`;
-  } else {
     route = `/course/${unitContent.courseId}`;
+  } else {
+    route = `/course/${unitContent.courseId}/${nextUnit}`;
   }
 
   return (

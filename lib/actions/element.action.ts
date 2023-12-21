@@ -17,13 +17,13 @@ const generateElement = async (courseTopic: string, unitName: string) => {
     },
     {
       role: 'user',
-      content: `You are currently creating an informative summary about ${unitName} in the context of ${courseTopic}. Follow this schema for your response: ${stringifiedSchema}.`,
+      content: `You are currently creating an informative in-depth document about ${unitName} in the context of ${courseTopic}. Follow this schema for your response: ${stringifiedSchema}.`,
     },
   ] as any;
 
   const openaiResponse = await openai.chat.completions.create({
     messages: prompt,
-    model: 'gpt-3.5-turbo-1106',
+    model: 'gpt-4-1106-preview',
     response_format: { type: 'json_object' },
   });
 

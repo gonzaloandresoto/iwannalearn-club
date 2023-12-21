@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.29.0",
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.0",
     "mongodb": "^6.3.0",
@@ -16,7 +17,8 @@
     "next": "14.0.4",
     "openai": "^4.23.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "svix": "^1.15.0"
   },
   "devDependencies": {
     "@types/node": "^20",

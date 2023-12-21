@@ -44,7 +44,6 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!id) return;
-    console.log('FETCHING COURSE PROGRESS');
     fetch('/api/course-progress', {
       method: 'POST',
       headers: {

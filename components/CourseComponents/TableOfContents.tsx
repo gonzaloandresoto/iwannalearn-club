@@ -22,9 +22,10 @@ export default function TableOfContents({
         {tableOfContentsArray.map((item, index) => (
           <div
             key={index}
-            className='w-full h-[48px] flex items-center px-2 bg-white border border-2 border-secondary-grey  rounded-md'
+            className='w-full h-[48px] flex gap-2 gap-2 items-center px-2 bg-white border border-2 border-secondary-grey  rounded-md'
           >
-            {item.title}
+            <p className='font-medium'>{'Unit ' + (index + 1) + ': '}</p>
+            <p>{item.title}</p>
           </div>
         ))}
       </div>

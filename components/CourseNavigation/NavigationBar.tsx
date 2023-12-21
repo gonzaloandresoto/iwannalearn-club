@@ -1,9 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import useTOCContext from '@/hooks/useTOCContext';
 import CourseProgress from './CourseProgress';
@@ -11,9 +11,8 @@ import TableOfContentsDropdown from './TableofContentsDropdown';
 import useOutsideClick from '@/lib/hooks/useOutsideClick';
 
 export default function NavigationBar() {
-  const router = useRouter();
   const params = useParams<{ id: string }>();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
   const { setId, tableOfContents, courseProgress } = useTOCContext();
 
@@ -21,17 +20,10 @@ export default function NavigationBar() {
     setId(params.id);
   }, []);
 
-  const returnHome = () => {
-    router.push('/');
-  };
-
   return (
     <div className='fixed top-0 relative w-4/5 flex items-center justify-center h-[96px]'>
-      <button
-        onClick={returnHome}
-        className='absolute left-0 w-[48px] h-[48px] flex-none bg-tertiary-grey rounded-md'
-      >
-        ←
+      <button className='absolute left-0 w-[48px] h-[48px] flex-none bg-tertiary-grey rounded-md'>
+        <Link href='/'>←</Link>
       </button>
 
       <p className='text-xl text-primary-grey font-titan'>superMe</p>
@@ -43,6 +35,7 @@ export default function NavigationBar() {
         <div className='relative'>
           <CourseProgress
             progressPercent={courseProgress}
+            isDropdownOpen={isDropdownOpen}
             setIsDropdownOpen={setIsDropdownOpen}
           />
           {isDropdownOpen && (

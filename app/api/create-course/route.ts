@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
+    console.log('Creating course');
     const { topic } = await request.json();
 
     const response = await createCourse(topic);
