@@ -1,4 +1,5 @@
 import NavigationBar from '@/components/CourseNavigation/NavigationBar';
+import { TOCProvider } from '@/context/TOCProvider';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,9 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className='h-screen w-screen flex flex-col items-center'>
-      <NavigationBar />
-      {children}
-    </section>
+    <TOCProvider>
+      <section className='h-screen w-screen flex flex-col items-center'>
+        <NavigationBar />
+
+        {children}
+      </section>
+    </TOCProvider>
   );
 }

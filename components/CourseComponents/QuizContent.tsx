@@ -1,5 +1,6 @@
 'use client';
 
+import useTOCContext from '@/hooks/useTOCContext';
 import { markQuizCompleted, updateUnitStatus } from '@/lib/courseServices';
 import { useState } from 'react';
 
@@ -22,15 +23,17 @@ interface QuizContentProps {
 }
 
 const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
+  const { updatedQuizId, setUpdatedQuizId } = useTOCContext();
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const correctAnswer = item.answer;
 
   const parsedChoices: Choice[] =
     (item.choices && (JSON.parse(item.choices) as Choice[])) || [];
 
-  const continueClick = () => {
-    markQuizCompleted(item._id);
-    updateUnitStatus(item.unitId);
+  const continueClick = async () => {
+    await markQuizCompleted(item._id);
+    setUpdatedQuizId(!updatedQuizId);
+    await updateUnitStatus(item.unitId);
     handleNext();
   };
 

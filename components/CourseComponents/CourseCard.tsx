@@ -33,9 +33,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   const router = useRouter();
   const handleNext = () => {
-    if (activePage === unitContent.length - 1) {
+    if (activePage === unitContent.length - 1 && courseId && unitId) {
       router.push(`/course/${courseId}/${unitId}/completed`);
-      return null;
     }
     setActivePage(activePage + 1);
   };

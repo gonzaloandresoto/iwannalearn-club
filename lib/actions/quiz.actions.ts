@@ -81,7 +81,7 @@ export async function markQuizCompleted(quizId: string) {
       { new: true }
     );
 
-    return { updatedQuiz: quiz };
+    return { updatedQuizId: quiz._id };
   } catch (error) {
     handleError(error);
   }

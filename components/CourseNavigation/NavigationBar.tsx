@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 
 import { useState, useEffect, useRef } from 'react';
+
+import useTOCContext from '@/hooks/useTOCContext';
 import CourseProgress from './CourseProgress';
 import TableOfContentsDropdown from './TableofContentsDropdown';
 import useOutsideClick from '@/lib/hooks/useOutsideClick';
@@ -11,38 +13,12 @@ import useOutsideClick from '@/lib/hooks/useOutsideClick';
 export default function NavigationBar() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [courseProgress, setCourseProgress] = useState(0);
-  const [tableOfContents, setTableOfContents] = useState([]);
   const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
+  const { setId, tableOfContents, courseProgress } = useTOCContext();
 
   useEffect(() => {
-    fetch('/api/course-progress', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: params.id }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCourseProgress(data.progress);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/course-content', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: params.id }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setTableOfContents(data);
-      });
+    setId(params.id);
   }, []);
 
   const returnHome = () => {
