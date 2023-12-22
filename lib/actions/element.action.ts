@@ -23,7 +23,7 @@ const generateElement = async (courseTopic: string, unitName: string) => {
 
   const openaiResponse = await openai.chat.completions.create({
     messages: prompt,
-    model: 'gpt-4-1106-preview',
+    model: 'gpt-3.5-turbo-1106',
     response_format: { type: 'json_object' },
   });
 
