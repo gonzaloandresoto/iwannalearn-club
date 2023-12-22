@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "next-dev": "next dev",
+    "api-dev": "uvicorn app.api.index:app --reload",
+    "dev": "concurrently --kill-others-on-fail \"npm run next-dev\" \"npm run api-dev\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -29,6 +31,7 @@
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
+    "concurrently": "^8.2.2",
     "typescript": "^5"
   }
 }
