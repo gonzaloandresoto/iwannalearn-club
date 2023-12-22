@@ -1,20 +1,20 @@
 'use client';
 
-import { createCourse } from '@/lib/actions/course.actions';
+import useCommandEnter from '@/lib/hooks/useCommandEnter';
 import { handleError } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function SearchBar() {
   const router = useRouter();
   const [topic, setTopic] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTopic(e.target.value);
-  };
+  useCommandEnter(() => handleSubmit(), topic);
 
   const handleSubmit = async () => {
+    console.log('submitting');
     try {
+      if (!topic) return;
       const response = await fetch('/api/create-course', {
         method: 'POST',
         headers: {
@@ -32,6 +32,10 @@ function SearchBar() {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTopic(e.target.value);
+  };
+
   return (
     <div className='max-w-[720px] w-full h-[56px] flex items-center px-2 border border-2 border-secondary-grey rounded-md'>
       <input
@@ -42,7 +46,7 @@ function SearchBar() {
         className='w-full h-full bg-white outline-none placeholder:text-primary-grey'
       />
       <button
-        onClick={handleSubmit}
+        onClick={() => handleSubmit()}
         className='h-[40px] px-4 text-white bg-primary-blue rounded-md'
       >
         Create

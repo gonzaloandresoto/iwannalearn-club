@@ -37,7 +37,6 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
     handleNext();
   };
 
-
   return (
     <div className='w-full h-max flex flex-col items-center gap-8'>
       <p className='text-2xl font-bold text-left'>{item.question}</p>
@@ -48,10 +47,11 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
               <button
                 key={index}
                 onClick={() => setSelectedAnswer(quizItem.id)}
-                className={`w-full px-4 py-2 border border-2 border-secondary-grey rounded-md ${quizItem.id === selectedAnswer
+                className={`w-full px-4 py-2 border border-2 border-secondary-grey rounded-md ${
+                  quizItem.id === selectedAnswer
                     ? 'bg-primary-orange text-white'
                     : 'bg-white text-black'
-                  }`}
+                }`}
               >
                 <p className='text-lg text-left'>{quizItem.option}</p>
               </button>
@@ -61,7 +61,7 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
       <button
         onClick={continueClick}
         className='fixed bottom-16 main-button disabled:bg-secondary-blue'
-        disabled={selectedAnswer !== correctAnswer}
+        disabled={Number(selectedAnswer) !== correctAnswer}
       >
         Continue
       </button>
