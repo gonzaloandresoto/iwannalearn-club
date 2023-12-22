@@ -1,4 +1,4 @@
-import { createCourse } from '@/lib/actions/course.actions';
+import { createCourse } from '@/lib/actions/generate.actions';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {

@@ -20,6 +20,7 @@ export default function UnitContent() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setUnitContent(data);
       });
   }, []);

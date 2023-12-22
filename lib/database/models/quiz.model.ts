@@ -5,7 +5,7 @@ export interface IElement extends Document {
   type: string;
   question: string;
   order: string;
-  choices: String;
+  choices: string;
   answer: string;
   status: boolean;
   unitId: { _id: string };

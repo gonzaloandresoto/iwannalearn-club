@@ -39,7 +39,7 @@ export default function TableOfContentsDropdown({
                   href={`/course/${unit.courseId}/${lesson.unitId}`}
                   className='flex flex-row justify-between px-4 py-2 bg-tertiary-grey rounded-md '
                 >
-                  {lesson.type === 'text' && (
+                  {lesson.type === 'lesson' && (
                     <p className='text-base font-regular text-left'>
                       {lesson.title}
                     </p>
