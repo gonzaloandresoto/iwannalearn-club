@@ -39,7 +39,7 @@ const generateElement = async (courseTopic: string, unitName: string) => {
 export async function createElement(
   courseTopic: string,
   unitName: string,
-  unitId: string
+  unitId: string,
 ) {
   try {
     await connectToDatabase();

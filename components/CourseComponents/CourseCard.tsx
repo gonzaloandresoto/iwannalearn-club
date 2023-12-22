@@ -51,7 +51,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
               <div key={index}>
                 {activePage === index && (
                   <>
-                    {item.type === 'text' && (
+                    {item.type === 'lesson' && (
                       <TextLessonContent
                         item={item}
                         handleNext={handleNext}
