@@ -16,7 +16,6 @@ export default function RootLayout({
     <TOCProvider>
       <section className='h-screen w-screen flex flex-col items-center'>
         <NavigationBar />
-
         {children}
       </section>
     </TOCProvider>

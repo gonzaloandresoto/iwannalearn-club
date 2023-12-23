@@ -12,7 +12,6 @@ function SearchBar() {
   useCommandEnter(() => handleSubmit(), topic);
 
   const handleSubmit = async () => {
-    console.log('submitting');
     try {
       if (!topic) return;
       const response = await fetch('/api/create-course', {
@@ -25,7 +24,7 @@ function SearchBar() {
 
       const data = await response.json();
       if (data) {
-        router.push(`/course/${data}`);
+        router.push(`/${data}`);
       }
     } catch (error) {
       handleError(error);

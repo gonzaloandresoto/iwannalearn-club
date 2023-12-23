@@ -19,9 +19,9 @@ export default async function CourseCover({
 
   let route;
   if (!nextUnit.message) {
-    route = `/course/${courseId}/${nextUnit}`;
+    route = `/${courseId}/${nextUnit}`;
   } else {
-    route = `/course/${courseId}`;
+    route = `/${courseId}`;
   }
 
   return (

@@ -36,7 +36,7 @@ export default function TableOfContentsDropdown({
               {unit.content.map((lesson, lessonIndex) => (
                 <Link
                   key={lessonIndex}
-                  href={`/course/${unit.courseId}/${lesson.unitId}`}
+                  href={`/${unit.courseId}/${lesson.unitId}`}
                   className='flex flex-row justify-between px-4 py-2 bg-tertiary-grey rounded-md '
                 >
                   {lesson.type === 'lesson' && (

@@ -21,14 +21,19 @@ export default function NavigationBar() {
   }, []);
 
   return (
-    <div className='fixed top-0 relative w-4/5 flex items-center justify-center h-[96px]'>
-      <button className='absolute left-0 w-[48px] h-[48px] flex-none bg-tertiary-grey rounded-md'>
-        <Link href='/'>←</Link>
-      </button>
+    <div className='fixed top-0 relative h-[72px] w-full flex flex-row items-center justify-between px-4 md:px-32'>
+      <Link
+        href='/'
+        className='w-[48px] h-[48px] flex-none flex items-center justify-center bg-tertiary-grey rounded-md'
+      >
+        ←
+      </Link>
 
-      <p className='text-xl text-primary-grey font-titan'>superMe</p>
+      <div className='absolute left-1/2 transform -translate-x-1/2'>
+        <p className='text-xl text-primary-grey font-titan'>superMe</p>
+      </div>
 
-      <div className='absolute right-0 flex gap-2 h-[48px]'>
+      <div className='flex gap-2 h-[48px]'>
         <button className='w-[48px] h-[48px] flex-none bg-primary-blue rounded-md'>
           ⭐️
         </button>
