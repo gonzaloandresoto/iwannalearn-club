@@ -177,7 +177,7 @@ const generateCourse = async (topic: string): Promise<Course> => {
   });
 
   const courseObject = JSON.parse(
-    res.choices[0].message.tool_calls?.[0]?.function?.arguments,
+    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
   console.log(courseObject);
   return courseObject;
@@ -185,7 +185,7 @@ const generateCourse = async (topic: string): Promise<Course> => {
 
 const generateLessons = async (
   course: Course,
-  unit: Unit,
+  unit: Unit
 ): Promise<Lesson[]> => {
   const prompt = [
     {
@@ -221,7 +221,7 @@ Write detailed lesson content for each.`,
     },
   });
   const lessonsObject = JSON.parse(
-    res.choices[0].message.tool_calls?.[0]?.function?.arguments,
+    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
   console.log(lessonsObject);
   return lessonsObject.lessons;
@@ -245,7 +245,7 @@ export async function createCourse(topic: string) {
         course.table_of_contents.map((unit: any) => ({
           title: unit.title,
           id: course.table_of_contents.indexOf(unit) + 1,
-        })),
+        }))
       ),
     });
     // console.log('Uploaded Course', newCourse);
@@ -277,7 +277,7 @@ export async function createCourse(topic: string) {
           content: lessons[j].content,
           unitId: newUnit._id,
         });
-        console.log('Uploaded Lesson', newLesson)
+        console.log('Uploaded Lesson', newLesson);
 
         if (lessons[j].quiz) {
           console.log('Quiz', lessons[j].quiz);
@@ -291,17 +291,15 @@ export async function createCourse(topic: string) {
               lessons[j].quiz?.options.map((option) => ({
                 id: lessons[j].quiz?.options.indexOf(option),
                 option: option,
-              })),
+              }))
             ),
             answer: lessons[j].quiz?.answer,
             status: false,
             unitId: newUnit._id,
           });
           console.log('Uploaded Quiz', newQuiz);
-        }
-        else {
+        } else {
           console.log('\n\n\n\n\n\n\nNo Quiz\n\n\n\n\n\n\n\n\n\n');
-
         }
       }
       // console.log('Uploaded Element', lessons);
@@ -374,7 +372,7 @@ export async function getCourseContentById(id: string) {
     const elements = await Element.find({ unitId: { $in: unitIds } });
 
     const mergedCourse = [...elements, ...quizzes].sort(
-      (a, b) => a.order - b.order,
+      (a, b) => a.order - b.order
     );
     // console.log('Merged Course', mergedCourse);
 
@@ -383,7 +381,7 @@ export async function getCourseContentById(id: string) {
         unitName: unit.title,
         courseId: unit.courseId,
         content: mergedCourse.filter((content) =>
-          content.unitId.equals(unit._id),
+          content.unitId.equals(unit._id)
         ),
       };
       return acc;
