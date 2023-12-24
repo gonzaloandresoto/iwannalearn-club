@@ -11,18 +11,19 @@ interface UnitContentItem {
 
 interface CourseCompletionProps {
   unitContent: UnitContentItem;
-  nextUnit: string;
+  nextUnitId: string;
 }
 
 export default function CourseCompletion({
   unitContent,
-  nextUnit,
+  nextUnitId,
 }: CourseCompletionProps) {
+  console.log(nextUnitId);
   let route;
-  if (!nextUnit) {
+  if (!nextUnitId) {
     route = `/${unitContent.courseId}`;
   } else {
-    route = `/${unitContent.courseId}/${nextUnit}`;
+    route = `/${unitContent.courseId}/${nextUnitId}`;
   }
 
   return (

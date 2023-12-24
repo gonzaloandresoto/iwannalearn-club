@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 
 import useTOCContext from '@/hooks/useTOCContext';
 import CourseProgress from './CourseProgress';
-import TableOfContentsDropdown from './TableofContentsDropdown';
+import TOCDropdown from './TOCDropdown';
 import useOutsideClick from '@/lib/hooks/useOutsideClick';
 
 export default function NavigationBar() {
@@ -21,7 +21,7 @@ export default function NavigationBar() {
   }, []);
 
   return (
-    <div className='fixed top-0 relative h-[72px] w-full flex flex-row items-center justify-between px-4 md:px-32'>
+    <div className='top-0 relative h-[72px] w-full flex flex-row items-center justify-between px-4 md:px-32'>
       <Link
         href='/'
         className='w-[48px] h-[48px] flex-none flex items-center justify-center bg-tertiary-grey rounded-md'
@@ -37,18 +37,16 @@ export default function NavigationBar() {
         <button className='w-[48px] h-[48px] flex-none bg-primary-blue rounded-md'>
           ⭐️
         </button>
-        <div className='relative'>
+        <div
+          ref={dropdownRef}
+          className='relative'
+        >
           <CourseProgress
             progressPercent={courseProgress}
             isDropdownOpen={isDropdownOpen}
             setIsDropdownOpen={setIsDropdownOpen}
           />
-          {isDropdownOpen && (
-            <TableOfContentsDropdown
-              tableOfContents={tableOfContents}
-              dropdownRef={dropdownRef}
-            />
-          )}
+          {isDropdownOpen && <TOCDropdown tableOfContents={tableOfContents} />}
         </div>
       </div>
     </div>

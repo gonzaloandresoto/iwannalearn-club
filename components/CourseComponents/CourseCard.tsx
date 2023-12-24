@@ -1,9 +1,5 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-
-import QuizContent from './QuizContent';
-import TextLessonContent from './TextLessonContent';
+import QuizContent from './Quiz/QuizContent';
+import LessonContent from './Lesson/LessonContent';
 
 interface UnitContentItems {
   title: string;
@@ -31,45 +27,30 @@ const CourseCard: React.FC<CourseCardProps> = ({
   activePage,
   setActivePage,
 }) => {
-  const router = useRouter();
-  const handleNext = () => {
-    if (activePage === unitContent.length - 1 && courseId && unitId) {
-      router.push(`/${courseId}/${unitId}/completed`);
-    }
-    setActivePage(activePage + 1);
-  };
-  const handlePrev = () => {
-    if (activePage === 0) return null;
-    setActivePage(activePage - 1);
-  };
+  const currentItem = unitContent[activePage];
   return (
     <div className='fixed bottom-0 w-[720px] h-5/6 flex flex-col items-center px-8 pt-8 bg-tertiary-grey rounded-t-xl overflow-y-auto'>
       <div className='w-full h-max flex flex-col gap-8'>
         <div>
-          {Object.values(unitContent).map((item, index) => {
-            return (
-              <div key={index}>
-                {activePage === index && (
-                  <>
-                    {item.type === 'lesson' && (
-                      <TextLessonContent
-                        item={item}
-                        handleNext={handleNext}
-                        handlePrev={handlePrev}
-                        activePage={activePage}
-                      />
-                    )}
-                    {item.type === 'quiz' && (
-                      <QuizContent
-                        item={item}
-                        handleNext={handleNext}
-                      />
-                    )}
-                  </>
-                )}
-              </div>
-            );
-          })}
+          {currentItem?.type === 'lesson' && (
+            <LessonContent
+              item={currentItem}
+              activePage={activePage}
+              setActivePage={setActivePage}
+              unitLength={unitContent.length}
+              courseId={courseId}
+              unitId={unitId}
+            />
+          )}
+          {currentItem?.type === 'quiz' && (
+            <QuizContent
+              item={currentItem}
+              activePage={activePage}
+              setActivePage={setActivePage}
+              unitLength={unitContent.length}
+              courseId={courseId}
+            />
+          )}
         </div>
       </div>
     </div>

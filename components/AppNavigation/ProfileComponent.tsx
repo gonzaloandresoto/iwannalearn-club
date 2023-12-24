@@ -11,10 +11,11 @@ const ProfileComponent = async () => {
     <Link href='/profile'>
       <div className='w-[40px] h-[40px] flex items-center justify-center bg-primary-grey rounded-full overflow-hidden'>
         {userDetails.photo ? (
-          <img
+          <Image
             src={userDetails.photo}
             alt={`${userDetails.name} profile`}
-            className='w-full h-full object-cover'
+            width={40}
+            height={40}
           />
         ) : (
           <p className='text-white'>{userDetails.firstName.charAt(0)}</p>

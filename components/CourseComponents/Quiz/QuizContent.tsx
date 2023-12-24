@@ -1,8 +1,7 @@
 'use client';
 
-import useTOCContext from '@/hooks/useTOCContext';
-import { markQuizCompleted, updateUnitStatus } from '@/lib/courseServices';
 import { useState } from 'react';
+import QuizNavigationControls from './QuizNavigationControls';
 
 interface Choice {
   id: string;
@@ -19,23 +18,24 @@ interface Content {
 
 interface QuizContentProps {
   item: Content;
-  handleNext: () => void;
+  activePage: number;
+  setActivePage: (page: number) => void;
+  unitLength: number;
+  courseId: string;
 }
 
-const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
-  const { updatedQuizId, setUpdatedQuizId } = useTOCContext();
+const QuizContent: React.FC<QuizContentProps> = ({
+  item,
+  activePage,
+  setActivePage,
+  unitLength,
+  courseId,
+}) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const correctAnswer = Number(item.answer);
 
   const parsedChoices: Choice[] =
     (item.choices && (JSON.parse(item.choices) as Choice[])) || [];
-
-  const continueClick = async () => {
-    await markQuizCompleted(item._id);
-    setUpdatedQuizId(!updatedQuizId);
-    await updateUnitStatus(item.unitId);
-    handleNext();
-  };
 
   return (
     <div className='w-full h-max flex flex-col items-center gap-8'>
@@ -47,7 +47,7 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
               <button
                 key={index}
                 onClick={() => setSelectedAnswer(quizItem.id)}
-                className={`w-full px-4 py-2 border border-2 border-secondary-grey rounded-md ${
+                className={`w-full px-4 py-2 border-2 border-secondary-grey rounded-md ${
                   quizItem.id === selectedAnswer
                     ? 'bg-primary-orange text-white'
                     : 'bg-white text-black'
@@ -58,13 +58,16 @@ const QuizContent: React.FC<QuizContentProps> = ({ item, handleNext }) => {
             );
           })}
       </div>
-      <button
-        onClick={continueClick}
-        className='fixed bottom-16 main-button disabled:bg-secondary-blue'
-        disabled={Number(selectedAnswer) !== correctAnswer}
-      >
-        Continue
-      </button>
+      <QuizNavigationControls
+        activePage={activePage}
+        setActivePage={setActivePage}
+        unitLength={unitLength}
+        courseId={courseId}
+        unitId={item.unitId}
+        quizId={item._id}
+        selectedAnswer={selectedAnswer}
+        correctAnswer={correctAnswer}
+      />
     </div>
   );
 };

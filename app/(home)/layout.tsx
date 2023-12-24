@@ -1,4 +1,4 @@
-import NavigationBar from '@/components/Home/NavigationBar';
+import NavigationBar from '@/components/AppNavigation/NavigationBar';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

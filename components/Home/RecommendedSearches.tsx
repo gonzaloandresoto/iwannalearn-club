@@ -1,7 +1,5 @@
 'use client';
-import { useEffect } from 'react';
 import { recommendedSearches } from '@/constants';
-import { createCourse } from '@/lib/actions/generate.actions';
 import { useRouter } from 'next/navigation';
 import { handleError } from '@/lib/utils';
 
@@ -35,7 +33,7 @@ export default function RecommendedSearches() {
           <button
             key={index}
             onClick={() => searchRecommendedTopic(item.topic)}
-            className='flex-none px-4 py-1 border border-2 border-secondary-grey rounded-md'
+            className='flex-none px-4 py-1 border-2 border-secondary-grey rounded-md'
           >
             {item.topic}
           </button>

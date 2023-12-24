@@ -386,7 +386,6 @@ export async function getCourseContentById(id: string) {
       };
       return acc;
     }, {});
-    console.log('Grouped Course', groupedCourse);
 
     return groupedCourse;
   } catch (error) {
