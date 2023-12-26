@@ -188,3 +188,25 @@ export async function getUserCourses(userId: string) {
     handleError(error);
   }
 }
+
+// Delete course by id
+export async function deleteCourseById(courseId: string, userId: string) {
+  try {
+    await connectToDatabase();
+
+    await UserCourse.deleteOne({ courseId: courseId, userId: userId });
+
+    const remainingUsersOnCourse = await UserCourse.find({
+      courseId: courseId,
+    });
+
+    if (remainingUsersOnCourse.length === 0) {
+      console.log('No users left on course, deleting course');
+      await Course.deleteOne({ _id: courseId });
+    }
+    console.log('Course deleted');
+    return { success: true };
+  } catch (error) {
+    handleError(error);
+  }
+}
