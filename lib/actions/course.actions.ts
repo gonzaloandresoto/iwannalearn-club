@@ -5,6 +5,7 @@ import { connectToDatabase } from '../database';
 import Course from '../database/models/course.model';
 import Unit from '../database/models/unit.model';
 import Element from '../database/models/element.model';
+import UserCourse from '../database/models/usercourse.model';
 
 import openai from '../openai/index';
 import { courseSchema } from '../openai/schemas/course.schema';
@@ -122,7 +123,6 @@ export async function getCourseProgressById(id: string) {
 }
 
 // Piece together course content
-
 export async function getCourseContentById(id: string) {
   try {
     await connectToDatabase();
@@ -154,6 +154,36 @@ export async function getCourseContentById(id: string) {
     }, {});
 
     return groupedCourse;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// Fetch all courses for a user
+
+export async function getUserCourses(userId: string) {
+  try {
+    await connectToDatabase();
+
+    const userCourseResponse = await UserCourse.find(
+      { userId: { $in: userId } },
+      { courseId: 1, _id: 0 }
+    );
+
+    const courseIds = userCourseResponse.map((course) => course.courseId);
+
+    // console.log('Course ids: ', courseIds);
+
+    if (!courseIds) throw new Error('Courses not found');
+
+    const userCourses = await Course.find(
+      { _id: { $in: courseIds } },
+      { title: 1, summary: 1 }
+    );
+
+    // console.log('User courses: ', userCourses);
+
+    return userCourses;
   } catch (error) {
     handleError(error);
   }
