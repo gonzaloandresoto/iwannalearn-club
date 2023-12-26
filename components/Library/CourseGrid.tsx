@@ -33,6 +33,7 @@ function CourseGrid() {
     <div className='flex flex-col gap-4'>
       {courses.map((course) => (
         <CourseCard
+          key={course._id}
           courseId={course._id}
           title={course.title}
           summary={course.summary}
