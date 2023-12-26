@@ -4,9 +4,9 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     console.log('Creating course');
-    const { topic } = await request.json();
+    const { topic, userId } = await request.json();
 
-    const response = await createCourse(topic);
+    const response = await createCourse(topic, userId);
 
     if (!response) throw new Error();
 

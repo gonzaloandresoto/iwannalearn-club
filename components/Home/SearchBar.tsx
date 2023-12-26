@@ -1,10 +1,12 @@
 'use client';
 
+import useUserContext from '@/hooks/useUserContext';
 import { handleError } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 function SearchBar() {
+  const { user } = useUserContext();
   const router = useRouter();
   const [topic, setTopic] = useState('');
 
@@ -17,7 +19,7 @@ function SearchBar() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ topic: topic }),
+        body: JSON.stringify({ topic: topic, userId: user._id }),
       });
 
       const data = await response.json();

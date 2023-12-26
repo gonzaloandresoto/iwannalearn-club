@@ -5,6 +5,7 @@ import { connectToDatabase } from '../database';
 import Course from '../database/models/course.model';
 import Unit from '../database/models/unit.model';
 import Element from '../database/models/element.model';
+import UserCourse from '../database/models/usercourse.model';
 
 import openai from '../openai/index';
 import { courseSchema } from '../openai/schemas/course.schema';
@@ -227,8 +228,25 @@ Write detailed lesson content for each.`,
   return lessonsObject.lessons;
 };
 
+// Function to assign a course to a user
+async function assignCourseToUser(userId: string, courseId: string) {
+  try {
+    await connectToDatabase();
+
+    const UserCourseId = await UserCourse.create({
+      userId: userId,
+      courseId: courseId,
+      completed: false,
+    });
+
+    if (!UserCourseId) throw new Error('UserCourse entry not created');
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // Main func to course and upload (self+children) to database
-export async function createCourse(topic: string) {
+export async function createCourse(topic: string, userId: string) {
   try {
     await connectToDatabase();
 
@@ -251,60 +269,62 @@ export async function createCourse(topic: string) {
     // console.log('Uploaded Course', newCourse);
 
     // Create units
-    const tableOfContents = course.table_of_contents;
-    for (let i = 0; i < tableOfContents.length; i++) {
-      const unit = tableOfContents[i];
-      const unitIdx = (i + 1).toString();
+    // const tableOfContents = course.table_of_contents;
+    // for (let i = 0; i < tableOfContents.length; i++) {
+    //   const unit = tableOfContents[i];
+    //   const unitIdx = (i + 1).toString();
 
-      const newUnit = await Unit.create({
-        title: unit.title,
-        courseId: newCourse._id,
-        status: 'NOT_STARTED',
-        order: unitIdx,
-      });
-      // console.log('Uploaded Unit', newUnit);
+    //   const newUnit = await Unit.create({
+    //     title: unit.title,
+    //     courseId: newCourse._id,
+    //     status: 'NOT_STARTED',
+    //     order: unitIdx,
+    //   });
+    //   // console.log('Uploaded Unit', newUnit);
 
-      // create unit's lessons
-      const lessons = await generateLessons(course, unit);
+    //   // create unit's lessons
+    //   const lessons = await generateLessons(course, unit);
 
-      // add each lesson to database (linked to unit._id)
-      for (let j = 0; j < lessons.length; j++) {
-        const newLesson = await Element.create({
-          ...lessons[j],
-          type: 'lesson',
-          order: j,
-          title: lessons[j].title,
-          content: lessons[j].content,
-          unitId: newUnit._id,
-        });
-        console.log('Uploaded Lesson', newLesson);
+    //   // add each lesson to database (linked to unit._id)
+    //   for (let j = 0; j < lessons.length; j++) {
+    //     const newLesson = await Element.create({
+    //       ...lessons[j],
+    //       type: 'lesson',
+    //       order: j,
+    //       title: lessons[j].title,
+    //       content: lessons[j].content,
+    //       unitId: newUnit._id,
+    //     });
+    //     console.log('Uploaded Lesson', newLesson);
 
-        if (lessons[j].quiz) {
-          console.log('Quiz', lessons[j].quiz);
+    //     if (lessons[j].quiz) {
+    //       console.log('Quiz', lessons[j].quiz);
 
-          const newQuiz = await Quiz.create({
-            ...lessons[j],
-            type: 'quiz',
-            question: lessons[j].quiz?.question,
-            order: j,
-            choices: JSON.stringify(
-              lessons[j].quiz?.options.map((option) => ({
-                id: lessons[j].quiz?.options.indexOf(option),
-                option: option,
-              }))
-            ),
-            answer: lessons[j].quiz?.answer,
-            status: false,
-            unitId: newUnit._id,
-          });
-          console.log('Uploaded Quiz', newQuiz);
-        } else {
-          console.log('\n\n\n\n\n\n\nNo Quiz\n\n\n\n\n\n\n\n\n\n');
-        }
-      }
-      // console.log('Uploaded Element', lessons);
-    }
+    //       const newQuiz = await Quiz.create({
+    //         ...lessons[j],
+    //         type: 'quiz',
+    //         question: lessons[j].quiz?.question,
+    //         order: j,
+    //         choices: JSON.stringify(
+    //           lessons[j].quiz?.options.map((option) => ({
+    //             id: lessons[j].quiz?.options.indexOf(option),
+    //             option: option,
+    //           }))
+    //         ),
+    //         answer: lessons[j].quiz?.answer,
+    //         status: false,
+    //         unitId: newUnit._id,
+    //       });
+    //       console.log('Uploaded Quiz', newQuiz);
+    //     } else {
+    //       console.log('\n\n\n\n\n\n\nNo Quiz\n\n\n\n\n\n\n\n\n\n');
+    //     }
+    //   }
+    //   // console.log('Uploaded Element', lessons);
+    // }
 
+    // Assign course to user
+    await assignCourseToUser(userId, newCourse._id);
     return newCourse._id;
   } catch (error) {
     handleError(error);
