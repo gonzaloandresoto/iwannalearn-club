@@ -27,6 +27,7 @@ export interface ITableOfContents {
     type: string;
     unitId: string;
     status: boolean;
+    completed: boolean;
   }[];
 }
 [];
@@ -52,7 +53,7 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setCourseProgress(data.progress);
+        setCourseProgress(data);
       });
   }, [id, updatedQuizId]);
 

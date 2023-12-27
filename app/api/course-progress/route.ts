@@ -1,4 +1,4 @@
-import { getCourseProgressById } from '@/lib/actions/course.actions';
+import { getCourseProgressById } from '@/lib/actions/generate.actions';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {

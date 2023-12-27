@@ -6,6 +6,6 @@ const UserCourseSchema = new Schema({
   completed: { type: Boolean, default: false },
 });
 
-const User = models.UserCourse || model('UserCourse', UserCourseSchema);
+const UserCourse = models.UserCourse || model('UserCourse', UserCourseSchema);
 
-export default User;
+export default UserCourse;

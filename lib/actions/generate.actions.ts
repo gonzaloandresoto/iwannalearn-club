@@ -11,6 +11,7 @@ import openai from '../openai/index';
 import { courseSchema } from '../openai/schemas/course.schema';
 import { handleError } from '../utils';
 import Quiz from '../database/models/quiz.model';
+import UserQuiz from '../database/models/userquiz.model';
 
 // SCHEMAS ---------------------------------------------------------------------
 const lesson_schema = {
@@ -268,60 +269,67 @@ export async function createCourse(topic: string, userId: string) {
     });
     // console.log('Uploaded Course', newCourse);
 
-    // Create units
-    // const tableOfContents = course.table_of_contents;
-    // for (let i = 0; i < tableOfContents.length; i++) {
-    //   const unit = tableOfContents[i];
-    //   const unitIdx = (i + 1).toString();
+    //Create units
+    const tableOfContents = course.table_of_contents;
+    for (let i = 0; i < tableOfContents.length; i++) {
+      const unit = tableOfContents[i];
+      const unitIdx = (i + 1).toString();
 
-    //   const newUnit = await Unit.create({
-    //     title: unit.title,
-    //     courseId: newCourse._id,
-    //     status: 'NOT_STARTED',
-    //     order: unitIdx,
-    //   });
-    //   // console.log('Uploaded Unit', newUnit);
+      const newUnit = await Unit.create({
+        title: unit.title,
+        courseId: newCourse._id,
+        status: 'NOT_STARTED',
+        order: unitIdx,
+      });
+      // console.log('Uploaded Unit', newUnit);
 
-    //   // create unit's lessons
-    //   const lessons = await generateLessons(course, unit);
+      // create unit's lessons
+      const lessons = await generateLessons(course, unit);
 
-    //   // add each lesson to database (linked to unit._id)
-    //   for (let j = 0; j < lessons.length; j++) {
-    //     const newLesson = await Element.create({
-    //       ...lessons[j],
-    //       type: 'lesson',
-    //       order: j,
-    //       title: lessons[j].title,
-    //       content: lessons[j].content,
-    //       unitId: newUnit._id,
-    //     });
-    //     console.log('Uploaded Lesson', newLesson);
+      // add each lesson to database (linked to unit._id)
+      for (let j = 0; j < lessons.length; j++) {
+        const newLesson = await Element.create({
+          ...lessons[j],
+          type: 'lesson',
+          order: j,
+          title: lessons[j].title,
+          content: lessons[j].content,
+          unitId: newUnit._id,
+        });
+        console.log('Uploaded Lesson', newLesson);
 
-    //     if (lessons[j].quiz) {
-    //       console.log('Quiz', lessons[j].quiz);
+        if (lessons[j].quiz) {
+          console.log('Quiz', lessons[j].quiz);
 
-    //       const newQuiz = await Quiz.create({
-    //         ...lessons[j],
-    //         type: 'quiz',
-    //         question: lessons[j].quiz?.question,
-    //         order: j,
-    //         choices: JSON.stringify(
-    //           lessons[j].quiz?.options.map((option) => ({
-    //             id: lessons[j].quiz?.options.indexOf(option),
-    //             option: option,
-    //           }))
-    //         ),
-    //         answer: lessons[j].quiz?.answer,
-    //         status: false,
-    //         unitId: newUnit._id,
-    //       });
-    //       console.log('Uploaded Quiz', newQuiz);
-    //     } else {
-    //       console.log('\n\n\n\n\n\n\nNo Quiz\n\n\n\n\n\n\n\n\n\n');
-    //     }
-    //   }
-    //   // console.log('Uploaded Element', lessons);
-    // }
+          const newQuiz = await Quiz.create({
+            ...lessons[j],
+            type: 'quiz',
+            question: lessons[j].quiz?.question,
+            order: j,
+            choices: JSON.stringify(
+              lessons[j].quiz?.options.map((option) => ({
+                id: lessons[j].quiz?.options.indexOf(option),
+                option: option,
+              }))
+            ),
+            answer: lessons[j].quiz?.answer,
+            status: false,
+            unitId: newUnit._id,
+          });
+
+          await UserQuiz.create({
+            userId: userId,
+            quizId: newQuiz._id,
+            unitId: newUnit._id,
+            completed: false,
+          });
+          console.log('Uploaded Quiz', newQuiz);
+        } else {
+          console.log('\n\n\n\n\n\n\nNo Quiz\n\n\n\n\n\n\n\n\n\n');
+        }
+      }
+      // console.log('Uploaded Element', lessons);
+    }
 
     // Assign course to user
     await assignCourseToUser(userId, newCourse._id);
@@ -360,14 +368,16 @@ export async function getCourseProgressById(id: string) {
     if (!units) throw new Error('Units not found');
 
     const unitIds = units.map((unit) => unit._id);
+    // console.log('🚀 ~ unitIds:', unitIds);
 
-    const quizzes = await Quiz.find({ unitId: { $in: unitIds } });
+    const quizzes = await UserQuiz.find({ unitId: { $in: unitIds } });
+    // console.log('🚀 ~ quizzes:', quizzes);
 
     let total = quizzes.length;
-    let completed = quizzes.filter((quiz) => quiz.status).length;
+    let completed = quizzes.filter((quiz) => quiz.completed).length;
     const progress = Math.round((completed / total) * 100);
 
-    return { progress: progress };
+    return progress;
   } catch (error) {
     handleError(error);
   }
@@ -386,16 +396,35 @@ export async function getCourseContentById(id: string) {
 
     const unitIds = units.map((unit) => unit._id);
 
-    const quizzes = await Quiz.find({ unitId: { $in: unitIds } });
-    // console.log('Quizzes', quizzes);
+    //Fetching quizzes and lessons
+    const courseQuizzes = await Quiz.find({ unitId: { $in: unitIds } });
+    const courseLessons = await Element.find({ unitId: { $in: unitIds } });
 
-    const elements = await Element.find({ unitId: { $in: unitIds } });
+    //Fetching the user quizzes
+    const courseQuizIds = courseQuizzes.map((quiz) => quiz._id);
+    // console.log('🚀 ~ courseQuizIds:', courseQuizIds);
+    const userQuizes = await UserQuiz.find({ quizId: { $in: courseQuizIds } });
+    // console.log('🚀 ~ userQuizes:', userQuizes);
 
-    const mergedCourse = [...elements, ...quizzes].sort(
+    //Giving each quiz its completion status
+    const mergedQuizes = courseQuizzes.map((quiz) => {
+      const userQuiz = userQuizes.find((userQuiz) =>
+        userQuiz.quizId.equals(quiz._id)
+      );
+      return {
+        ...quiz._doc,
+        completed: userQuiz ? userQuiz.completed : false,
+      };
+    });
+
+    // console.log('🚀 ~ mergedQuizes:', mergedQuizes);
+
+    //Merging the quizzes and lessons
+    const mergedCourse = [...courseLessons, ...mergedQuizes].sort(
       (a, b) => a.order - b.order
     );
-    // console.log('Merged Course', mergedCourse);
 
+    // Strcuture the course content by unit
     const groupedCourse = units.reduce((acc, unit) => {
       acc[unit._id.toString()] = {
         unitName: unit.title,

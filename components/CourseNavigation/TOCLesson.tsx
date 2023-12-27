@@ -4,7 +4,7 @@ interface Lesson {
   title: string;
   type: string;
   unitId: string;
-  status: boolean;
+  completed: boolean;
 }
 
 interface TOCLessonProps {
@@ -24,7 +24,7 @@ const TOCLesson = ({ lesson, courseId }: TOCLessonProps) => {
       {lesson.type === 'quiz' && (
         <>
           <p className='text-sm font-semibold text-left'>QUIZ</p>
-          {lesson.status === false ? (
+          {lesson.completed === false ? (
             <img
               src='/course-icons/uncompleted.svg'
               width={20}

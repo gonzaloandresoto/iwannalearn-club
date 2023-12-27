@@ -3,10 +3,10 @@ export const headerLinks = [
     label: 'Home',
     route: '/',
   },
-  {
-    label: 'Explore',
-    route: '/explore',
-  },
+  // {
+  //   label: 'Explore',
+  //   route: '/explore',
+  // },
   {
     label: 'My Courses',
     route: '/library',

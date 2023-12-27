@@ -4,6 +4,7 @@ import { connectToDatabase } from '../database';
 import { handleError } from '../utils';
 import { quizSchema } from '../openai/schemas/quiz.schema';
 import openai from '../openai';
+import UserQuiz from '../database/models/userquiz.model';
 
 // Generate quiz
 const generateQuiz = async (lessonContent: string) => {
@@ -65,19 +66,16 @@ export async function createQuiz(
   }
 }
 
-// Mark quiz completed
 export async function markQuizCompleted(quizId: string) {
   try {
-    await connectToDatabase();
-
-    const checkedQuiz = await Quiz.findById(quizId);
-    if (checkedQuiz && checkedQuiz.status === true) {
+    const checkedQuiz = await UserQuiz.findOne({ quizId: quizId });
+    if (checkedQuiz && checkedQuiz.completed === true) {
       return { message: 'Quiz already marked as completed' };
     }
 
-    const quiz = await Quiz.findOneAndUpdate(
-      { _id: quizId },
-      { status: true },
+    const quiz = await UserQuiz.findOneAndUpdate(
+      { quizId: quizId },
+      { completed: true },
       { new: true }
     );
 

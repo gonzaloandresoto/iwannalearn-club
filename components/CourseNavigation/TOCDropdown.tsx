@@ -5,6 +5,7 @@ interface Content {
   type: string;
   unitId: string;
   status: boolean;
+  completed: boolean;
 }
 
 interface TableOfContentsProps {
