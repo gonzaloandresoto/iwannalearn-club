@@ -5,20 +5,20 @@ import Link from 'next/link';
 
 const ProfileComponent = async () => {
   const { userId } = auth();
-  const userDetails = await getUserById(userId || '');
+  const userDetails = await getUserById(userId as string);
 
   return (
     <Link href='/profile'>
       <div className='w-[40px] h-[40px] flex items-center justify-center bg-primary-grey rounded-full overflow-hidden'>
-        {userDetails.photo ? (
+        {userDetails?.photo ? (
           <Image
             src={userDetails.photo}
-            alt={`${userDetails.name} profile`}
+            alt={`${userDetails?.name} profile`}
             width={40}
             height={40}
           />
         ) : (
-          <p className='text-white'>{userDetails.firstName.charAt(0)}</p>
+          <p className='text-white'>{userDetails?.firstName?.charAt(0)}</p>
         )}
       </div>
     </Link>

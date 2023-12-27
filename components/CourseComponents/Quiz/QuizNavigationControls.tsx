@@ -27,7 +27,7 @@ export default function QuizNavigationControls({
   correctAnswer,
 }: QuizNavigationControlsProps) {
   const router = useRouter();
-  const { updatedQuizId, setUpdatedQuizId } = useTOCContext();
+  const { wasQuizUpdated, setWasQuizUpdated } = useTOCContext();
 
   const handleNext = () => {
     if (activePage === unitLength - 1 && courseId && unitId) {
@@ -38,15 +38,15 @@ export default function QuizNavigationControls({
 
   const continueClick = async () => {
     await markQuizCompleted(quizId);
-    setUpdatedQuizId(!updatedQuizId);
+    setWasQuizUpdated(!wasQuizUpdated);
     await updateUnitStatus(unitId);
     handleNext();
   };
   return (
-    <div>
+    <div className='fixed bottom-16'>
       <button
         onClick={() => continueClick()}
-        className='fixed bottom-16 main-button disabled:bg-secondary-blue'
+        className='main-button disabled:bg-secondary-blue'
         disabled={Number(selectedAnswer) !== correctAnswer}
       >
         Continue

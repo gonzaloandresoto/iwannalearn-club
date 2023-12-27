@@ -5,12 +5,20 @@ export async function POST(request: Request) {
   try {
     const { userId } = await request.json();
 
+    if (!userId)
+      return NextResponse.json({ status: 400, message: 'User ID is required' });
+
     const response = await getUserById(userId);
 
-    if (!response) throw new Error();
-
-    return NextResponse.json(response);
-  } catch (error) {
-    console.log('Error fetching user details', error);
+    return NextResponse.json({ status: 200, message: 'OK', data: response });
+  } catch (error: any) {
+    if (error.message === 'User not found')
+      return NextResponse.json({ status: 404, message: 'User not found' });
+    else {
+      return NextResponse.json({
+        status: 500,
+        message: 'Server Error',
+      });
+    }
   }
 }
