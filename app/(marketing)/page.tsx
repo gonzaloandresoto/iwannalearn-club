@@ -1,9 +1,10 @@
+import Letter from '@/components/Marketing/Letter';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className='grow flex flex-col gap-12 bg-secondary-tan lg:px-24 sm:text-left text-center'>
+    <div className='relative grow flex flex-col gap-12 bg-secondary-tan lg:px-24 sm:text-left text-center'>
       <div className='flex-none h-[88px] sm:h-[104px] flex items-center justify-between px-4'>
         <Image
           src='/assets/logo-circle.png'
@@ -26,7 +27,7 @@ export default function Page() {
               <p>iwannalearn.guitar</p>
               <p>iwannalearn.history</p>
             </div>
-            <p className='text-4xl sm:text-6xl font-semibold'>iWannaLearn</p>
+            <p className='text-4xl sm:text-6xl font-semibold'>iwannalearn</p>
           </div>
           <button className='w-max bg-secondary-black px-6 py-4 sm:px-12 sm:py-6 text-2xl font-rosario text-tertiary-tan'>
             Join waitlist
@@ -45,6 +46,7 @@ export default function Page() {
       <div className='sm:hidden h-[40px]'>
         <p>{`Made w/ ❤️ in toronto`}</p>
       </div>
+      <Letter />
     </div>
   );
 }
