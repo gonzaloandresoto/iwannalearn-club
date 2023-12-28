@@ -10,6 +10,11 @@ const config: Config = {
     colors: {
       white: '#FFFFFF',
       black: '#191919',
+      'secondary-black': '#46423D',
+      'primary-tan': '#E7E1D9',
+      'secondary-tan': '#FBF7EC',
+      'tertiary-tan': '#FFFEFA',
+
       'primary-grey': '#7B7B7B',
       'secondary-grey': '#E3E3E3',
       'tertiary-grey': '#F6F6F6',
@@ -27,6 +32,8 @@ const config: Config = {
       fontFamily: {
         titan: ['var(--font-titan-one)'],
         rounded: ['SF Pro Rounded', 'sans-serif'],
+        sourceSerif: ['var(--font-source-serif-4)'],
+        rosario: ['var(--font-rosario)'],
       },
     },
   },
