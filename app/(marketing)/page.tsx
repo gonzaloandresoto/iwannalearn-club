@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className='relative grow flex flex-col gap-12 bg-secondary-tan lg:px-24 sm:text-left text-center'>
+    <div className='relative grow flex flex-col gap-12 bg-secondary-tan lg:px-24 sm:text-left text-center lg:overflow-y-hidden'>
       <div className='flex-none h-[88px] sm:h-[104px] flex items-center justify-between px-4'>
         <Image
           src='/assets/logo-circle.png'
