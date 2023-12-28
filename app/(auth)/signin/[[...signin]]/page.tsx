@@ -3,8 +3,8 @@ import { SignIn } from '@clerk/nextjs';
 export default function Page() {
   return (
     <SignIn
-      redirectUrl={'/'}
-      afterSignInUrl={'/'}
+      redirectUrl={'/create'}
+      afterSignInUrl={'/create'}
     />
   );
 }

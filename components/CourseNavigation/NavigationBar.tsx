@@ -23,7 +23,7 @@ export default function NavigationBar() {
   return (
     <div className='top-0 relative h-[72px] w-full flex flex-row items-center justify-between px-4 md:px-32'>
       <Link
-        href='/'
+        href='/library'
         className='w-[48px] h-[48px] flex-none flex items-center justify-center bg-tertiary-grey rounded-md'
       >
         ←

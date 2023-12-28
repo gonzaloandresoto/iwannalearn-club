@@ -25,7 +25,7 @@ export default function Page() {
         <button
           disabled={user === null}
           onClick={() => {
-            router.push('/');
+            router.push('/create');
           }}
           className='main-button disabled:opacity-50'
         >
