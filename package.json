@@ -18,6 +18,8 @@
     "openai": "^4.23.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-loader-spinner": "^6.1.6",
+    "react-spinners": "^0.13.8",
     "svix": "^1.15.0"
   },
   "devDependencies": {
