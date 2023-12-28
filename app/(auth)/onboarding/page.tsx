@@ -18,10 +18,9 @@ export default function Page() {
           visible={true}
         />
         <p className='text-2xl font-semibold'>Welcome to iWannaLearn</p>
-        <p>
-          We're just setting your account up, once it's finished loading, you'll
-          be able to advance.
-        </p>
+
+        <p>{`We're just setting your account up, once it's finished loading, you'll be able to advance.`}</p>
+
         <button
           disabled={user === null}
           onClick={() => {

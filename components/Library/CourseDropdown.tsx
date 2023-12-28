@@ -21,7 +21,7 @@ export default function CourseDropdown({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ courseId: courseId, userId: user._id }),
+      body: JSON.stringify({ courseId: courseId, userId: user?._id }),
     }).then((response) => response.json());
   };
   return (

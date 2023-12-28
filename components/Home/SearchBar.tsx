@@ -19,7 +19,7 @@ function SearchBar() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ topic: topic, userId: user._id }),
+        body: JSON.stringify({ topic: topic, userId: user?._id }),
       });
 
       const data = await response.json();
