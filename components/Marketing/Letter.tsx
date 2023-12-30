@@ -16,7 +16,7 @@ export default function Letter() {
     <div
       ref={ref}
       onClick={() => setUnhide(!unhide)}
-      className={`${positionClasses} hidden lg:flex transition-all duration-700 w-[800px] h-[720px] xl:w-[960px] xl:h-[800px] flex-col gap-6 px-8 py-12 bg-white shadow-lg font-sourceSerif text-secondary-black text-lg xl:text-xl`}
+      className={`${positionClasses} z-50 hidden lg:flex transition-all duration-700 w-[800px] h-[720px] xl:w-[960px] xl:h-[800px] flex-col gap-6 px-8 py-12 bg-white shadow-lg font-sourceSerif text-secondary-black text-lg xl:text-xl`}
     >
       <div>
         <Image
