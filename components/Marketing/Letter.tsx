@@ -10,13 +10,13 @@ export default function Letter() {
 
   const positionClasses = unhide
     ? 'absolute left-1/2 -translate-x-1/2 bottom-0 rotate-0 cursor-default'
-    : 'absolute xl:left-1/3 left-1/3 -translate-x-1/2 xl:-bottom-2/3 -bottom-1/2 rotate-12 cursor-pointer';
+    : 'absolute xl:left-[30%]  xl:-bottom-[55%] left-[45%] -bottom-[35%] -translate-x-[50%] rotate-12 cursor-pointer';
 
   return (
     <div
       ref={ref}
       onClick={() => setUnhide(!unhide)}
-      className={`${positionClasses} hidden lg:flex transition-all duration-700 w-[720px] h-[720px] xl:w-[960px] xl:h-[800px] flex-col gap-6 px-8 py-12 bg-white shadow-md font-sourceSerif text-secondary-black text-lg xl:text-xl`}
+      className={`${positionClasses} hidden lg:flex transition-all duration-700 w-[800px] h-[720px] xl:w-[960px] xl:h-[800px] flex-col gap-6 px-8 py-12 bg-white shadow-lg font-sourceSerif text-secondary-black text-lg xl:text-xl`}
     >
       <div>
         <Image
