@@ -24,7 +24,7 @@ function SearchBar() {
 
       const data = await response.json();
       if (data) {
-        router.push(`/${data}`);
+        router.push(`/course/${data}`);
       }
     } catch (error) {
       handleError(error);

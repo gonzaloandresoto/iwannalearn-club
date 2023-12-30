@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Inter, Titan_One, Source_Serif_4, Rosario } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
-import { UserProvider } from '@/context/UserProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 const titanOne = Titan_One({
@@ -31,17 +30,15 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <UserProvider>
-        <html lang='en'>
-          <body
-            className={`${inter.className} ${titanOne.variable} ${sourceSerif.variable} ${rosario.variable}`}
-          >
-            <section className='min-h-screen min-w-screen flex grow'>
-              {children}
-            </section>
-          </body>
-        </html>
-      </UserProvider>
+      <html lang='en'>
+        <body
+          className={`${inter.className} ${titanOne.variable} ${sourceSerif.variable} ${rosario.variable}`}
+        >
+          <section className='min-h-screen min-w-screen flex grow'>
+            {children}
+          </section>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

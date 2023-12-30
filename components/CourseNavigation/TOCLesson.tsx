@@ -15,7 +15,7 @@ interface TOCLessonProps {
 const TOCLesson = ({ lesson, courseId }: TOCLessonProps) => {
   return (
     <Link
-      href={`/${courseId}/${lesson.unitId}`}
+      href={`/course/${courseId}/${lesson.unitId}`}
       className='flex flex-row justify-between px-4 py-2 bg-tertiary-grey rounded-md '
     >
       {lesson.type === 'lesson' && (

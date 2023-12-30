@@ -31,7 +31,7 @@ export default function QuizNavigationControls({
 
   const handleNext = () => {
     if (activePage === unitLength - 1 && courseId && unitId) {
-      router.push(`/${courseId}/${unitId}/completed`);
+      router.push(`/course/${courseId}/${unitId}/completed`);
     }
     setActivePage(activePage + 1);
   };

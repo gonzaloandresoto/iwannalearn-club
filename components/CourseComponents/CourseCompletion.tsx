@@ -21,9 +21,9 @@ export default function CourseCompletion({
   console.log(nextUnitId);
   let route;
   if (!nextUnitId) {
-    route = `/${unitContent.courseId}`;
+    route = `/course/${unitContent.courseId}`;
   } else {
-    route = `/${unitContent.courseId}/${nextUnitId}`;
+    route = `/course/${unitContent.courseId}/${nextUnitId}`;
   }
 
   return (

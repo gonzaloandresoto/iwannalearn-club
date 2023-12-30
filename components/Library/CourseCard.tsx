@@ -38,7 +38,7 @@ export default function CourseCard({
 
       <Link
         className='w-full flex flex-col gap-4 px-4 py-4 bg-tertiary-grey rounded-xl'
-        href={`/${courseId}`}
+        href={`/course/${courseId}`}
       >
         <p className='text-lg font-semibold'>{title}</p>
         <p>{summary}</p>
