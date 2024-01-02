@@ -36,19 +36,19 @@ function SearchBar() {
   };
 
   return (
-    <form className='max-w-[720px] w-full h-[56px] flex items-center px-2 border-2 border-secondary-grey rounded-md'>
+    <form className='max-w-[720px] w-full md:h-[64px] flex items-center px-2 py-2 border-2 border-primary-tan rounded-md font-rosario'>
       <input
         type='text'
         value={topic}
         onChange={handleChange}
-        placeholder='What would you like to learn about?'
-        className='w-full h-full bg-white outline-none placeholder:text-primary-grey'
+        placeholder='Where will your curiosity lead?'
+        className='w-full h-full bg-white outline-none md:text-lg text-base placeholder:text-secondary-black'
       />
       <button
         onClick={(e) => handleSubmit(e)}
-        className='h-[40px] px-4 text-white bg-primary-blue rounded-md'
+        className='md:h-[48px] px-4 py-2 text-tertiary-tan md:text-xl bg-secondary-black rounded-md'
       >
-        Create
+        Generate
       </button>
     </form>
   );

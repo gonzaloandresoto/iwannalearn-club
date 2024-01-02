@@ -27,13 +27,13 @@ export default function RecommendedSearches() {
   };
 
   return (
-    <div className='max-w-[880px] flex flex-wrap gap-4 justify-center'>
+    <div className='max-w-[880px] w-full flex flex-wrap md:gap-4 gap-3 justify-center'>
       {recommendedSearches.map((item, index) => {
         return (
           <button
             key={index}
             onClick={() => searchRecommendedTopic(item.topic)}
-            className='flex-none px-4 py-1 border-2 border-secondary-grey rounded-md'
+            className='flex-none px-4 py-1 bg-white border-2 border-primary-tan rounded-md text-secondary-black md:text-lg text-sm'
           >
             {item.topic}
           </button>
