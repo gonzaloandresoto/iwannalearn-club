@@ -373,11 +373,14 @@ export async function getCourseProgressById(id: string) {
     const quizzes = await UserQuiz.find({ unitId: { $in: unitIds } });
     // console.log('🚀 ~ quizzes:', quizzes);
 
+    if (!quizzes) throw new Error('Quizzes not found');
+
     let total = quizzes.length;
     let completed = quizzes.filter((quiz) => quiz.completed).length;
     const progress = Math.round((completed / total) * 100);
 
-    return progress;
+    console.log('🚀 ~ progress:', progress);
+    return { progress: progress };
   } catch (error) {
     handleError(error);
   }

@@ -53,6 +53,7 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log('Data: ', data);
         setCourseProgress(data);
       });
   }, [id, wasQuizUpdated]);

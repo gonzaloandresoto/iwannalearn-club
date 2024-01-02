@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!response) throw new Error();
 
-    return NextResponse.json(response);
+    return NextResponse.json(response.progress);
   } catch (error) {
     console.log('Error getting course progress', error);
   }
