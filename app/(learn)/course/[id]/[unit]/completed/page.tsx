@@ -1,4 +1,4 @@
-import CourseCompletion from '@/components/CourseComponents/CourseCompletion';
+import CourseCompletion from '@/components/Course/CourseComponents/CourseCompletion';
 import {
   getNextUncompletedUnit,
   getUnitContentById,

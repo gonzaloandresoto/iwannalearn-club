@@ -18,8 +18,8 @@ interface TOCUnitProps {
 
 const TOCUnit = ({ unit }: TOCUnitProps) => {
   return (
-    <div className='flex flex-col gap-4 px-4 py-6 bg-white border-2 border-secondary-grey rounded-xl shadow-sm'>
-      <p className='text-lg font-semibold'>{unit.unitName}</p>
+    <div className='flex flex-col gap-4 px-4 py-4 bg-white border-2 border-primary-tan rounded-md shadow-sm'>
+      <p className='text-lg font-bold font-rosario'>{unit.unitName}</p>
       <div className='flex flex-col gap-2'>
         {unit.content.map((lesson, lessonIndex) => (
           <TOCLesson

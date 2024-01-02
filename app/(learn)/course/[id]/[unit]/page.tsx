@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import CourseCard from '@/components/CourseComponents/CourseCard';
+import CourseCard from '@/components/Course/CourseComponents/CourseCard';
 import { useParams } from 'next/navigation';
 
 export default function UnitContent() {

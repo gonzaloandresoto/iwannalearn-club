@@ -9,6 +9,7 @@ import useTOCContext from '@/hooks/useTOCContext';
 import CourseProgress from './CourseProgress';
 import TOCDropdown from './TOCDropdown';
 import useOutsideClick from '@/lib/hooks/useOutsideClick';
+import Image from 'next/image';
 
 export default function NavigationBar() {
   const params = useParams<{ id: string }>();
@@ -21,21 +22,22 @@ export default function NavigationBar() {
   }, []);
 
   return (
-    <div className='top-0 relative h-[72px] w-full flex flex-row items-center justify-between px-4 md:px-32'>
+    <div className='relative h-[72px] w-full flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>
       <Link
         href='/library'
-        className='w-[48px] h-[48px] flex-none flex items-center justify-center bg-tertiary-grey rounded-md'
+        className='w-[40px] h-[40px] flex-none flex items-center justify-center bg-secondary-black rounded-md'
       >
-        ←
+        <p className='text-tertiary-tan text-base font-bold'>←</p>
       </Link>
 
-      <div className='absolute left-1/2 transform -translate-x-1/2'>
-        <p className='text-xl text-primary-grey font-titan'>superMe</p>
-      </div>
-
-      <div className='flex gap-2 h-[48px]'>
-        <button className='w-[48px] h-[48px] flex-none bg-primary-blue rounded-md'>
-          ⭐️
+      <div className='flex gap-4'>
+        <button className='hidden w-[40px] h-[40px] flex-none md:flex items-center justify-center bg-secondary-black rounded-md'>
+          <Image
+            src='/course-icons/more-white.svg'
+            alt='more icon'
+            width={18}
+            height={4}
+          />
         </button>
         <div
           ref={dropdownRef}

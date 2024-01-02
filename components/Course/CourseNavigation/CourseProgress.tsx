@@ -25,19 +25,21 @@ export default function CourseProgress({
         e.stopPropagation();
         setIsDropdownOpen(!isDropdownOpen);
       }}
-      className='h-[48px] flex items-center gap-3 px-4 bg-tertiary-grey rounded-md cursor-pointer'
+      className='h-[40px] flex items-center gap-3 px-4 bg-white rounded-md border-2 border-primary-tan cursor-pointer'
     >
-      <p className='text-sm font-medium text-black'>Course Progress</p>
+      <p className='text-sm font-bold font-rosario text-black'>Progress</p>
       <div
         ref={progressBarRef}
-        className='w-[88px] h-[10px] bg-white border border-secondary-grey rounded-full'
+        className='w-[120px] h-[10px] bg-primary-tan rounded-sm'
       >
         <div
           style={{ width: `${progressBarWidth}px` }}
-          className='h-full bg-primary-blue rounded-full'
+          className='h-full bg-primary-blue'
         ></div>
       </div>
-      <p className='text-sm font-medium text-black'>{progressPercent || 0}%</p>
+      <p className='text-sm font-bold font-rosario text-black'>
+        {progressPercent || 0}%
+      </p>
     </button>
   );
 }
