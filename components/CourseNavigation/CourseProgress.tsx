@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useRef } from 'react';
 
 interface CourseProgressProps {
   progressPercent: number;
@@ -13,7 +13,12 @@ export default function CourseProgress({
   isDropdownOpen,
   setIsDropdownOpen,
 }: CourseProgressProps) {
-  const progressBarWidth = progressPercent && 88 * (progressPercent / 100);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const progressBarWidth =
+    progressPercent &&
+    progressBarRef.current &&
+    progressBarRef.current.clientWidth * (progressPercent / 100);
+
   return (
     <button
       onClick={(e) => {
@@ -23,7 +28,10 @@ export default function CourseProgress({
       className='h-[48px] flex items-center gap-3 px-4 bg-tertiary-grey rounded-md cursor-pointer'
     >
       <p className='text-sm font-medium text-black'>Course Progress</p>
-      <div className='w-[88px] h-[10px] bg-white border border-secondary-grey rounded-full'>
+      <div
+        ref={progressBarRef}
+        className='w-[88px] h-[10px] bg-white border border-secondary-grey rounded-full'
+      >
         <div
           style={{ width: `${progressBarWidth}px` }}
           className='h-full bg-primary-blue rounded-full'

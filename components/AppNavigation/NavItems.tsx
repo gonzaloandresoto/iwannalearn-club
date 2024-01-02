@@ -11,14 +11,15 @@ const NavItems = () => {
       {headerLinks.map((item) => {
         const isActive = currentPath === item.route;
         return (
-          <li
-            key={item.route}
-            className={`${
-              isActive ? 'text-primary-blue' : 'text-primary-grey'
-            }`}
-          >
+          <li key={item.route}>
             <Link href={item.route}>
-              <p>{item.label}</p>
+              <p
+                className={`text-secondary-black ${
+                  isActive ? 'underline font-medium' : 'no-underline'
+                }`}
+              >
+                {item.label}
+              </p>
             </Link>
           </li>
         );

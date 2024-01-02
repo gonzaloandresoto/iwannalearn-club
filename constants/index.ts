@@ -1,14 +1,14 @@
 export const headerLinks = [
   {
-    label: 'Create',
-    route: '/create',
+    label: 'Generate',
+    route: '/generate',
   },
   // {
   //   label: 'Explore',
   //   route: '/explore',
   // },
   {
-    label: 'My Courses',
+    label: 'Library',
     route: '/library',
   },
 ];

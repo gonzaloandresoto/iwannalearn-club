@@ -6,12 +6,12 @@ import Link from 'next/link';
 
 const NavigationBar = () => {
   return (
-    <div className='w-full h-[72px] flex flex-row items-center justify-between px-4 md:px-32'>
+    <div className='w-full h-[72px] flex flex-row items-center justify-between px-4 lg:px-32'>
       <Image
-        src=''
+        src='/assets/logo-circle.png'
         alt='iwannalearn logo'
-        width={40}
-        height={40}
+        width={48}
+        height={48}
       />
       <div className='flex flex-row gap-8 items-center'>
         <SignedIn>

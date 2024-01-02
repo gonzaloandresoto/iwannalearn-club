@@ -2,9 +2,11 @@
 import { recommendedSearches } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { handleError } from '@/lib/utils';
+import useUserContext from '@/hooks/useUserContext';
 
 export default function RecommendedSearches() {
   const router = useRouter();
+  const { user } = useUserContext();
 
   const searchRecommendedTopic = async (topic: string) => {
     try {
@@ -14,7 +16,7 @@ export default function RecommendedSearches() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ topic: topic }),
+        body: JSON.stringify({ topic: topic, userId: user?._id }),
       });
 
       const data = await response.json();
