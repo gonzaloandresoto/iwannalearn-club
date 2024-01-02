@@ -27,11 +27,11 @@ export default function CourseDropdown({
   return (
     <div
       ref={dropdownRef}
-      className='absolute right-0 my-2 w-[200px] py-2 px-2 bg-white border border-secondary-grey shadow-sm rounded-lg'
+      className='absolute sm:-left-[208px] w-[200px] top-0 py-2 bg-white border-2 border-secondary-grey shadow-lg rounded-md'
     >
       <button
         onClick={() => deleteCourse()}
-        className='w-full flex flex-row gap-2 px-2 py-1 items-center bg-white hover:bg-tertiary-grey rounded-md'
+        className='w-full flex flex-row gap-2 px-4 py-2 items-center bg-white hover:bg-secondary-tan'
       >
         <img src='/course-icons/delete.svg' />
         <p className='text=sm'>Delete</p>

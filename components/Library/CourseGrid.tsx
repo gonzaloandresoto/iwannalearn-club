@@ -7,7 +7,6 @@ import CourseCard from '../Library/CourseCard';
 interface Course {
   _id: string;
   title: string;
-  summary: string;
 }
 
 function CourseGrid() {
@@ -30,13 +29,12 @@ function CourseGrid() {
   }, [user]);
 
   return (
-    <div className='flex flex-col gap-4'>
-      {courses.map((course) => (
+    <div className='flex flex-col gap-10'>
+      {courses?.map((course) => (
         <CourseCard
           key={course._id}
           courseId={course._id}
           title={course.title}
-          summary={course.summary}
         />
       ))}
     </div>
