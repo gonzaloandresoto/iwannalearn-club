@@ -11,6 +11,7 @@ const config: Config = {
       white: '#FFFFFF',
       black: '#191919',
       'secondary-black': '#46423D',
+      'tertiary-black': '#6D6963',
       'primary-tan': '#E7E1D9',
       'secondary-tan': '#FBF7EC',
       'tertiary-tan': '#FFFEFA',

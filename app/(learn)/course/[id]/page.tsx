@@ -1,4 +1,4 @@
-import { getCourseById } from '@/lib/actions/course.actions';
+import { getCourseById } from '@/lib/actions/generate.actions';
 import CourseCover from '@/components/Course/CourseComponents/CourseCover';
 
 export default async function CourseContent({
@@ -8,11 +8,11 @@ export default async function CourseContent({
 }) {
   const course = await getCourseById(id);
   return (
-    <div className='flex flex-col grow items-center bg-tertiary-tan'>
+    <div className='flex flex-col grow items-center justify-end bg-tertiary-tan'>
       <CourseCover
-        courseId={course._id}
-        title={course.title}
-        summary={course.summary}
+        courseId={course?._id.toString()}
+        title={course?.title}
+        summary={course?.summary}
         tableOfContents={course?.tableOfContents}
       />
     </div>

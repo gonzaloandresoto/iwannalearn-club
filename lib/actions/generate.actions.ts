@@ -347,6 +347,26 @@ export async function getCourseById(id: string) {
 
     const course = await Course.findById(id);
 
+    const newTableOfContents = JSON.parse(course.tableOfContents);
+
+    for (const item in newTableOfContents) {
+      const unitName = newTableOfContents[item].title;
+
+      const unit = await Unit.findOne({ title: unitName, courseId: id });
+
+      if (unit && unit._id) {
+        newTableOfContents[item].unitId = unit._id.toString();
+      } else {
+        return;
+      }
+    }
+
+    // console.log('🚀 ~ tableOfContents:', newTableOfContents);
+
+    course.tableOfContents = JSON.stringify(newTableOfContents);
+
+    // console.log('🚀 ~ course:', course);
+
     if (!course) throw new Error('Course not found');
 
     return course;
