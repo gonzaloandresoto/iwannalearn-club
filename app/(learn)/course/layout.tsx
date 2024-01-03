@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <UserProvider>
       <TOCProvider>
-        <section className='min-h-screen min-w-screen flex flex-col grow'>
+        <section className='min-h-screen min-w-screen flex flex-col grow overflow-hidden'>
           <NavigationBar />
           {children}
         </section>

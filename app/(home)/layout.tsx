@@ -4,7 +4,7 @@ import { UserProvider } from '@/context/UserProvider';
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <UserProvider>
-      <section className='h-screen w-screen flex flex-col'>
+      <section className='h-screen w-screen flex flex-col overflow-hidden'>
         <NavigationBar />
         {children}
       </section>
