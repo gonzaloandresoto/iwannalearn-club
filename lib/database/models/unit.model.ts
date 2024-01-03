@@ -10,14 +10,16 @@ export interface IUnit extends Document {
   courseId: { _id: string };
 }
 
-const UnitSchema = new Schema({
-  title: { type: String, required: true },
-  imageUrl: { type: String, required: false, default: '' },
-  summary: { type: String, required: false },
-  status: { type: String, required: true },
-  order: { type: String, required: true },
-  courseId: { type: Schema.Types.ObjectId, ref: 'Course' },
-});
+const UnitSchema = new Schema(
+  {
+    title: { type: String, required: true },
+    imageUrl: { type: String, required: false, default: '' },
+    summary: { type: String, required: false },
+    order: { type: String, required: true },
+    courseId: { type: Schema.Types.ObjectId, ref: 'Course' },
+  },
+  { timestamps: true }
+);
 
 const Unit = models.Unit || model('Unit', UnitSchema);
 

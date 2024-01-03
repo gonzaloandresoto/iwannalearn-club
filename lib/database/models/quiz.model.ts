@@ -11,15 +11,17 @@ export interface IElement extends Document {
   unitId: { _id: string };
 }
 
-const QuizSchema = new Schema({
-  type: { type: String, required: true },
-  question: { type: String, required: false },
-  order: { type: String, required: false },
-  choices: { type: String, required: false },
-  answer: { type: String, required: false },
-  status: { type: Boolean, required: false },
-  unitId: { type: Schema.Types.ObjectId, ref: 'Unit' },
-});
+const QuizSchema = new Schema(
+  {
+    type: { type: String, required: true },
+    question: { type: String, required: false },
+    order: { type: String, required: false },
+    choices: { type: String, required: false },
+    answer: { type: String, required: false },
+    unitId: { type: Schema.Types.ObjectId, ref: 'Unit' },
+  },
+  { timestamps: true }
+);
 
 const Quiz = models.Quiz || model('Quiz', QuizSchema);
 

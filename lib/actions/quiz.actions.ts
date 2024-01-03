@@ -79,7 +79,7 @@ export async function markQuizCompleted(quizId: string) {
       { new: true }
     );
 
-    return { updatedQuizId: quiz._id };
+    return quiz._id;
   } catch (error) {
     handleError(error);
   }

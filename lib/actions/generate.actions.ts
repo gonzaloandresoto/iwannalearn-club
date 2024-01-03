@@ -246,7 +246,74 @@ async function assignCourseToUser(userId: string, courseId: string) {
   }
 }
 
-// Main func to course and upload (self+children) to database
+async function createUnitsAndLessons(
+  course: Course,
+  courseId: string,
+  userId: string
+) {
+  const unitPromises = course.table_of_contents.map(async (unit, index) => {
+    const unitIdx = (index + 1).toString();
+
+    const newUnit = await Unit.create({
+      title: unit.title,
+      courseId: courseId,
+      order: unitIdx,
+    });
+
+    console.log('✅ Uploaded Unit', newUnit);
+
+    // Generate lesson contents
+    const lessons = await generateLessons(course, unit);
+
+    if (!lessons) throw new Error('Lessons could not be generated');
+
+    // Create lesson and quiz entries in database, parallel, asynchronously
+    const lessonPromises = lessons.map(async (lesson, j) => {
+      const newLesson = await Element.create({
+        ...lesson,
+        type: 'lesson',
+        order: j + 1,
+        title: lesson.title,
+        content: lesson.content,
+        unitId: newUnit._id,
+      });
+      console.log('✅ Uploaded Lesson', newLesson);
+
+      // Create quiz if it exists in the lesson
+      if (lesson.quiz) {
+        const newQuiz = await Quiz.create({
+          ...lesson.quiz,
+          type: 'quiz',
+          question: lesson.quiz.question,
+          order: j + 1,
+          choices: JSON.stringify(
+            lesson.quiz.options.map((option, optionIndex) => ({
+              id: optionIndex,
+              option: option,
+            }))
+          ),
+          answer: lesson.quiz.answer,
+          unitId: newUnit._id,
+        });
+
+        console.log('✅ Uploaded Quiz', newQuiz);
+
+        await UserQuiz.create({
+          userId: userId,
+          quizId: newQuiz._id,
+          unitId: newUnit._id,
+          completed: false,
+        });
+      }
+    });
+
+    await Promise.all(lessonPromises);
+  });
+
+  await Promise.all(unitPromises);
+}
+
+// Main function called to create the course + upload its contents to the database
 export async function createCourse(topic: string, userId: string) {
   try {
     await connectToDatabase();
@@ -267,72 +334,15 @@ export async function createCourse(topic: string, userId: string) {
         }))
       ),
     });
-    // console.log('Uploaded Course', newCourse);
+    // console.log('✅ Uploaded Course', newCourse);
 
-    //Create units
-    const tableOfContents = course.table_of_contents;
-    for (let i = 0; i < tableOfContents.length; i++) {
-      const unit = tableOfContents[i];
-      const unitIdx = (i + 1).toString();
-
-      const newUnit = await Unit.create({
-        title: unit.title,
-        courseId: newCourse._id,
-        status: 'NOT_STARTED',
-        order: unitIdx,
-      });
-      // console.log('Uploaded Unit', newUnit);
-
-      // create unit's lessons
-      const lessons = await generateLessons(course, unit);
-
-      // add each lesson to database (linked to unit._id)
-      for (let j = 0; j < lessons.length; j++) {
-        const newLesson = await Element.create({
-          ...lessons[j],
-          type: 'lesson',
-          order: j,
-          title: lessons[j].title,
-          content: lessons[j].content,
-          unitId: newUnit._id,
-        });
-        console.log('Uploaded Lesson', newLesson);
-
-        if (lessons[j].quiz) {
-          console.log('Quiz', lessons[j].quiz);
-
-          const newQuiz = await Quiz.create({
-            ...lessons[j],
-            type: 'quiz',
-            question: lessons[j].quiz?.question,
-            order: j,
-            choices: JSON.stringify(
-              lessons[j].quiz?.options.map((option) => ({
-                id: lessons[j].quiz?.options.indexOf(option),
-                option: option,
-              }))
-            ),
-            answer: lessons[j].quiz?.answer,
-            status: false,
-            unitId: newUnit._id,
-          });
-
-          await UserQuiz.create({
-            userId: userId,
-            quizId: newQuiz._id,
-            unitId: newUnit._id,
-            completed: false,
-          });
-          console.log('Uploaded Quiz', newQuiz);
-        } else {
-          console.log('\n\n\n\n\n\n\nNo Quiz\n\n\n\n\n\n\n\n\n\n');
-        }
-      }
-      // console.log('Uploaded Element', lessons);
-    }
-
-    // Assign course to user
+    // Assigning the course to the user
     await assignCourseToUser(userId, newCourse._id);
+
+    // Create units and lessons in parallel, asynchronously
+    createUnitsAndLessons(course, newCourse._id, userId);
+
+    // Return course id
     return newCourse._id;
   } catch (error) {
     handleError(error);

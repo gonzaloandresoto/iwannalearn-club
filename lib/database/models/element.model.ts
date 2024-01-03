@@ -9,13 +9,16 @@ export interface IElement extends Document {
   unitId?: { _id: string };
 }
 
-const ElementSchema = new Schema({
-  type: { type: String, required: true },
-  order: { type: String, required: true },
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  unitId: { type: Schema.Types.ObjectId, ref: 'Unit' },
-});
+const ElementSchema = new Schema(
+  {
+    type: { type: String, required: true },
+    order: { type: String, required: true },
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    unitId: { type: Schema.Types.ObjectId, ref: 'Unit' },
+  },
+  { timestamps: true }
+);
 
 const Element = models.Element || model('Element', ElementSchema);
 
