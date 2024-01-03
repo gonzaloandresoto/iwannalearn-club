@@ -4,11 +4,7 @@ import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 
 const inter = Inter({ subsets: ['latin'] });
-const titanOne = Titan_One({
-  subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-titan-one',
-});
+
 const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
   variable: '--font-source-serif-4',
@@ -32,14 +28,8 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang='en'>
-        <head>
-          <link
-            rel='icon'
-            href='/favicon.ico'
-          />
-        </head>
         <body
-          className={`${inter.className} ${titanOne.variable} ${sourceSerif.variable} ${rosario.variable}`}
+          className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}
         >
           <section className='min-h-screen min-w-screen flex grow'>
             {children}
