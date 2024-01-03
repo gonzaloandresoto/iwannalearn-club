@@ -19,8 +19,9 @@ const rosario = Rosario({
 });
 
 export const metadata: Metadata = {
-  title: 'smartMe',
-  description: 'An ai-powered learning experience for all.',
+  title: 'iWannaLearn',
+  description:
+    'An ai-powered learning experience for all. Generate digestable courses on the fly, similar to Duolingo or Headway.',
 };
 
 export default function RootLayout({
@@ -31,6 +32,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang='en'>
+        <head>
+          <link
+            rel='icon'
+            href='/favicon.ico'
+          />
+        </head>
         <body
           className={`${inter.className} ${titanOne.variable} ${sourceSerif.variable} ${rosario.variable}`}
         >
