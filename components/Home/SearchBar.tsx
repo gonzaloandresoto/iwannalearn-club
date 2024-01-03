@@ -1,34 +1,20 @@
 'use client';
 
+interface SearchBarProps {
+  createCourse: (topic: string, userId: string) => Promise<void>;
+}
+
 import useUserContext from '@/hooks/useUserContext';
-import { handleError } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-function SearchBar() {
+export default function SearchBar({ createCourse }: SearchBarProps) {
   const { user } = useUserContext();
-  const router = useRouter();
-  const [topic, setTopic] = useState('');
+  const [topic, setTopic] = useState<string>('');
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!topic || !user) return;
     e.preventDefault();
-    try {
-      if (!topic) return;
-      const response = await fetch('/api/create-course', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ topic: topic, userId: user?._id }),
-      });
-
-      const data = await response.json();
-      if (data) {
-        router.push(`/course/${data}`);
-      }
-    } catch (error) {
-      handleError(error);
-    }
+    createCourse(topic, user?._id);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +22,7 @@ function SearchBar() {
   };
 
   return (
-    <form className='max-w-[720px] w-full md:h-[64px] flex items-center px-2 py-2 border-2 border-primary-tan rounded-md font-rosario'>
+    <form className='max-w-[720px] w-full md:h-[64px] flex items-center px-2 py-2 bg-white border-2 border-primary-tan rounded-md font-rosario'>
       <input
         type='text'
         value={topic}
@@ -53,5 +39,3 @@ function SearchBar() {
     </form>
   );
 }
-
-export default SearchBar;
