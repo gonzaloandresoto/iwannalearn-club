@@ -25,7 +25,7 @@ export default function UnitContent() {
   }, []);
 
   return (
-    <div className='flex grow justify-center'>
+    <div className='flex flex-col grow items-center justify-end bg-tertiary-tan'>
       <CourseCard
         unitId={unit}
         courseId={id}

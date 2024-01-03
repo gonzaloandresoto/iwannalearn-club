@@ -1,12 +1,18 @@
-import Link from 'next/link';
 import TableOfContents from './Other/TableOfContents';
-import { getNextUncompletedUnit } from '@/lib/actions/unit.actions';
+import {
+  getNextUncompletedUnit,
+  getUnitCompletions,
+} from '@/lib/actions/unit.actions';
 
 interface CourseCoverProps {
   courseId: string;
   title: string;
   summary: string;
   tableOfContents: string;
+}
+
+interface UnitCompletionsItem {
+  [key: string]: string;
 }
 
 export default async function CourseCover({
@@ -16,16 +22,10 @@ export default async function CourseCover({
   tableOfContents,
 }: CourseCoverProps) {
   const nextUnit = await getNextUncompletedUnit(courseId);
-
-  let route;
-  if (!nextUnit.message) {
-    route = `/course/${courseId}/${nextUnit}`;
-  } else {
-    route = `/course/${courseId}`;
-  }
+  const unitCompletions = await getUnitCompletions(courseId);
 
   return (
-    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center lg:px-12 px-8 lg:pt-16 pt-12 bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
+    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center lg:px-12 px-4 lg:pt-16 pt-12 bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
       <div className='w-full flex flex-col gap-4'>
         <p className='lg:text-4xl text-2xl text-center font-bold font-sourceSerif text-secondary-black'>
           {title}
@@ -38,7 +38,8 @@ export default async function CourseCover({
       <TableOfContents
         tableOfContents={tableOfContents}
         courseId={courseId}
-        nextUnit={nextUnit?.toString()}
+        nextUnit={nextUnit || null}
+        unitCompletions={unitCompletions as UnitCompletionsItem}
       />
     </div>
   );

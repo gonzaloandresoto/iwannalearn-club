@@ -23,10 +23,14 @@ const LessonContent: React.FC<TextLessonContentProps> = ({
   unitId,
 }) => {
   return (
-    <div className='w-full h-max flex flex-col items-center'>
-      <div className='w-full flex flex-col gap-8'>
-        <p className='text-2xl font-bold'>{item.title}</p>
-        <p className='text-lg'>{item.content}</p>
+    <div className='w-full flex flex-col items-center'>
+      <div className='w-full flex flex-col gap-4'>
+        <p className='lg:text-4xl text-2xl text-left font-bold font-sourceSerif text-secondary-black'>
+          {item.title}
+        </p>
+        <p className='md:text-xl text-lg text-tertiary-black font-medium font-rosario'>
+          {item.content}
+        </p>
       </div>
       <LessonNavigationControls
         activePage={activePage}

@@ -10,13 +10,13 @@ export default async function Completed({
   params: { id: string; unit: string };
 }) {
   const unitContent = await getUnitContentById(unit);
-  const nextUnitId = await getNextUncompletedUnit(id);
+  const nextUnit = await getNextUncompletedUnit(id);
 
   return (
-    <div className='flex grow justify-center'>
+    <div className='flex flex-col grow items-center justify-end bg-tertiary-tan'>
       <CourseCompletion
         unitContent={unitContent}
-        nextUnitId={nextUnitId}
+        nextUnitId={nextUnit || null}
       />
     </div>
   );

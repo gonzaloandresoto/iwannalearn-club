@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import QuizNavigationControls from './QuizNavigationControls';
+import Image from 'next/image';
 
 interface Choice {
   id: string;
@@ -39,7 +40,9 @@ const QuizContent: React.FC<QuizContentProps> = ({
 
   return (
     <div className='w-full h-max flex flex-col items-center gap-8'>
-      <p className='text-2xl font-bold text-left'>{item.question}</p>
+      <p className='lg:text-4xl text-2xl text-center font-bold font-sourceSerif text-secondary-black'>
+        {item.question}
+      </p>
       <div className='w-full h-max flex flex-col gap-2'>
         {item.choices &&
           parsedChoices.map((quizItem, index) => {
@@ -47,13 +50,25 @@ const QuizContent: React.FC<QuizContentProps> = ({
               <button
                 key={index}
                 onClick={() => setSelectedAnswer(quizItem.id)}
-                className={`w-full px-4 py-2 border-2 border-secondary-grey rounded-md ${
+                className={`w-full flex items-center justify-between px-4 py-2 border-2 border-secondary-grey rounded-md ${
                   quizItem.id === selectedAnswer
-                    ? 'bg-primary-orange text-white'
-                    : 'bg-white text-black'
+                    ? 'bg-primary-blue text-tertiary-tan'
+                    : 'bg-secondary-tan text-secondary-black border-primary-tan'
                 }`}
               >
-                <p className='text-lg text-left'>{quizItem.option}</p>
+                <p className='text-lg text-left font-rosario'>
+                  {quizItem.option}
+                </p>
+                <Image
+                  src={
+                    quizItem.id === selectedAnswer
+                      ? '/course-icons/selected.svg'
+                      : '/course-icons/uncompleted.svg'
+                  }
+                  width={24}
+                  height={24}
+                  alt='check'
+                />
               </button>
             );
           })}

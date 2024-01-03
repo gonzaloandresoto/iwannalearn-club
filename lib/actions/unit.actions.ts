@@ -5,6 +5,8 @@ import { handleError } from '../utils';
 import { createElement } from './element.action';
 import Quiz from '../database/models/quiz.model';
 import Element from '../database/models/element.model';
+import UserQuiz from '../database/models/userquiz.model';
+import next from 'next';
 
 export async function addUnitToDatabase(
   courseTopic: string,
@@ -66,20 +68,60 @@ export async function getUnitElementsById(id: string) {
   }
 }
 
+// Function to get the next uncompleted unit
 export async function getNextUncompletedUnit(courseId: string) {
+  try {
+    const unitCompletions = await getUnitCompletions(courseId);
+
+    if (unitCompletions) {
+      for (const unitId of Object.keys(unitCompletions)) {
+        if (unitCompletions[unitId] !== 'COMPLETED') {
+          return unitId; // Return the first uncompleted unit ID
+        }
+      }
+    }
+
+    return null;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function getUnitCompletions(courseId: string) {
   try {
     await connectToDatabase();
 
-    const unit = await Unit.findOne({
-      courseId: courseId,
-      status: 'NOT_STARTED',
-    }).sort({ order: 1 });
+    const units = await Unit.find({ courseId }).sort({ order: 1 });
+    if (!units.length) return {};
 
-    if (!unit) {
-      return { message: 'No uncompleted units' };
+    const quizzes = await UserQuiz.find(
+      { unitId: { $in: units.map((unit) => unit._id) } },
+      { completed: 1, unitId: 1 }
+    );
+
+    let unitCompletions: { [key: string]: string } = {};
+    for (const unit of units) {
+      const unitQuizzes = quizzes.filter((quiz) =>
+        quiz.unitId.equals(unit._id)
+      );
+
+      const completedQuizzesCount = unitQuizzes.filter(
+        (quiz) => quiz.completed
+      ).length;
+
+      if (
+        completedQuizzesCount === unitQuizzes.length ||
+        unitQuizzes.length === 0
+      ) {
+        unitCompletions[unit._id] = 'COMPLETED';
+      } else if (completedQuizzesCount > 0) {
+        unitCompletions[unit._id] = 'IN_PROGRESS';
+      } else {
+        unitCompletions[unit._id] = 'NOT_STARTED';
+      }
     }
 
-    return unit._id;
+    return unitCompletions;
   } catch (error) {
     handleError(error);
   }

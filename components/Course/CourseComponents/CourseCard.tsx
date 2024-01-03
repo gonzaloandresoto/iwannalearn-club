@@ -29,8 +29,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   const currentItem = unitContent[activePage];
   return (
-    <div className='fixed bottom-0 w-[720px] h-5/6 flex flex-col items-center px-8 pt-8 bg-tertiary-grey rounded-t-xl overflow-y-auto'>
-      <div className='w-full h-max flex flex-col gap-8'>
+    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center lg:px-12 px-4 lg:pt-16 pt-12 bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
+      <div className='w-full'>
         <div>
           {currentItem?.type === 'lesson' && (
             <LessonContent
