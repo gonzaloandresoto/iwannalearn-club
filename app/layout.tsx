@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Titan_One, Source_Serif_4, Rosario } from 'next/font/google';
+import { Inter, Source_Serif_4, Rosario } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 

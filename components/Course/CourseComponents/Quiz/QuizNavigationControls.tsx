@@ -37,10 +37,10 @@ export default function QuizNavigationControls({
   };
 
   const continueClick = async () => {
-    setWasQuizUpdated(!wasQuizUpdated);
-    handleNext();
     await markQuizCompleted(quizId);
+    setWasQuizUpdated(!wasQuizUpdated);
     await updateUnitStatus(unitId);
+    handleNext();
   };
   return (
     <div className='w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan lg:px-12 px-4'>

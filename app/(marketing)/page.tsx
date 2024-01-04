@@ -1,4 +1,5 @@
 import Letter from '@/components/Marketing/Letter';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -12,11 +13,21 @@ export default function Page() {
           width={56}
           height={56}
         />
-        <Link href='/signin'>
-          <button className='w-max px-6 py-4 text-xl font-rosario text-secondary-black underline'>
-            Sign in
-          </button>
-        </Link>
+        <SignedIn>
+          <Link href='/generate'>
+            <button className='w-max px-6 py-4 text-xl font-rosario text-secondary-black underline'>
+              Home
+            </button>
+          </Link>
+        </SignedIn>
+
+        <SignedOut>
+          <Link href='/generate'>
+            <button className='w-max px-6 py-4 text-xl font-rosario text-secondary-black underline'>
+              Sign in
+            </button>
+          </Link>
+        </SignedOut>
       </div>
 
       <div className='z-20 grow flex lg:flex-row flex-col lg:items-start items-center gap-16 justify-between px-4'>
