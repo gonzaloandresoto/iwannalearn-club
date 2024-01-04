@@ -29,7 +29,7 @@ export default function GeneratingCourse() {
           visible={true}
         />
         <p className='lg:text-4xl text-2xl text-secondary-black font-bold font-rosario'>
-          We're building your course
+          {`We're building your course`}
         </p>
         <p className='lg:text-lg text-base text-tertiary-black font-medium font-rosario'>
           This will take ~10s

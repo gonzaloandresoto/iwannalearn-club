@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface Lesson {
@@ -27,8 +28,9 @@ const TOCLesson = ({ lesson, courseId }: TOCLessonProps) => {
         <>
           <p className='text-sm font-bold font-rosario text-left'>QUIZ</p>
           {lesson.completed === false ? (
-            <img
+            <Image
               src='/course-icons/uncompleted.svg'
+              alt='uncompleted icon'
               width={20}
               height={20}
             />
