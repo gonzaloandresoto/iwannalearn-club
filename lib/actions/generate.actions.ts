@@ -84,8 +84,7 @@ const create_lessons = {
             },
             content: {
               type: 'string',
-              description:
-                'the content of the lesson with two paragraphs separated by a newline',
+              description: 'the content of the lesson',
             },
             quiz: {
               type: 'object',
@@ -148,11 +147,13 @@ interface Course {
 
 // Generate course outline
 const generateCourse = async (topic: string): Promise<Course> => {
+  console.log('START GENERATING COURSE OPEN AI');
+
   const prompt = [
     {
       role: 'system',
       content:
-        'You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your students will ask about some high level topic and you will generate a textbook quality course on the topic for them. ',
+        'You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your students will ask about some high level topic and you will generate a textbook quality course on the topic for them.',
     },
     {
       role: 'user',
@@ -177,10 +178,12 @@ const generateCourse = async (topic: string): Promise<Course> => {
     },
   });
 
+  console.log('DONE GENERATING COURSE OPEN AI', res);
+
   const courseObject = JSON.parse(
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
-  // console.log(courseObject);
+  console.log('DONE GENERATING COURSE', courseObject);
   return courseObject;
 };
 
@@ -223,7 +226,7 @@ Write detailed lesson content for each.`,
   const lessonsObject = JSON.parse(
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
-  // console.log(lessonsObject);
+  console.log('Lessons Object', lessonsObject);
   return lessonsObject.lessons;
 };
 
@@ -258,7 +261,7 @@ async function createUnitsAndLessons(
       order: unitIdx,
     });
 
-    // console.log('✅ Uploaded Unit', newUnit);
+    console.log('✅ Uploaded Unit', newUnit);
 
     // Generate lesson contents
     const lessons = await generateLessons(course, unit);
@@ -275,7 +278,7 @@ async function createUnitsAndLessons(
         content: lesson.content,
         unitId: newUnit._id,
       });
-      // console.log('✅ Uploaded Lesson', newLesson);
+      console.log('✅ Uploaded Lesson', newLesson);
 
       // Create quiz if it exists in the lesson
       if (lesson.quiz) {
@@ -294,7 +297,7 @@ async function createUnitsAndLessons(
           unitId: newUnit._id,
         });
 
-        // console.log('✅ Uploaded Quiz', newQuiz);
+        console.log('✅ Uploaded Quiz', newQuiz);
 
         await UserQuiz.create({
           userId: userId,
@@ -332,14 +335,16 @@ export async function createCourse(topic: string, userId: string) {
         }))
       ),
     });
-    // console.log('✅ Uploaded Course', newCourse);
+    console.log('✅ Uploaded Course', newCourse);
 
     // Assigning the course to the user
     await assignCourseToUser(userId, newCourse._id);
 
+    console.log('✅ Assigned Course to User');
     // Create units and lessons in parallel, asynchronously
     createUnitsAndLessons(course, newCourse._id, userId);
 
+    console.log('✅ Returning ID');
     // Return course id
     return newCourse._id;
   } catch (error) {
