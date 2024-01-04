@@ -6,13 +6,16 @@ import Link from 'next/link';
 
 const NavigationBar = () => {
   return (
-    <div className='sticky w-full h-[72px] flex flex-row items-center justify-between px-4 lg:px-32'>
-      <Image
-        src='/assets/logo-circle.png'
-        alt='iwannalearn logo'
-        width={48}
-        height={48}
-      />
+    <div className='sticky w-full min-h-[72px] flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>
+      <Link href='/generate'>
+        <Image
+          src='/assets/logo-circle.png'
+          alt='iwannalearn logo'
+          width={48}
+          height={48}
+        />
+      </Link>
+
       <div className='flex flex-row gap-8 items-center'>
         <SignedIn>
           <NavItems />

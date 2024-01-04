@@ -37,13 +37,13 @@ export default function QuizNavigationControls({
   };
 
   const continueClick = async () => {
-    await markQuizCompleted(quizId);
     setWasQuizUpdated(!wasQuizUpdated);
-    await updateUnitStatus(unitId);
     handleNext();
+    await markQuizCompleted(quizId);
+    await updateUnitStatus(unitId);
   };
   return (
-    <div className='fixed bottom-16'>
+    <div className='w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan lg:px-12 px-4'>
       <button
         onClick={() => continueClick()}
         className='main-button disabled:bg-secondary-blue'

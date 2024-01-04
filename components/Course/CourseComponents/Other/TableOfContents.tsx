@@ -1,5 +1,6 @@
 'use client';
 
+import { table } from 'console';
 import { useRouter } from 'next/navigation';
 
 interface TableofContentsItem {
@@ -21,7 +22,6 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({
   tableOfContents,
-  nextUnit,
   courseId,
   unitCompletions,
 }: TableOfContentsProps) {

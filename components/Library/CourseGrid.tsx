@@ -29,7 +29,7 @@ function CourseGrid() {
   }, [user]);
 
   return (
-    <div className='flex flex-col gap-10'>
+    <div className='grid lg:grid-cols-2 grid-cols-1  gap-10'>
       {courses?.map((course) => (
         <CourseCard
           key={course._id}
