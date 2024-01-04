@@ -1,16 +1,14 @@
 'use server';
-
-import mongoose from 'mongoose';
 import { connectToDatabase } from '../database';
-import Course from '../database/models/course.model';
+import openai from '../openai/index';
+
 import Unit from '../database/models/unit.model';
+import Course from '../database/models/course.model';
 import Element from '../database/models/element.model';
 import UserCourse from '../database/models/usercourse.model';
-
-import openai from '../openai/index';
-import { courseSchema } from '../openai/schemas/course.schema';
-import { handleError } from '../utils';
 import Quiz from '../database/models/quiz.model';
+
+import { handleError } from '../utils';
 import UserQuiz from '../database/models/userquiz.model';
 
 // SCHEMAS ---------------------------------------------------------------------
@@ -53,7 +51,7 @@ const course_schema = {
     },
     summary: {
       type: 'string',
-      description: 'a short summary of the course',
+      description: 'a short, two sentence summary of the course',
     },
     table_of_contents: {
       type: 'array',
@@ -86,7 +84,8 @@ const create_lessons = {
             },
             content: {
               type: 'string',
-              description: 'the content of the lesson',
+              description:
+                'the content of the lesson with two paragraphs separated by a newline',
             },
             quiz: {
               type: 'object',
@@ -181,7 +180,7 @@ const generateCourse = async (topic: string): Promise<Course> => {
   const courseObject = JSON.parse(
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
-  console.log(courseObject);
+  // console.log(courseObject);
   return courseObject;
 };
 
@@ -192,8 +191,7 @@ const generateLessons = async (
   const prompt = [
     {
       role: 'system',
-      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. 
-      Based on a course outline, you will write detailed two paragraph lesson content for each of the lessons outlined along with a quiz question to test the student's understanding.`,
+      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your quality is text-book level, and as informative as Wikipedia. Based on a course outline, you will write detailed two paragraph informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Each lesson should mantain the context of the course and not overlap with other lessons.`,
     },
     {
       role: 'user',
@@ -225,7 +223,7 @@ Write detailed lesson content for each.`,
   const lessonsObject = JSON.parse(
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
-  console.log(lessonsObject);
+  // console.log(lessonsObject);
   return lessonsObject.lessons;
 };
 
@@ -260,7 +258,7 @@ async function createUnitsAndLessons(
       order: unitIdx,
     });
 
-    console.log('✅ Uploaded Unit', newUnit);
+    // console.log('✅ Uploaded Unit', newUnit);
 
     // Generate lesson contents
     const lessons = await generateLessons(course, unit);
@@ -277,7 +275,7 @@ async function createUnitsAndLessons(
         content: lesson.content,
         unitId: newUnit._id,
       });
-      console.log('✅ Uploaded Lesson', newLesson);
+      // console.log('✅ Uploaded Lesson', newLesson);
 
       // Create quiz if it exists in the lesson
       if (lesson.quiz) {
@@ -296,7 +294,7 @@ async function createUnitsAndLessons(
           unitId: newUnit._id,
         });
 
-        console.log('✅ Uploaded Quiz', newQuiz);
+        // console.log('✅ Uploaded Quiz', newQuiz);
 
         await UserQuiz.create({
           userId: userId,
@@ -409,7 +407,6 @@ export async function getCourseProgressById(id: string) {
     let completed = quizzes.filter((quiz) => quiz.completed).length;
     const progress = Math.round((completed / total) * 100);
 
-    console.log('🚀 ~ progress:', progress);
     return { progress: progress };
   } catch (error) {
     handleError(error);
@@ -423,7 +420,7 @@ export async function getCourseContentById(id: string) {
     await connectToDatabase();
     const units = await Unit.find({
       courseId: { $in: id },
-    });
+    }).sort({ order: 1 });
 
     if (!units) throw new Error('Units not found');
 
@@ -457,7 +454,9 @@ export async function getCourseContentById(id: string) {
       (a, b) => a.order - b.order
     );
 
-    // Strcuture the course content by unit
+    // console.log('🚀 ~ mergedCourse:', mergedCourse);
+
+    // Strucuture the course content by unit
     const groupedCourse = units.reduce((acc, unit) => {
       acc[unit._id.toString()] = {
         unitName: unit.title,
@@ -468,7 +467,6 @@ export async function getCourseContentById(id: string) {
       };
       return acc;
     }, {});
-
     return groupedCourse;
   } catch (error) {
     handleError(error);
