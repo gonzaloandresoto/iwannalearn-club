@@ -30,16 +30,12 @@ const unit_schema = {
       type: 'string',
       description: 'the title of the section',
     },
-    description: {
-      type: 'string',
-      description: 'a short description of the section',
-    },
     lessons: {
       type: 'array',
       items: lesson_schema,
     },
   },
-  required: ['title', 'description', 'lessons'],
+  required: ['title', 'lessons'],
 };
 
 const course_schema = {
@@ -51,7 +47,7 @@ const course_schema = {
     },
     summary: {
       type: 'string',
-      description: 'a short, two sentence summary of the course',
+      description: 'a short summary of the course',
     },
     table_of_contents: {
       type: 'array',
