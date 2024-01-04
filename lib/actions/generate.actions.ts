@@ -190,7 +190,7 @@ const generateLessons = async (
   const prompt = [
     {
       role: 'system',
-      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your quality is text-book level, and as informative as Wikipedia. Based on a course outline, you will write detailed two paragraph informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Each lesson should mantain the context of the course and not overlap with other lessons.`,
+      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your quality is text-book level, and as informative as Wikipedia. Based on a course outline, you will write detailed two paragraph informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Content should not describe what it will teach, but rather actually provide useful information. Each lesson should mantain the context of the course and not overlap with other lessons.`,
     },
     {
       role: 'user',
@@ -222,12 +222,15 @@ Write detailed lesson content for each.`,
   const lessonsObject = JSON.parse(
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
-  console.log('Lessons Object', lessonsObject);
+  // console.log('Lessons Object', lessonsObject);
   return lessonsObject.lessons;
 };
 
 // Function to assign a course to a user
-async function assignCourseToUser(userId: string, courseId: string) {
+async function assignCourseToUser(
+  userId: string,
+  courseId: string
+): Promise<void> {
   try {
     await connectToDatabase();
 
@@ -247,7 +250,7 @@ async function createUnitsAndLessons(
   course: Course,
   courseId: string,
   userId: string
-) {
+): Promise<void> {
   const unitPromises = course.table_of_contents.map(async (unit, index) => {
     const unitIdx = (index + 1).toString();
 
@@ -257,7 +260,7 @@ async function createUnitsAndLessons(
       order: unitIdx,
     });
 
-    console.log('✅ Uploaded Unit', newUnit);
+    // console.log('✅ Uploaded Unit', newUnit);
 
     // Generate lesson contents
     const lessons = await generateLessons(course, unit);
@@ -293,7 +296,7 @@ async function createUnitsAndLessons(
           unitId: newUnit._id,
         });
 
-        console.log('✅ Uploaded Quiz', newQuiz);
+        // console.log('✅ Uploaded Quiz', newQuiz);
 
         await UserQuiz.create({
           userId: userId,
@@ -310,41 +313,54 @@ async function createUnitsAndLessons(
   await Promise.all(unitPromises);
 }
 
+async function createAndUploadCourse(course: Course): Promise<string> {
+  const tableOfContents = course.table_of_contents.map((unit, index) => ({
+    title: unit.title,
+    id: index + 1,
+  }));
+
+  const newCourse = await Course.create({
+    ...course,
+    tableOfContents: JSON.stringify(tableOfContents),
+  });
+
+  return newCourse._id;
+}
+
 // Main function called to create the course + upload its contents to the database
-export async function createCourse(topic: string, userId: string) {
+export async function createCourse(
+  topic: string,
+  userId: string
+): Promise<string | { message: string }> {
   try {
-    await connectToDatabase();
-
-    // Create course outline and upload to database
-    const course = await generateCourse(topic);
-
-    if (!course) throw new Error('Course could not be generated');
-
-    const newCourse = await Course.create({
-      ...course,
-      title: course.title,
-      summary: course.summary,
-      tableOfContents: JSON.stringify(
-        course.table_of_contents.map((unit: any) => ({
-          title: unit.title,
-          id: course.table_of_contents.indexOf(unit) + 1,
-        }))
-      ),
+    const timeoutPromise = new Promise<{ message: string }>((resolve) => {
+      setTimeout(() => {
+        resolve({ message: 'Course creation is taking longer than expected!' });
+      }, 9000);
     });
-    console.log('✅ Uploaded Course', newCourse);
 
-    // Assigning the course to the user
-    await assignCourseToUser(userId, newCourse._id);
+    const courseCreationPromise = (async () => {
+      await connectToDatabase();
 
-    console.log('✅ Assigned Course to User');
-    // Create units and lessons in parallel, asynchronously
-    createUnitsAndLessons(course, newCourse._id, userId);
+      const course = await generateCourse(topic);
+      if (!course) throw new Error('Course could not be generated');
 
-    console.log('✅ Returning ID');
-    // Return course id
-    return newCourse._id;
+      const newCourseId = await createAndUploadCourse(course);
+      // console.log('✅ Uploaded Course', newCourseId);
+
+      await assignCourseToUser(userId, newCourseId);
+      // console.log('✅ Assigned Course to User');
+
+      createUnitsAndLessons(course, newCourseId, userId);
+      // console.log('✅ Units and Lessons created');
+
+      return newCourseId;
+    })();
+
+    return await Promise.race([courseCreationPromise, timeoutPromise]);
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 

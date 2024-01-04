@@ -5,6 +5,9 @@ import RecommendedSearches from '@/components/Home/RecommendedSearches';
 import SearchBar from '@/components/Home/SearchBar';
 
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useRouter } from 'next/navigation';
 import { handleError } from '@/lib/utils';
 
@@ -26,7 +29,20 @@ export default function Generate() {
 
       const data = await response.json();
       if (data) {
-        router.push(`/course/${data}`);
+        if (data.message) {
+          toast(data.message, {
+            position: 'top-center',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            theme: 'dark',
+          });
+        } else {
+          router.push(`/course/${data}`);
+        }
       }
     } catch (error) {
       handleError(error);
@@ -35,6 +51,7 @@ export default function Generate() {
 
   return (
     <div className='main-page justify-center'>
+      <ToastContainer />
       {isGenerating ? (
         <GeneratingCourse />
       ) : (
