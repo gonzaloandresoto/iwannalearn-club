@@ -1,4 +1,4 @@
-import CourseCompletion from '@/components/Course/CourseComponents/CourseCompletion';
+import UnitCompletion from '@/components/Course/CourseComponents/UnitCompletion';
 import {
   getNextUncompletedUnit,
   getUnitContentById,
@@ -12,9 +12,11 @@ export default async function Completed({
   const unitContent = await getUnitContentById(unit);
   const nextUnit = await getNextUncompletedUnit(id);
 
+  console.log(unitContent);
+
   return (
     <div className='flex flex-col grow items-center justify-end bg-tertiary-tan'>
-      <CourseCompletion
+      <UnitCompletion
         unitContent={unitContent}
         nextUnitId={nextUnit || null}
       />

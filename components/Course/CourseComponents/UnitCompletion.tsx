@@ -9,15 +9,15 @@ interface UnitContentItem {
   courseId: string;
 }
 
-interface CourseCompletionProps {
+interface UnitCompletionProps {
   unitContent: UnitContentItem;
   nextUnitId: string | null;
 }
 
-export default function CourseCompletion({
+export default function UnitCompletion({
   unitContent,
   nextUnitId,
-}: CourseCompletionProps) {
+}: UnitCompletionProps) {
   console.log(nextUnitId);
   let route;
   if (!nextUnitId) {
@@ -34,23 +34,23 @@ export default function CourseCompletion({
   });
 
   return (
-    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center justify-center lg:px-12 px-4  bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
-      <div className='w-full h-full flex flex-col lg:gap-8 gap-4 items-center justify-center'>
+    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col items-center justify-center   bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
+      <div className='w-full h-full flex flex-col lg:gap-8 gap-4 items-center justify-center lg:px-12 px-4'>
         <p className='lg:text-2xl text-xl text-secondary-black font-bold font-rosario text-center'>
-          Congratulations on completing
+          {`Congratulations on completing Unit ${unitContent?.order}`}
         </p>
         <p className='lg:text-6xl text-4xl text-secondary-black font-sourceSerif font-bold text-center'>
-          {unitContent.title}
+          {unitContent?.title}
         </p>
         <p className='text-xl text-secondary-black font-semibold font-rosario text-center'>{`awarded on ${today}`}</p>
       </div>
 
-      <div className='h-[96px]'>
+      <div className='w-full min-h-[88px] flex gap-2 pt-[16px] justify-center border-t-2 border-primary-tan lg:px-12 px-4'>
         <Link
           href={route}
           className='main-button '
         >
-          Next Unit
+          Continue
         </Link>
       </div>
     </div>

@@ -15,14 +15,7 @@ const config: Config = {
       'primary-tan': '#E7E1D9',
       'secondary-tan': '#FBF7EC',
       'tertiary-tan': '#FFFEFA',
-
-      'primary-grey': '#7B7B7B',
-      'secondary-grey': '#E3E3E3',
-      'tertiary-grey': '#F6F6F6',
       'primary-blue': '#0C54A8',
-      'secondary-blue': '#B3C4FF',
-      'primary-orange': '#FE8312',
-      'secondary-orange': '#FE8312',
     },
     extend: {
       backgroundImage: {
