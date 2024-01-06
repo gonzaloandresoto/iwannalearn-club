@@ -1,14 +1,5 @@
 import { Schema, model, models } from 'mongoose';
 
-export interface IUnit extends Document {
-  _id: string;
-  title: string;
-  imageUrl?: string;
-  status: string;
-  order: string;
-  courseId: { _id: string };
-}
-
 const UnitSchema = new Schema(
   {
     title: { type: String, required: true },

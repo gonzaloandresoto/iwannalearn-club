@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import useTOCContext from '@/hooks/useTOCContext';
 import CourseProgress from './CourseProgress';
 import TOCDropdown from './TOCDropdown';
-import useOutsideClick from '@/lib/hooks/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import Image from 'next/image';
 
 export default function NavigationBar() {

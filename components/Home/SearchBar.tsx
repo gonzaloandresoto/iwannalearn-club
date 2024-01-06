@@ -1,20 +1,47 @@
 'use client';
 
 interface SearchBarProps {
-  createCourse: (topic: string, userId: string) => Promise<void>;
+  setIsGenerating: (isGenerating: boolean) => void;
 }
 
 import useUserContext from '@/hooks/useUserContext';
-import React, { useState } from 'react';
+import { createCourse } from '@/lib/actions/generate.actions';
 
-export default function SearchBar({ createCourse }: SearchBarProps) {
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
+
+export default function SearchBar({ setIsGenerating }: SearchBarProps) {
+  const router = useRouter();
   const { user } = useUserContext();
   const [topic, setTopic] = useState<string>('');
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!topic || !user) return;
+  const handleCourseCreation = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    topic: string,
+    userId: string
+  ) => {
     e.preventDefault();
-    createCourse(topic, user?._id);
+    if (!topic || !userId) return;
+
+    setIsGenerating(true);
+    const response = await createCourse(topic, userId);
+
+    if ('message' in response) {
+      toast(response.message, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'dark',
+      });
+    } else {
+      router.push(`/course/${response.courseId}`);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +58,7 @@ export default function SearchBar({ createCourse }: SearchBarProps) {
         className='w-full h-full bg-white outline-none md:text-lg text-base placeholder:text-secondary-black'
       />
       <button
-        onClick={(e) => handleSubmit(e)}
+        onClick={(e) => handleCourseCreation(e, topic || '', user?._id || '')}
         className='md:h-[48px] px-4 py-2 text-tertiary-tan md:text-xl bg-secondary-black rounded-md'
       >
         Generate

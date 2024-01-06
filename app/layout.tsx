@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Source_Serif_4, Rosario } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
+import { ToastContainer } from 'react-toastify';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
           className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}
         >
           <section className='min-h-screen min-w-screen flex grow'>
+            <ToastContainer />
             {children}
           </section>
         </body>

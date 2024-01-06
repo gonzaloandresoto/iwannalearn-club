@@ -1,13 +1,6 @@
 import { Schema, model, models } from 'mongoose';
 
-export interface ICourse extends Document {
-  _id: string;
-  title: string;
-  summary: string;
-  tableOfContents: String;
-}
-
-const CourseSchema = new Schema<ICourse>(
+const CourseSchema = new Schema(
   {
     title: { type: String, required: true },
     summary: { type: String, required: true },

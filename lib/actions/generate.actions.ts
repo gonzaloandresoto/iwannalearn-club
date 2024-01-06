@@ -5,11 +5,11 @@ import openai from '../openai/index';
 import Unit from '../database/models/unit.model';
 import Course from '../database/models/course.model';
 import Element from '../database/models/element.model';
-import UserCourse from '../database/models/usercourse.model';
 import Quiz from '../database/models/quiz.model';
+import UserCourse from '../database/models/usercourse.model';
+import UserQuiz from '../database/models/userquiz.model';
 
 import { handleError } from '../utils';
-import UserQuiz from '../database/models/userquiz.model';
 
 // SCHEMAS ---------------------------------------------------------------------
 const lesson_schema = {
@@ -331,12 +331,12 @@ async function createAndUploadCourse(course: Course): Promise<string> {
 export async function createCourse(
   topic: string,
   userId: string
-): Promise<string | { message: string }> {
+): Promise<{ courseId: string } | { message: string }> {
   try {
     const timeoutPromise = new Promise<{ message: string }>((resolve) => {
       setTimeout(() => {
         resolve({ message: 'Course creation is taking longer than expected!' });
-      }, 9000);
+      }, 1000);
     });
 
     const courseCreationPromise = (async () => {
@@ -351,10 +351,10 @@ export async function createCourse(
       await assignCourseToUser(userId, newCourseId);
       // console.log('✅ Assigned Course to User');
 
-      createUnitsAndLessons(course, newCourseId, userId);
+      // createUnitsAndLessons(course, newCourseId, userId);
       // console.log('✅ Units and Lessons created');
 
-      return newCourseId;
+      return { courseId: newCourseId };
     })();
 
     return await Promise.race([courseCreationPromise, timeoutPromise]);

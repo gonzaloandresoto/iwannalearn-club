@@ -1,7 +1,7 @@
 'use client';
 
 import useUserContext from '@/hooks/useUserContext';
-import useOutsideClick from '@/lib/hooks/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface CourseDropdownProps {
   courseId: string;

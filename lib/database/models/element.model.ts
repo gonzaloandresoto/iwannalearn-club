@@ -1,14 +1,5 @@
 import { Schema, models, model } from 'mongoose';
 
-export interface IElement extends Document {
-  _id: string;
-  type: string;
-  order: string;
-  title: string;
-  content?: string;
-  unitId?: { _id: string };
-}
-
 const ElementSchema = new Schema(
   {
     type: { type: String, required: true },
