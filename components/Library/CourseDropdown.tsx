@@ -2,6 +2,7 @@
 
 import useUserContext from '@/hooks/useUserContext';
 import useOutsideClick from '@/hooks/useOutsideClick';
+import { deleteCourseById } from '@/lib/actions/generate.actions';
 
 interface CourseDropdownProps {
   courseId: string;
@@ -15,15 +16,6 @@ export default function CourseDropdown({
   const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
   const { user } = useUserContext();
 
-  const deleteCourse = async () => {
-    fetch('/api/course-delete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ courseId: courseId, userId: user?._id }),
-    }).then((response) => response.json());
-  };
   return (
     <div
       ref={dropdownRef}
@@ -35,7 +27,7 @@ export default function CourseDropdown({
         </p>
       </div>
       <button
-        onClick={() => deleteCourse()}
+        onClick={() => deleteCourseById(courseId || '', user?._id || '')}
         className='w-full flex flex-row gap-2 px-4 py-2 items-center bg-white hover:bg-secondary-tan'
       >
         <img src='/course-icons/delete.svg' />

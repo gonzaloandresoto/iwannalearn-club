@@ -2,37 +2,58 @@
 import Unit from '../database/models/unit.model';
 import { connectToDatabase } from '../database';
 import { handleError } from '../utils';
-import { createElement } from './element.action';
 import Quiz from '../database/models/quiz.model';
 import Element from '../database/models/element.model';
 import UserQuiz from '../database/models/userquiz.model';
-import next from 'next';
 
-export async function addUnitToDatabase(
-  courseTopic: string,
-  unitName: string,
-  courseId: string,
-  id: string
+export async function updateUnitStatus(
+  unitId: string,
+  userId: string,
+  status: string
 ) {
+  if (!unitId || !userId) return;
   try {
     await connectToDatabase();
 
-    const newUnit = await Unit.create({
-      title: unitName,
-      courseId: courseId,
-      status: 'NOT_STARTED',
-      order: id,
-    });
+    const updatedUnit = await Unit.findOneAndUpdate(
+      { unit_id: unitId, userId: userId },
+      { status: status },
+      { new: true }
+    );
 
-    const unitId = newUnit._id;
+    if (!updatedUnit) throw new Error('Unit could not be updated');
 
-    createElement(courseTopic, unitName, unitId);
-
-    return JSON.parse(JSON.stringify(newUnit));
+    return;
   } catch (error) {
     handleError(error);
   }
 }
+
+// export async function addUnitToDatabase(
+//   courseTopic: string,
+//   unitName: string,
+//   courseId: string,
+//   id: string
+// ) {
+//   try {
+//     await connectToDatabase();
+
+//     const newUnit = await Unit.create({
+//       title: unitName,
+//       courseId: courseId,
+//       status: 'NOT_STARTED',
+//       order: id,
+//     });
+
+//     const unitId = newUnit._id;
+
+//     createElement(courseTopic, unitName, unitId);
+
+//     return JSON.parse(JSON.stringify(newUnit));
+//   } catch (error) {
+//     handleError(error);
+//   }
+// }
 
 export async function getUnitContentById(unitId: string) {
   try {

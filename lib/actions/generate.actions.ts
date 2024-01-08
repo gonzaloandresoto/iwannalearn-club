@@ -10,6 +10,7 @@ import UserCourse from '../database/models/usercourse.model';
 import UserQuiz from '../database/models/userquiz.model';
 
 import { handleError } from '../utils';
+import UserUnit from '../database/models/userunit.model';
 
 // SCHEMAS ---------------------------------------------------------------------
 const lesson_schema = {
@@ -252,12 +253,18 @@ async function createUnitsAndLessons(
   userId: string
 ): Promise<void> {
   const unitPromises = course.table_of_contents.map(async (unit, index) => {
-    const unitIdx = (index + 1).toString();
-
     const newUnit = await Unit.create({
       title: unit.title,
       courseId: courseId,
-      order: unitIdx,
+      order: index + 1,
+    });
+
+    if (!newUnit) throw new Error('Unit could not be saved to database');
+
+    await UserUnit.create({
+      userId: userId,
+      unitId: newUnit._id,
+      status: 'NOT_STARTED',
     });
 
     // console.log('✅ Uploaded Unit', newUnit);
@@ -281,7 +288,7 @@ async function createUnitsAndLessons(
 
       // Create quiz if it exists in the lesson
       if (lesson.quiz) {
-        const newQuiz = await Quiz.create({
+        await Quiz.create({
           ...lesson.quiz,
           type: 'quiz',
           question: lesson.quiz.question,
@@ -296,14 +303,14 @@ async function createUnitsAndLessons(
           unitId: newUnit._id,
         });
 
-        // console.log('✅ Uploaded Quiz', newQuiz);
-
-        await UserQuiz.create({
-          userId: userId,
-          quizId: newQuiz._id,
-          unitId: newUnit._id,
-          completed: false,
-        });
+        // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
+        // await UserQuiz.create({
+        //   userId: userId,
+        //   quizId: newQuiz._id,
+        //   unitId: newUnit._id,
+        //   completed: false,
+        // });
+        // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
       }
     });
 
@@ -313,7 +320,10 @@ async function createUnitsAndLessons(
   await Promise.all(unitPromises);
 }
 
-async function createAndUploadCourse(course: Course): Promise<string> {
+async function createAndUploadCourse(
+  course: Course,
+  userId: string
+): Promise<string> {
   const tableOfContents = course.table_of_contents.map((unit, index) => ({
     title: unit.title,
     id: index + 1,
@@ -322,6 +332,7 @@ async function createAndUploadCourse(course: Course): Promise<string> {
   const newCourse = await Course.create({
     ...course,
     tableOfContents: JSON.stringify(tableOfContents),
+    userId: userId,
   });
 
   return newCourse._id;
@@ -345,7 +356,7 @@ export async function createCourse(
       const course = await generateCourse(topic);
       if (!course) throw new Error('Course could not be generated');
 
-      const newCourseId = await createAndUploadCourse(course);
+      const newCourseId = await createAndUploadCourse(course, userId);
       // console.log('✅ Uploaded Course', newCourseId);
 
       await assignCourseToUser(userId, newCourseId);
@@ -487,5 +498,59 @@ export async function getCourseContentById(id: string) {
     return groupedCourse;
   } catch (error) {
     handleError(error);
+  }
+}
+
+export async function deleteCourseById(
+  courseId: string,
+  userId: string
+): Promise<void> {
+  if (!courseId || !userId) return;
+  try {
+    await connectToDatabase();
+
+    await UserCourse.findByIdAndDelete({ courseId: courseId, userId: userId });
+
+    const remainingUsersOnCourse = await UserCourse.find({
+      courseId: courseId,
+    });
+
+    if (remainingUsersOnCourse.length === 0) {
+      await Course.deleteOne({ _id: courseId });
+    }
+
+    return;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+interface CourseForUser {
+  _id: string;
+  title: string;
+}
+
+export async function getCourseByUserId(
+  userId: string
+): Promise<CourseForUser[]> {
+  try {
+    await connectToDatabase();
+
+    const userCourses = await UserCourse.find(
+      { userId: userId },
+      { courseId: 1 }
+    );
+
+    const userCourseIds = userCourses.map((course) => course.courseId);
+
+    const courses = await Course.find(
+      { _id: { $in: userCourseIds } },
+      { title: 1 }
+    );
+
+    return courses;
+  } catch (error) {
+    handleError(error);
+    return [];
   }
 }

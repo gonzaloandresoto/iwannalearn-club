@@ -1,32 +1,15 @@
-'use client';
-
 import useUserContext from '@/hooks/useUserContext';
-import { useEffect, useState } from 'react';
 import CourseCard from '../Library/CourseCard';
+import { getCourseByUserId } from '@/lib/actions/generate.actions';
 
 interface Course {
   _id: string;
   title: string;
 }
 
-function CourseGrid() {
+export default async function CourseGrid() {
   const { user } = useUserContext();
-  const [courses, setCourses] = useState<Course[]>([]);
-
-  useEffect(() => {
-    if (!user) return;
-    fetch('/api/user-courses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId: user._id }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCourses(data);
-      });
-  }, [user]);
+  const courses = await getCourseByUserId(user?._id || '');
 
   return (
     <div className='grid lg:grid-cols-2 grid-cols-1  gap-10'>
@@ -40,5 +23,3 @@ function CourseGrid() {
     </div>
   );
 }
-
-export default CourseGrid;

@@ -4,7 +4,7 @@ const UnitSchema = new Schema(
   {
     title: { type: String, required: true },
     imageUrl: { type: String, required: false, default: '' },
-    order: { type: String, required: true },
+    order: { type: Number, required: true },
     courseId: { type: Schema.Types.ObjectId, ref: 'Course' },
   },
   { timestamps: true }

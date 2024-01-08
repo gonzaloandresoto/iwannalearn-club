@@ -5,6 +5,7 @@ const CourseSchema = new Schema(
     title: { type: String, required: true },
     summary: { type: String, required: true },
     tableOfContents: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { timestamps: true }
 );

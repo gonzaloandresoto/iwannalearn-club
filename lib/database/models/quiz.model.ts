@@ -14,10 +14,10 @@ export interface IElement extends Document {
 const QuizSchema = new Schema(
   {
     type: { type: String, required: true },
-    question: { type: String, required: false },
-    order: { type: String, required: false },
-    choices: { type: String, required: false },
-    answer: { type: String, required: false },
+    question: { type: String, required: true },
+    order: { type: Number, required: true },
+    choices: { type: String, required: true },
+    answer: { type: String, required: true },
     unitId: { type: Schema.Types.ObjectId, ref: 'Unit' },
   },
   { timestamps: true }
