@@ -22,9 +22,9 @@ export default function Page() {
         </SignedIn>
 
         <SignedOut>
-          <Link href='/generate'>
+          <Link href='/signup'>
             <button className='w-max px-6 py-4 text-xl font-rosario text-secondary-black underline'>
-              Sign in
+              Sign up
             </button>
           </Link>
         </SignedOut>

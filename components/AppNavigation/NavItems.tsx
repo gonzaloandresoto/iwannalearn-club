@@ -14,7 +14,7 @@ const NavItems = () => {
           <li key={item.route}>
             <Link href={item.route}>
               <p
-                className={`text-secondary-black ${
+                className={`text-secondary-black hover:text-tertiary-black font-rosario font-medium ${
                   isActive ? 'underline font-medium' : 'no-underline'
                 }`}
               >

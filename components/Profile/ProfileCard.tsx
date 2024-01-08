@@ -8,13 +8,13 @@ export default function ProfileCard() {
   const { user } = useUserContext();
 
   return (
-    <div className='w-full flex flex-row gap-8'>
+    <div className='max-w-[720px] w-full flex flex-row items-center gap-4'>
       {user?.photo ? (
         <Image
           src={user.photo}
           alt={`${user?.firstName}` + ' profile photo'}
-          width={104}
-          height={104}
+          width={88}
+          height={88}
           className='rounded-full'
         />
       ) : (
@@ -22,7 +22,7 @@ export default function ProfileCard() {
       )}
 
       <div className='flex flex-col gap-4'>
-        <p className='text-2xl font-semibold'>
+        <p className='text-xl text-secondary-black font-rosario font-semibold'>
           {user?.firstName} {user?.lastName}
         </p>
         <div className='flex flex-row gap-4'>

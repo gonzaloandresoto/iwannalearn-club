@@ -4,9 +4,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
 .main-button {
-  @apply w-max h-[48px] flex-none flex items-center gap-2 px-4 bg-primary-blue rounded-md text-white;
+  @apply w-max h-[48px] flex-none flex items-center gap-2 px-4 bg-primary-blue rounded-md text-white font-rosario;
 }
 
 .main-page {
-  @apply flex flex-col grow items-center px-4 py-6 bg-tertiary-tan overflow-y-auto;
+  @apply flex grow flex-col  items-center px-4 py-6 bg-tertiary-tan overflow-y-auto;
+}
+
+.primary-button {
+  @apply bg-secondary-black;
+}
+
+.secondary-button {
+  @apply px-4 py-1 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md text-sm text-tertiary-black font-rosario font-semibold;
+}
+
+.option-button {
+  @apply w-full flex items-center justify-between px-4 py-2 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md text-lg text-secondary-black text-left font-rosario;
+}
+
+.h1 {
+  @apply lg:text-4xl text-2xl text-secondary-black font-semibold;
 }
