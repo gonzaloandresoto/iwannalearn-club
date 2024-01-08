@@ -533,6 +533,7 @@ interface CourseForUser {
 export async function getCourseByUserId(
   userId: string
 ): Promise<CourseForUser[]> {
+  if (!userId) return [];
   try {
     await connectToDatabase();
 
