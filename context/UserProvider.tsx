@@ -1,11 +1,14 @@
 'use client';
 
+import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   useState,
   useEffect,
   Dispatch,
   SetStateAction,
+  use,
 } from 'react';
 
 interface User {
@@ -14,6 +17,7 @@ interface User {
   lastName: string;
   email: string;
   photo: string;
+  onboarding: boolean;
 }
 
 interface IUserContext {
@@ -26,24 +30,19 @@ interface IUserContext {
 const UserContext = createContext<IUserContext>(null!);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
+  const { userId } = useAuth();
+  const router = useRouter();
   const [clerkId, setClerkId] = useState<string>('');
   const [user, setUser] = useState<User | null>(null);
   const [retryCount, setRetryCount] = useState<number>(0);
-  const maxRetries = 10;
-  const retryInterval = 1000;
+  const maxRetries = 15;
+  const retryInterval = 2400;
 
   useEffect(() => {
-    fetch('/api/clerk-id', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setClerkId(data);
-      });
-  }, []);
+    if (userId) {
+      setClerkId(userId);
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (!clerkId || retryCount > maxRetries) return;
@@ -66,6 +65,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         }
       });
   }, [clerkId, retryCount]);
+
+  if (user && user.onboarding === false) router.push('/onboarding');
 
   const value = {
     clerkId,

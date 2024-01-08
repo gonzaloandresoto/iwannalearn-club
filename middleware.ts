@@ -9,7 +9,7 @@ export default authMiddleware({
     '/signup',
     '/api/webhook/clerk',
   ],
-  ignoredRoutes: ['/api/webhook/clerk'],
+  ignoredRoutes: ['/api/webhook/clerk, /onboarding'],
   afterAuth: (auth, req) => {
     if (!auth.userId && !auth.isPublicRoute) {
       return NextResponse.redirect(new URL('/signup', req.nextUrl).href);

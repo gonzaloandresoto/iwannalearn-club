@@ -34,7 +34,7 @@ export async function getUserById(userId: string) {
 
     const user = await User.findOne({ clerkId: { $in: userId } });
 
-    if (!user) throw new Error('User not found');
+    if (!user) return { message: 'User not found' };
 
     return user;
   } catch (error) {
@@ -46,20 +46,31 @@ export async function getUserById(userId: string) {
 interface UpdateUserParams {
   firstName: string;
   lastName: string;
-  username: string;
-  photo: string;
 }
 
-export async function updateUser(clerkId: string, user: UpdateUserParams) {
+export async function updateUserDetails(
+  userId: string,
+  userInfo: UpdateUserParams,
+  completed: boolean
+) {
+  if (!userId) return { message: 'User not found' };
   try {
     await connectToDatabase();
 
-    const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
-      new: true,
-    });
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId },
+      {
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        onboarding: completed,
+      },
+      {
+        new: true,
+      }
+    );
 
     if (!updatedUser) throw new Error('User update failed');
-    return JSON.parse(JSON.stringify(updatedUser));
+    return updatedUser;
   } catch (error) {
     handleError(error);
   }

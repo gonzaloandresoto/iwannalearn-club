@@ -7,6 +7,7 @@ const UserSchema = new Schema(
     firstName: { type: String, required: false },
     lastName: { type: String, required: false },
     photo: { type: String, required: false },
+    onboarding: { type: Boolean, default: false, required: false },
   },
   { timestamps: true }
 );

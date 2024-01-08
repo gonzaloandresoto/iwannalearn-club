@@ -1,36 +1,56 @@
 'use client';
 
-import { FallingLines } from 'react-loader-spinner';
-
-import useUserContext from '@/hooks/useUserContext';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import useUserContext from '@/hooks/useUserContext';
+
+import Attribution from '@/components/Onboarding/Attribution';
+import Benefits from '@/components/Onboarding/Benefits';
+import UserPending from '@/components/Onboarding/UserPending';
+import WhyLearn from '@/components/Onboarding/WhyLearn';
+import AccountDetails from '@/components/Onboarding/AccountDetails';
+import { updateUserDetails } from '@/lib/actions/user.actions';
 
 export default function Page() {
-  const { user } = useUserContext();
   const router = useRouter();
+  const [activePage, setActivePage] = useState(0);
+  const { user } = useUserContext();
 
-  return (
-    <div className='w-screen h-screen flex items-center justify-center'>
-      <div className='flex flex-col gap-4 items-center'>
-        <FallingLines
-          color='#0C54A8'
-          width='100'
-          visible={true}
-        />
-        <p className='text-2xl font-semibold'>Welcome to iWannaLearn</p>
+  const [userInfo, setUserInfo] = useState({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+  });
 
-        <p>{`We're just setting your account up, once it's finished loading, you'll be able to advance.`}</p>
+  // if user onboarding parameter is true, redirect to home page)
 
+  // need to think of how to handle the welcome screen
+
+  const nextPage = async () => {
+    if (activePage === 3) {
+      await updateUserDetails(user?._id || '', userInfo, true);
+      router.push('/generate');
+    } else {
+      setActivePage(activePage + 1);
+    }
+  };
+
+  return user ? (
+    <div className='main-page'>
+      {activePage === 0 && <AccountDetails setUserInfo={setUserInfo} />}
+      {activePage === 1 && <Attribution />}
+      {activePage === 2 && <WhyLearn />}
+      {activePage === 3 && <Benefits />}
+      <div className='w-full min-h-[88px] flex gap-2 justify-center pt-[16px] border-t-2 border-primary-tan'>
         <button
-          disabled={user === null}
-          onClick={() => {
-            router.push('/create');
-          }}
-          className='main-button disabled:opacity-50'
+          disabled={activePage === 3 && !user}
+          onClick={nextPage}
+          className='main-button'
         >
-          Continue
+          {activePage === 3 ? 'Get started' : 'Continue'}
         </button>
       </div>
     </div>
+  ) : (
+    <UserPending />
   );
 }

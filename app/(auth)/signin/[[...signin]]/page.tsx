@@ -2,9 +2,11 @@ import { SignIn } from '@clerk/nextjs';
 
 export default function Page() {
   return (
-    <SignIn
-      redirectUrl={'/generate'}
-      afterSignInUrl={'/generate'}
-    />
+    <div className='main-page justify-center'>
+      <SignIn
+        redirectUrl={'/generate'}
+        afterSignInUrl={'/generate'}
+      />
+    </div>
   );
 }
