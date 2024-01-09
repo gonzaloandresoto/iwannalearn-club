@@ -16,10 +16,10 @@ export default function AccountDetails({ setUserInfo }: AccountDetailsProps) {
   };
 
   return (
-    <div className='flex grow flex-col gap-8 items-center justify-center'>
+    <div className='w-full flex grow flex-col gap-8 items-center justify-center'>
       <p className='h1 text-center font-rosario'>Help us get to know you</p>
-      <div className='max-w-[720px] w-full flex flex-col gap-2'>
-        <div className='flex flex-col gap-2'>
+      <div className='max-w-[480px] w-full flex flex-col gap-2'>
+        <div className='w-full flex flex-col gap-2'>
           <label
             htmlFor='full name'
             className='text-lg text-tertiary-black font-rosario'
@@ -30,7 +30,7 @@ export default function AccountDetails({ setUserInfo }: AccountDetailsProps) {
             type='text'
             name='full name'
             id='full name'
-            className='bg-white border-2 border-primary-tan rounded-md p-2 text-lg font-rosario'
+            className='w-full bg-white border-2 border-primary-tan rounded-md p-2 text-lg font-rosario'
             placeholder='Aa'
             onChange={handleChange}
           />
