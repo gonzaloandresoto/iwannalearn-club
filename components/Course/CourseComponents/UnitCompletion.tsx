@@ -18,7 +18,6 @@ export default function UnitCompletion({
   unitContent,
   nextUnitId,
 }: UnitCompletionProps) {
-  console.log(nextUnitId);
   let route;
   if (!nextUnitId) {
     route = `/course/${unitContent.courseId}`;

@@ -98,7 +98,7 @@ export async function getNextUncompletedUnit(courseId: string) {
 
     if (unitCompletions) {
       for (const unitId of Object.keys(unitCompletions)) {
-        if (unitCompletions[unitId] !== 'COMPLETED') {
+        if (unitCompletions[unitId].status !== 'COMPLETE') {
           return unitId;
         }
       }
@@ -121,12 +121,30 @@ export async function getUnitCompletions(courseId: string) {
       { unitId: 1, status: 1 }
     );
 
-    if (!userUnits.length) return { message: 'No units found for this unit' };
+    if (!userUnits.length) return { message: 'No units found for this course' };
 
-    const unitCompletions: { [key: string]: string } = {};
+    const userUnitsIndexed: any = {};
     for (const userUnit of userUnits) {
-      unitCompletions[userUnit.unitId] = userUnit.status;
+      userUnitsIndexed[userUnit?.unitId] = userUnit?.status;
     }
+
+    const unitDetails = await Unit.find(
+      { courseId: courseId },
+      { _id: 1, order: 1 }
+    );
+
+    if (!unitDetails.length)
+      return { message: 'No units found for this course' };
+
+    const unitCompletions: any = {};
+    unitDetails
+      ?.sort((a, b) => a.order - b.order)
+      .map((unit) => {
+        unitCompletions[unit?._id] = {
+          order: unit?.order,
+          status: userUnitsIndexed[unit?._id],
+        };
+      });
 
     return unitCompletions;
   } catch (error) {

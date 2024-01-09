@@ -12,8 +12,6 @@ export default async function Completed({
   const unitContent = await getUnitContentById(unit);
   const nextUnit = await getNextUncompletedUnit(id);
 
-  console.log(unitContent);
-
   return (
     <div className='flex flex-col grow items-center justify-end bg-tertiary-tan'>
       <UnitCompletion

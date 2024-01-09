@@ -1,6 +1,5 @@
 'use client';
 
-import { table } from 'console';
 import { useRouter } from 'next/navigation';
 
 interface TableofContentsItem {
@@ -10,7 +9,10 @@ interface TableofContentsItem {
 }
 
 interface UnitCompletionsItem {
-  [key: string]: string;
+  [key: string]: {
+    status: string;
+    order: string;
+  };
 }
 
 interface TableOfContentsProps {
@@ -30,18 +32,19 @@ export default function TableOfContents({
     JSON.parse(tableOfContents);
 
   const allCompleted = Object.values(unitCompletions).every(
-    (status) => status === 'COMPLETED'
+    (item) => item.status === 'COMPLETE'
   );
 
   const unitStatus = (unitId: string, index: number) => {
-    const status = unitCompletions[unitId];
-    const prevStatus = unitCompletions[tableOfContentsArray[index - 1]?.unitId];
+    const status = unitCompletions[unitId]?.status;
+    const prevStatus =
+      unitCompletions[tableOfContentsArray[index - 1]?.unitId]?.status;
     if (
       (index === 0 && status === 'NOT_STARTED') ||
-      (prevStatus === 'COMPLETED' && status === 'NOT_STARTED')
+      (prevStatus === 'COMPLETE' && status === 'NOT_STARTED')
     ) {
       return 'Start';
-    } else if (status === 'COMPLETED' || allCompleted) {
+    } else if (status === 'COMPLETE' || allCompleted) {
       return 'Redo';
     } else if (status === 'IN_PROGRESS') {
       return 'Continue';

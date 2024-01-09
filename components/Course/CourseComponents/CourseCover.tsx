@@ -1,3 +1,6 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import TableOfContents from './Other/TableOfContents';
 import {
   getNextUncompletedUnit,
@@ -12,19 +15,33 @@ interface CourseCoverProps {
 }
 
 interface UnitCompletionsItem {
-  [key: string]: string;
+  [key: string]: {
+    status: string;
+    order: string;
+  };
 }
 
-export default async function CourseCover({
+const CourseCover: React.FC<CourseCoverProps> = ({
   courseId,
   title,
   summary,
   tableOfContents,
-}: CourseCoverProps) {
-  const nextUnit = await getNextUncompletedUnit(courseId);
-  const unitCompletions = await getUnitCompletions(courseId);
+}) => {
+  const [nextUnit, setNextUnit] = useState<string>('');
+  const [unitCompletions, setUnitCompletions] = useState<UnitCompletionsItem>(
+    {}
+  );
 
-  console.log('Unit completions', unitCompletions);
+  useEffect(() => {
+    const fetchData = async () => {
+      const next = await getNextUncompletedUnit(courseId);
+      const completions = await getUnitCompletions(courseId);
+      setNextUnit(next?.toString() || '');
+      setUnitCompletions(completions);
+    };
+
+    fetchData();
+  }, [courseId]);
 
   return (
     <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center lg:px-12 px-4 lg:pt-16 pt-12 bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
@@ -40,9 +57,11 @@ export default async function CourseCover({
       <TableOfContents
         tableOfContents={tableOfContents}
         courseId={courseId}
-        nextUnit={nextUnit || null}
-        unitCompletions={unitCompletions as UnitCompletionsItem}
+        nextUnit={nextUnit}
+        unitCompletions={unitCompletions}
       />
     </div>
   );
-}
+};
+
+export default CourseCover;
