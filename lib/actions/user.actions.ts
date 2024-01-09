@@ -6,6 +6,7 @@ import { connectToDatabase } from '@/lib/database';
 import User from '@/lib/database/models/user.model';
 
 import { handleError } from '@/lib/utils';
+import UserOnboarding from '../database/models/useronboarding.model';
 
 interface CreateUserParams {
   clerkId: string;
@@ -17,12 +18,10 @@ interface CreateUserParams {
 
 export async function createUser(user: CreateUserParams) {
   try {
-    console.log('Creating user IN FUNCTION:', user);
     await connectToDatabase();
 
     const newUser = await User.create(user);
-    console.log('Created user IN FUNCTION:', newUser);
-    return JSON.parse(JSON.stringify(newUser));
+    return newUser;
   } catch (error) {
     handleError(error);
   }
@@ -46,6 +45,8 @@ export async function getUserById(userId: string) {
 interface UpdateUserParams {
   firstName: string;
   lastName: string;
+  attribution: string;
+  whyLearn: string;
 }
 
 export async function updateUserDetails(
@@ -70,7 +71,16 @@ export async function updateUserDetails(
     );
 
     if (!updatedUser) throw new Error('User update failed');
-    return updatedUser;
+
+    const userOnboardingDetails = await UserOnboarding.create({
+      userId: userId,
+      attribution: userInfo.attribution,
+      whyLearn: userInfo.whyLearn,
+    });
+
+    if (!userOnboardingDetails) throw new Error('User onboarding failed');
+
+    return { message: 'User updated successfully' };
   } catch (error) {
     handleError(error);
   }

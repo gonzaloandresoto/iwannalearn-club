@@ -1,13 +1,5 @@
-import { set } from 'mongoose';
-import { Dispatch, SetStateAction } from 'react';
-
-interface UserInfo {
-  firstName: string;
-  lastName: string;
-}
-
 interface AccountDetailsProps {
-  setUserInfo: Dispatch<SetStateAction<UserInfo>>;
+  setUserInfo: (userInfo: any) => void;
 }
 
 export default function AccountDetails({ setUserInfo }: AccountDetailsProps) {
@@ -16,7 +8,7 @@ export default function AccountDetails({ setUserInfo }: AccountDetailsProps) {
     const [firstName, ...rest] = value.trim().split(/\s+/);
     const lastName = rest.join(' ');
 
-    setUserInfo((prev) => ({
+    setUserInfo((prev: any) => ({
       ...prev,
       firstName: firstName || '',
       lastName: lastName,
@@ -26,7 +18,7 @@ export default function AccountDetails({ setUserInfo }: AccountDetailsProps) {
   return (
     <div className='flex grow flex-col gap-8 items-center justify-center'>
       <p className='h1 text-center font-rosario'>Help us get to know you</p>
-      <form className='max-w-[720px] w-full flex flex-col gap-2'>
+      <div className='max-w-[720px] w-full flex flex-col gap-2'>
         <div className='flex flex-col gap-2'>
           <label
             htmlFor='full name'
@@ -43,7 +35,7 @@ export default function AccountDetails({ setUserInfo }: AccountDetailsProps) {
             onChange={handleChange}
           />
         </div>
-      </form>
+      </div>
     </div>
   );
 }

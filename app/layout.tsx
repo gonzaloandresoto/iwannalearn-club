@@ -27,7 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      afterSignInUrl='/generate'
+      afterSignUpUrl='/onboarding'
+    >
       <html lang='en'>
         <body
           className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}

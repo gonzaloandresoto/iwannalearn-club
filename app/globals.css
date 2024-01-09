@@ -20,9 +20,13 @@
 }
 
 .option-button {
-  @apply w-full flex items-center justify-between px-4 py-2 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md text-lg text-secondary-black text-left font-rosario;
+  @apply w-full flex items-center justify-between px-4 py-2 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md lg:text-lg text-base text-secondary-black text-left font-rosario;
 }
 
 .h1 {
   @apply lg:text-4xl text-2xl text-secondary-black font-semibold;
+}
+
+.h2 {
+  @apply lg:text-2xl text-xl text-tertiary-black font-semibold;
 }

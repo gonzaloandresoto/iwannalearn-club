@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useUserContext from '@/hooks/useUserContext';
 
@@ -19,16 +19,21 @@ export default function Page() {
   const [userInfo, setUserInfo] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
+    attribution: '',
+    whyLearn: '',
   });
 
-  // if user onboarding parameter is true, redirect to home page)
-
-  // need to think of how to handle the welcome screen
+  useEffect(() => {
+    if (!user) return;
+    else if (user.onboarding) {
+      router.push('/generate');
+    }
+  }, [user]);
 
   const nextPage = async () => {
     if (activePage === 3) {
-      await updateUserDetails(user?._id || '', userInfo, true);
-      router.push('/generate');
+      await updateUserDetails(user?._id || '', userInfo, true),
+        router.push('/generate');
     } else {
       setActivePage(activePage + 1);
     }
@@ -37,8 +42,8 @@ export default function Page() {
   return user ? (
     <div className='main-page'>
       {activePage === 0 && <AccountDetails setUserInfo={setUserInfo} />}
-      {activePage === 1 && <Attribution />}
-      {activePage === 2 && <WhyLearn />}
+      {activePage === 1 && <Attribution setUserInfo={setUserInfo} />}
+      {activePage === 2 && <WhyLearn setUserInfo={setUserInfo} />}
       {activePage === 3 && <Benefits />}
       <div className='w-full min-h-[88px] flex gap-2 justify-center pt-[16px] border-t-2 border-primary-tan'>
         <button
