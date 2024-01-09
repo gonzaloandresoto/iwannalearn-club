@@ -36,7 +36,7 @@ export default function RootLayout({
         <body
           className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}
         >
-          <section className='min-w-screen min-h-screen flex grow'>
+          <section className='min-w-[100dvw] min-h-[100dvh] flex grow'>
             <ToastContainer />
             {children}
             {/* <Analytics /> */}
