@@ -175,12 +175,12 @@ const generateCourse = async (topic: string): Promise<Course> => {
     },
   });
 
-  console.log('DONE GENERATING COURSE OPEN AI', res);
+  // console.log('DONE GENERATING COURSE OPEN AI', res);
 
   const courseObject = JSON.parse(
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
-  console.log('DONE GENERATING COURSE', courseObject);
+  // console.log('DONE GENERATING COURSE', courseObject);
   return courseObject;
 };
 
@@ -285,7 +285,7 @@ async function createUnitsAndLessons(
         content: lesson.content,
         unitId: newUnit._id,
       });
-      console.log('✅ Uploaded Lesson', newLesson);
+      // console.log('✅ Uploaded Lesson', newLesson);
 
       // Create quiz if it exists in the lesson
       if (lesson.quiz) {
