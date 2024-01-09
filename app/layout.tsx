@@ -39,7 +39,7 @@ export default function RootLayout({
           <section className='min-w-screen min-h-screen flex grow'>
             <ToastContainer />
             {children}
-            <Analytics />
+            {/* <Analytics /> */}
           </section>
         </body>
       </html>

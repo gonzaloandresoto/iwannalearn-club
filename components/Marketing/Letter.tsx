@@ -16,8 +16,9 @@ export default function Letter() {
     <div
       ref={ref}
       onClick={() => setUnhide(!unhide)}
-      className={`${positionClasses} z-50 hidden lg:flex transition-all duration-700 w-[800px] h-[720px] xl:w-[960px] xl:h-[800px] flex-col gap-6 px-8 py-12 bg-white shadow-lg font-sourceSerif text-secondary-black text-lg xl:text-xl`}
+      className={`${positionClasses} z-50 hidden lg:flex transition-all duration-700 w-[800px] h-[720px] xl:w-[960px] xl:h-[800px] flex-col gap-6 px-8 py-12 bg-white shadow-lg font-rosario text-secondary-black text-lg xl:text-xl`}
     >
+      {!unhide && <div className='-top-[50px] absolute'>Click me!</div>}
       <div>
         <Image
           src='/assets/letter-stickers.png'
@@ -29,12 +30,13 @@ export default function Letter() {
       <div className='flex flex-col gap-4'>
         <p>{`hey stranger!`}</p>
         <p>{`ever think about how little incentive most "education" companies have to actually teach you stuff?`}</p>
-        <p>{`to most, you're an engagement metric at risk of losing interest at anytime. why? the faster you pick up a skill, the less time you'll spend on their platform.`}</p>
+        <p>{`to most, you're an engagement metric, at risk of losing interest at anytime. why? the faster you pick up a skill, the less time you'll spend on their platform.`}</p>
         <p>{`the internet birthed a generation of self-taught thinkers.`}</p>
         <p>{`free from institutional constraints.`}</p>
         <p>{`who crave knowledge to understand the world.`}</p>
         <p>{`we're doing this for you ❤️`}</p>
-        <p>{`iWannaLearn is not just another educational company. We're a much-needed revolution in learning. We're tearing down the walls of conventional education and building a community where knowledge is limitless and accessible to everyone.`}</p>
+        <p>{`iWannaLearn is not just another educational company. We're a much-needed revolution in learning.`}</p>
+        <p>{`We're tearing down the walls of conventional education and building a community where knowledge is limitless and accessible to everyone.`}</p>
       </div>
     </div>
   );

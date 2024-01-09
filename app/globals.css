@@ -23,6 +23,10 @@
   @apply w-full flex items-center justify-between px-4 py-2 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md lg:text-lg text-base text-secondary-black text-left font-rosario;
 }
 
+.nav-text {
+  @apply text-lg text-secondary-black hover:text-tertiary-black font-rosario font-medium;
+}
+
 .h1 {
   @apply lg:text-4xl text-2xl text-secondary-black font-semibold;
 }
