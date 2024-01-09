@@ -18,13 +18,14 @@ export default function CourseGrid() {
   const { user } = useUserContext();
 
   useEffect(() => {
+    if (!user) return;
     const getCourses = async () => {
       const courses = await getCourseByUserId(user?._id || '');
       setCourses(courses);
     };
 
     getCourses();
-  }, []);
+  }, [user]);
 
   if (courses?.length === 0)
     return (
@@ -35,7 +36,7 @@ export default function CourseGrid() {
     );
 
   return (
-    <div className='grid lg:grid-cols-2 grid-cols-1  gap-10'>
+    <div className='grid lg:grid-cols-2 grid-cols-1 gap-10'>
       {courses?.map((course) => (
         <CourseCard
           key={course._id}

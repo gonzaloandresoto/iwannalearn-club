@@ -55,7 +55,7 @@ export default function CourseCard({ title, courseId }: CourseCardProps) {
       </div>
       <Link
         href={`/course/${courseId}`}
-        className='max-w-[480px] w-full h-[240px] flex flex-col justify-between px-4 py-4 rounded-r-md rounded-bl-md border-2 border-primary-tan '
+        className='lg:w-[480px] w-full h-[240px] flex flex-col justify-between px-4 py-4 rounded-r-md rounded-bl-md border-2 border-primary-tan '
       >
         <p className='text-2xl font-semibold font-rosario w-2/3'>{title}</p>
 

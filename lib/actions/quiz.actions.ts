@@ -5,6 +5,29 @@ import { handleError } from '../utils';
 import openai from '../openai';
 import UserQuiz from '../database/models/userquiz.model';
 
+export async function markQuizCompleted(quizId: string, userId: string) {
+  if (!quizId || !userId) return;
+
+  try {
+    await connectToDatabase();
+
+    const checkedQuiz = await UserQuiz.findOne({ quizId: quizId });
+    if (checkedQuiz && checkedQuiz.completed === true) {
+      return { message: 'Quiz already marked as completed' };
+    }
+
+    const quiz = await UserQuiz.findOneAndUpdate(
+      { quizId: quizId, userId: userId },
+      { completed: true },
+      { new: true }
+    );
+
+    return quiz._id;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // Generate quiz
 // const generateQuiz = async (lessonContent: string) => {
 //   const prompt = [
@@ -64,26 +87,3 @@ import UserQuiz from '../database/models/userquiz.model';
 //     handleError(error);
 //   }
 // }
-
-export async function markQuizCompleted(quizId: string, userId: string) {
-  if (!quizId || !userId) return;
-
-  try {
-    await connectToDatabase();
-
-    const checkedQuiz = await UserQuiz.findOne({ quizId: quizId });
-    if (checkedQuiz && checkedQuiz.completed === true) {
-      return { message: 'Quiz already marked as completed' };
-    }
-
-    const quiz = await UserQuiz.findOneAndUpdate(
-      { quizId: quizId, userId: userId },
-      { completed: true },
-      { new: true }
-    );
-
-    return quiz._id;
-  } catch (error) {
-    handleError(error);
-  }
-}

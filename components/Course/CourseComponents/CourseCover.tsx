@@ -24,6 +24,8 @@ export default async function CourseCover({
   const nextUnit = await getNextUncompletedUnit(courseId);
   const unitCompletions = await getUnitCompletions(courseId);
 
+  console.log('Unit completions', unitCompletions);
+
   return (
     <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center lg:px-12 px-4 lg:pt-16 pt-12 bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
       <div className='w-full flex flex-col gap-4'>

@@ -5,6 +5,8 @@ import { handleError } from '../utils';
 import Quiz from '../database/models/quiz.model';
 import Element from '../database/models/element.model';
 import UserQuiz from '../database/models/userquiz.model';
+import UserUnit from '../database/models/userunit.model';
+import { connect } from 'http2';
 
 export async function updateUnitStatus(
   unitId: string,
@@ -15,8 +17,8 @@ export async function updateUnitStatus(
   try {
     await connectToDatabase();
 
-    const updatedUnit = await Unit.findOneAndUpdate(
-      { unit_id: unitId, userId: userId },
+    const updatedUnit = await UserUnit.findOneAndUpdate(
+      { unitId: unitId, userId: userId },
       { status: status },
       { new: true }
     );
@@ -97,7 +99,7 @@ export async function getNextUncompletedUnit(courseId: string) {
     if (unitCompletions) {
       for (const unitId of Object.keys(unitCompletions)) {
         if (unitCompletions[unitId] !== 'COMPLETED') {
-          return unitId; // Return the first uncompleted unit ID
+          return unitId;
         }
       }
     }
@@ -108,38 +110,22 @@ export async function getNextUncompletedUnit(courseId: string) {
   }
 }
 
+// Function to get the status of all units in a course
 export async function getUnitCompletions(courseId: string) {
+  if (!courseId) return;
   try {
     await connectToDatabase();
 
-    const units = await Unit.find({ courseId }).sort({ order: 1 });
-    if (!units.length) return {};
-
-    const quizzes = await UserQuiz.find(
-      { unitId: { $in: units.map((unit) => unit._id) } },
-      { completed: 1, unitId: 1 }
+    const userUnits = await UserUnit.find(
+      { courseId: courseId },
+      { unitId: 1, status: 1 }
     );
 
-    let unitCompletions: { [key: string]: string } = {};
-    for (const unit of units) {
-      const unitQuizzes = quizzes.filter((quiz) =>
-        quiz.unitId.equals(unit._id)
-      );
+    if (!userUnits.length) return { message: 'No units found for this unit' };
 
-      const completedQuizzesCount = unitQuizzes.filter(
-        (quiz) => quiz.completed
-      ).length;
-
-      if (
-        completedQuizzesCount === unitQuizzes.length ||
-        unitQuizzes.length === 0
-      ) {
-        unitCompletions[unit._id] = 'COMPLETED';
-      } else if (completedQuizzesCount > 0) {
-        unitCompletions[unit._id] = 'IN_PROGRESS';
-      } else {
-        unitCompletions[unit._id] = 'NOT_STARTED';
-      }
+    const unitCompletions: { [key: string]: string } = {};
+    for (const userUnit of userUnits) {
+      unitCompletions[userUnit.unitId] = userUnit.status;
     }
 
     return unitCompletions;

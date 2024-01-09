@@ -22,7 +22,7 @@ export default function NavigationBar() {
   }, []);
 
   return (
-    <div className='relative sticky min-h-[72px] w-full flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>
+    <div className='z-20 relative sticky min-h-[72px] w-full flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>
       <Link
         href='/library'
         className='w-[40px] h-[40px] flex-none flex items-center justify-center bg-secondary-black rounded-md'

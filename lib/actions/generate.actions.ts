@@ -264,6 +264,7 @@ async function createUnitsAndLessons(
     await UserUnit.create({
       userId: userId,
       unitId: newUnit._id,
+      courseId: courseId,
       status: 'NOT_STARTED',
     });
 
@@ -288,7 +289,7 @@ async function createUnitsAndLessons(
 
       // Create quiz if it exists in the lesson
       if (lesson.quiz) {
-        await Quiz.create({
+        const newQuiz = await Quiz.create({
           ...lesson.quiz,
           type: 'quiz',
           question: lesson.quiz.question,
@@ -304,12 +305,12 @@ async function createUnitsAndLessons(
         });
 
         // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
-        // await UserQuiz.create({
-        //   userId: userId,
-        //   quizId: newQuiz._id,
-        //   unitId: newUnit._id,
-        //   completed: false,
-        // });
+        await UserQuiz.create({
+          userId: userId,
+          quizId: newQuiz._id,
+          unitId: newUnit._id,
+          completed: false,
+        });
         // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
       }
     });
@@ -347,7 +348,7 @@ export async function createCourse(
     const timeoutPromise = new Promise<{ message: string }>((resolve) => {
       setTimeout(() => {
         resolve({ message: 'Course creation is taking longer than expected!' });
-      }, 1000);
+      }, 9000);
     });
 
     const courseCreationPromise = (async () => {
@@ -362,7 +363,7 @@ export async function createCourse(
       await assignCourseToUser(userId, newCourseId);
       // console.log('✅ Assigned Course to User');
 
-      // createUnitsAndLessons(course, newCourseId, userId);
+      createUnitsAndLessons(course, newCourseId, userId);
       // console.log('✅ Units and Lessons created');
 
       return { courseId: newCourseId };
