@@ -27,8 +27,11 @@ export default function Benefits() {
         {`Here's why you'll love iWannaLearn`}
       </p>
       <div className='lg:w-[720px] w-full flex flex-col gap-4'>
-        {whyLearnOptions?.map((option) => (
-          <div className='w-full flex items-center gap-8 px-4 py-6 border-2 border-primary-tan rounded-lg'>
+        {whyLearnOptions?.map((option, index) => (
+          <div
+            key={index}
+            className='w-full flex items-center gap-8 px-4 py-6 border-2 border-primary-tan rounded-lg'
+          >
             {option?.icon && (
               <Image
                 src={option?.icon}
