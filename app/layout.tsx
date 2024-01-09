@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import { Inter, Source_Serif_4, Rosario } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
@@ -38,6 +39,7 @@ export default function RootLayout({
           <section className='min-w-screen min-h-screen flex grow'>
             <ToastContainer />
             {children}
+            <Analytics />
           </section>
         </body>
       </html>

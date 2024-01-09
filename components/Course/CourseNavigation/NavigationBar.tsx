@@ -12,7 +12,7 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 import Image from 'next/image';
 
 export default function NavigationBar() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ id: string; unit: string }>();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
   const { setId, tableOfContents, courseProgress } = useTOCContext();
@@ -21,10 +21,12 @@ export default function NavigationBar() {
     setId(params.id);
   }, []);
 
+  let route = params.unit ? `/course/${params.id}` : '/library';
+
   return (
     <div className='z-20 relative sticky min-h-[72px] w-full flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>
       <Link
-        href='/library'
+        href={route}
         className='w-[40px] h-[40px] flex-none flex items-center justify-center bg-secondary-black rounded-md'
       >
         <p className='text-tertiary-tan text-base font-bold'>←</p>

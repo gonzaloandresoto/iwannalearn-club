@@ -347,7 +347,9 @@ export async function createCourse(
   try {
     const timeoutPromise = new Promise<{ message: string }>((resolve) => {
       setTimeout(() => {
-        resolve({ message: 'Course creation is taking longer than expected!' });
+        resolve({
+          message: `Course creation is taking longer than expected. We'll redirect you shortly.`,
+        });
       }, 9000);
     });
 
@@ -554,5 +556,22 @@ export async function getCourseByUserId(
   } catch (error) {
     handleError(error);
     return [];
+  }
+}
+
+export async function getMostRecentCourse(userId: string) {
+  if (!userId) return;
+  try {
+    await connectToDatabase();
+
+    const mostRecentCourse = await UserCourse.find({ userId: userId })
+      .sort({ createdAt: -1 })
+      .limit(1);
+
+    if (!mostRecentCourse) return { message: 'No course found' };
+
+    return { courseId: mostRecentCourse[0].courseId };
+  } catch (error) {
+    handleError(error);
   }
 }
