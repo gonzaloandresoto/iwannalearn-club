@@ -54,7 +54,7 @@ export default function QuizNavigationControls({
   };
 
   return (
-    <div className='w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan lg:px-12 px-4'>
+    <div className='w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan'>
       <button
         onClick={() => handleNext()}
         className='main-button disabled:bg-secondary-blue'

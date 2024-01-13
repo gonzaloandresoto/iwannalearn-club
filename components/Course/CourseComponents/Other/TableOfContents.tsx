@@ -80,9 +80,9 @@ export default function TableOfContents({
               }}
               disabled={isDisabled}
               className={`flex-none px-4 py-1 text-lg text-tertiary-tan font-rosario rounded-sm disabled:opacity-60 ${
-                status === 'Complete'
-                  ? 'bg-primary-green'
-                  : 'bg-secondary-black'
+                status === 'Complete' || status === 'Locked'
+                  ? 'bg-secondary-black'
+                  : 'bg-primary-green'
               }`}
             >
               {status}
