@@ -50,7 +50,7 @@ export default function Page() {
           </div>
           <SignedIn>
             <Link
-              href='/Home'
+              href='/generate'
               className='w-max bg-secondary-black px-6 py-4 md:px-12 md:py-6 lg:text-2xl text-lg font-rosario text-tertiary-tan'
             >
               Home

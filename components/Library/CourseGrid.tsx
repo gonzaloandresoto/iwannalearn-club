@@ -36,7 +36,7 @@ export default function CourseGrid() {
     );
 
   return (
-    <div className='w-full flex flex-col items-center gap-10'>
+    <div className='w-full h-max flex flex-col items-center gap-10'>
       {courses?.map((course) => (
         <CourseCard
           key={course._id}
