@@ -1,4 +1,5 @@
 import UnitCompletion from '@/components/Course/CourseComponents/UnitCompletion';
+import EmptyState from '@/components/Course/EmptyState';
 import {
   getNextUncompletedUnit,
   getUnitContentById,
@@ -13,11 +14,15 @@ export default async function Completed({
   const nextUnit = await getNextUncompletedUnit(id);
 
   return (
-    <div className='flex flex-col grow items-center justify-end bg-tertiary-tan'>
-      <UnitCompletion
-        unitContent={unitContent}
-        nextUnitId={nextUnit || null}
-      />
+    <div className='course-page'>
+      {nextUnit && unitContent ? (
+        <UnitCompletion
+          unitContent={unitContent}
+          nextUnitId={nextUnit || null}
+        />
+      ) : (
+        <EmptyState />
+      )}
     </div>
   );
 }

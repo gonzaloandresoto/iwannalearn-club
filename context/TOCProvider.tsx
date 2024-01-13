@@ -41,7 +41,6 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
   );
   const [courseProgress, setCourseProgress] = useState<number>(0);
   const [wasQuizUpdated, setWasQuizUpdated] = useState<boolean>(false);
-  const [isTOCLoaded, setIsTOCLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     if (!id) return;
@@ -77,11 +76,7 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
         setTableOfContents(data);
         // }
       });
-  }, [id, wasQuizUpdated, isTOCLoaded]);
-
-  console.log('TOC: ', tableOfContents);
-
-  // console.log('TOC: ', Object.values(tableOfContents)[0]?.content);
+  }, [id, wasQuizUpdated]);
 
   const value = {
     id,

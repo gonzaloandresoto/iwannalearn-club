@@ -3,12 +3,28 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
 
-.main-button {
-  @apply w-max h-[48px] flex-none flex items-center gap-2 px-4 bg-primary-blue rounded-md text-white font-rosario;
-}
+/* CONTAINERS */
 
 .main-page {
-  @apply flex grow flex-col  items-center px-4 py-6 bg-tertiary-tan overflow-y-auto;
+  @apply max-w-[1280px] flex grow flex-col items-center p-4 bg-tertiary-tan;
+}
+
+.course-page {
+  @apply flex grow justify-center bg-tertiary-tan;
+}
+
+.course-card {
+  @apply w-full max-w-[880px] min-h-full flex flex-col gap-6 items-center lg:px-12 px-4 lg:pt-16 pt-12 lg:mt-4 bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto;
+}
+
+.course-content {
+  @apply w-full h-full flex flex-col gap-8 justify-between;
+}
+
+/* BUTTONS */
+
+.main-button {
+  @apply w-max h-[48px] flex-none flex items-center gap-2 px-4 bg-primary-blue rounded-md text-white font-rosario;
 }
 
 .primary-button {
@@ -22,6 +38,8 @@
 .option-button {
   @apply w-full flex items-center justify-between px-4 py-2 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md lg:text-lg text-base text-secondary-black text-left font-rosario;
 }
+
+/* TEXT */
 
 .nav-text {
   @apply text-lg text-secondary-black hover:text-tertiary-black font-rosario font-medium;

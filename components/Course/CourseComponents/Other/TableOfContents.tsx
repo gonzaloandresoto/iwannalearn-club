@@ -19,7 +19,7 @@ interface TableOfContentsProps {
   tableOfContents: string;
   nextUnit: string | null;
   courseId: string;
-  unitCompletions: UnitCompletionsItem;
+  unitCompletions: UnitCompletionsItem | null;
 }
 
 export default function TableOfContents({
@@ -31,62 +31,65 @@ export default function TableOfContents({
   const tableOfContentsArray: TableofContentsItem[] =
     JSON.parse(tableOfContents);
 
-  const allCompleted = Object.values(unitCompletions).every(
-    (item) => item.status === 'COMPLETE'
-  );
-
   const unitStatus = (unitId: string, index: number) => {
+    if (!unitCompletions) return 'Locked';
+
     const status = unitCompletions[unitId]?.status;
     const prevStatus =
-      unitCompletions[tableOfContentsArray[index - 1]?.unitId]?.status;
+      index > 0
+        ? unitCompletions[tableOfContentsArray[index - 1].unitId]?.status
+        : 'NOT_STARTED';
+
     if (
-      (index === 0 && status === 'NOT_STARTED') ||
-      (prevStatus === 'COMPLETE' && status === 'NOT_STARTED')
+      status === 'NOT_STARTED' &&
+      (index === 0 || prevStatus === 'COMPLETE')
     ) {
       return 'Start';
-    } else if (status === 'COMPLETE' || allCompleted) {
-      return 'Redo';
+    } else if (status === 'COMPLETE') {
+      return 'Complete';
     } else if (status === 'IN_PROGRESS') {
       return 'Continue';
-    } else if (status === 'NOT_STARTED') {
+    } else {
       return 'Locked';
     }
   };
 
   return (
-    <div className='w-full'>
-      <div className='w-full flex flex-col'>
-        {tableOfContentsArray.map((item, index) => {
-          const status = unitStatus(item.unitId, index);
-          const isDisabled = status === 'Locked';
+    <div className='w-full flex flex-col'>
+      {tableOfContentsArray.map((item, index) => {
+        const status = unitStatus(item.unitId, index);
+        const isDisabled = status === 'Locked';
 
-          return (
-            <div
-              key={index}
-              className='w-full flex items-center justify-between lg:py-4 py-3 border-b-2 border-primary-tan'
-            >
-              <div className='flex flex-col gap-2'>
-                <p className='lg:text-base text-sm text-tertiary-black font-bold font-rosario uppercase'>
-                  {'Unit ' + (index + 1) + ': '}
-                </p>
-                <p className='lg:text-xl text-lg text-secondary-black font-semibold font-rosario'>
-                  {item.title}
-                </p>
-              </div>
-
-              <button
-                onClick={() => {
-                  router.push(`/course/${courseId}/${item.unitId}`);
-                }}
-                disabled={isDisabled}
-                className='flex-none px-4 py-1 bg-secondary-black text-lg text-tertiary-tan font-rosario rounded-sm disabled:opacity-60'
-              >
-                {status}
-              </button>
+        return (
+          <div
+            key={index}
+            className='w-full flex items-center justify-between lg:py-4 py-3 border-b-2 border-primary-tan'
+          >
+            <div className='flex flex-col gap-2'>
+              <p className='lg:text-base text-sm text-tertiary-black font-bold font-rosario uppercase'>
+                {'Unit ' + (index + 1) + ': '}
+              </p>
+              <p className='lg:text-xl text-lg text-secondary-black font-semibold font-rosario'>
+                {item.title}
+              </p>
             </div>
-          );
-        })}
-      </div>
+
+            <button
+              onClick={() => {
+                router.push(`/course/${courseId}/${item.unitId}`);
+              }}
+              disabled={isDisabled}
+              className={`flex-none px-4 py-1 text-lg text-tertiary-tan font-rosario rounded-sm disabled:opacity-60 ${
+                status === 'Complete'
+                  ? 'bg-primary-green'
+                  : 'bg-secondary-black'
+              }`}
+            >
+              {status}
+            </button>
+          </div>
+        );
+      })}
     </div>
   );
 }

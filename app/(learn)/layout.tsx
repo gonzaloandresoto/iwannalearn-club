@@ -1,5 +1,6 @@
 import { TOCProvider } from '@/context/TOCProvider';
 import { UserProvider } from '@/context/UserProvider';
+import NavigationBar from '@/components/Course/CourseNavigation/NavigationBar';
 
 export default function RootLayout({
   children,
@@ -9,7 +10,8 @@ export default function RootLayout({
   return (
     <UserProvider>
       <TOCProvider>
-        <section className='min-h-screen min-w-screen flex flex-col grow overflow-hidden'>
+        <section className='flex grow flex-col overflow-hidden'>
+          <NavigationBar />
           {children}
         </section>
       </TOCProvider>

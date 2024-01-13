@@ -33,7 +33,7 @@ export default function UnitCompletion({
   });
 
   return (
-    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col items-center justify-center   bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
+    <div className='course-card'>
       <div className='w-full h-full flex flex-col lg:gap-8 gap-4 items-center justify-center lg:px-12 px-4'>
         <p className='lg:text-2xl text-xl text-secondary-black font-bold font-rosario text-center'>
           {`Congratulations on completing Unit ${unitContent?.order}`}

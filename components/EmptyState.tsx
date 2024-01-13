@@ -8,7 +8,7 @@ interface EmptyStateProps {
 
 function EmptyState({ text, image }: EmptyStateProps) {
   return (
-    <div className='flex grow flex-col gap-4  items-center justify-center bg-tertiary-tan px-4'>
+    <div className='main-page justify-center bg-tertiary-tan'>
       {image && (
         <Image
           src={image}

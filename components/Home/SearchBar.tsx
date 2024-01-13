@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { Sparkles } from 'lucide-react';
 
 export default function SearchBar({ setIsGenerating }: SearchBarProps) {
   const router = useRouter();
@@ -49,18 +50,19 @@ export default function SearchBar({ setIsGenerating }: SearchBarProps) {
   };
 
   return (
-    <form className='max-w-[720px] w-full md:h-[64px] flex items-center px-2 py-2 bg-white border-2 border-primary-tan rounded-md font-rosario'>
+    <form className='max-w-[720px] w-full md:h-[64px] flex items-center px-2 py-2 bg-white border-2 border-primary-tan rounded-md'>
       <input
         type='text'
         value={topic}
         onChange={handleChange}
         placeholder='Where will your curiosity lead?'
-        className='w-full h-full bg-white outline-none md:text-lg text-base placeholder:text-secondary-black'
+        className='w-full h-full bg-white outline-none md:text-lg text-base placeholder:text-secondary-black font-rosario'
       />
       <button
         onClick={(e) => handleCourseCreation(e, topic || '', user?._id || '')}
-        className='md:h-[48px] px-4 py-2 text-tertiary-tan md:text-xl bg-secondary-black rounded-md'
+        className='md:h-[48px] flex flex-row items-center gap-2 px-4 py-2 text-tertiary-tan md:text-xl bg-secondary-black rounded-sm font-rosario'
       >
+        <Sparkles className='md:w-[20px] w-[16px]' />
         Generate
       </button>
     </form>

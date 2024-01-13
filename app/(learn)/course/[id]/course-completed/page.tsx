@@ -1,5 +1,7 @@
-export default function CourseCompleted() {
+export default async function CourseCompleted() {
   return (
-    <div className='flex flex-col grow items-center justify-end bg-tertiary-tan'></div>
+    <div className='course-page'>
+      <p>Course Completion</p>
+    </div>
   );
 }

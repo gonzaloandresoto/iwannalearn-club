@@ -23,8 +23,8 @@ const LessonContent: React.FC<TextLessonContentProps> = ({
   unitId,
 }) => {
   return (
-    <div className='w-full h-full flex flex-col justify-between'>
-      <div className='w-full flex flex-col grow gap-4 overflow-y-auto lg:pt-16 pt-12 pb-8 lg:px-12 px-4'>
+    <div className='course-content'>
+      <div className='w-full flex flex-col grow gap-4 overflow-y-auto'>
         <p className='lg:text-4xl text-2xl text-left font-bold font-sourceSerif text-secondary-black'>
           {item?.title}
         </p>

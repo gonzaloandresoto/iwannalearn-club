@@ -2,13 +2,15 @@ import QuizContent from './Quiz/QuizContent';
 import LessonContent from './Lesson/LessonContent';
 
 interface UnitContentItems {
-  title: string;
-  status?: string;
-  type: string;
-  content?: string;
-  question?: string;
-  answer?: string;
   _id: string;
+  content?: string;
+  createdAt: any;
+  order: number;
+  title?: string;
+  type: string;
+  updatedAt: any;
+  answer?: string;
+  choices?: any;
   unitId: string;
 }
 
@@ -29,7 +31,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   const currentItem = unitContent[activePage];
   return (
-    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-hiden'>
+    <div className='course-card'>
       <div className='w-full h-full overflow-y-auto'>
         {currentItem?.type === 'lesson' && (
           <LessonContent

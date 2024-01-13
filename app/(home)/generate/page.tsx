@@ -1,12 +1,14 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useUserContext from '@/hooks/useUserContext';
+
+import { getMostRecentCourse } from '@/lib/actions/generate.actions';
+
 import GeneratingCourse from '@/components/Home/GeneratingCourse';
 import RecommendedTopics from '@/components/Home/RecommendedTopics';
 import SearchBar from '@/components/Home/SearchBar';
-import useUserContext from '@/hooks/useUserContext';
-import { getMostRecentCourse } from '@/lib/actions/generate.actions';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 export default function Generate() {
   const router = useRouter();
@@ -33,7 +35,7 @@ export default function Generate() {
       ) : (
         <div className='flex flex-col gap-4 items-center justify-center'>
           <p className='md:text-5xl text-3xl text-secondary-black font-bold font-sourceSerif'>
-            iWanna<span className=''>Learn</span>
+            iWannaLearn
           </p>
           <SearchBar setIsGenerating={setIsGenerating} />
           <RecommendedTopics setIsGenerating={setIsGenerating} />

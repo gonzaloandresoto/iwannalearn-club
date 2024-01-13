@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TableOfContents from './Other/TableOfContents';
 import {
   getNextUncompletedUnit,
@@ -21,12 +21,12 @@ interface UnitCompletionsItem {
   };
 }
 
-const CourseCover: React.FC<CourseCoverProps> = ({
+export default function CourseCover({
   courseId,
   title,
   summary,
   tableOfContents,
-}) => {
+}: CourseCoverProps) {
   const [nextUnit, setNextUnit] = useState<string>('');
   const [unitCompletions, setUnitCompletions] = useState<UnitCompletionsItem>(
     {}
@@ -44,7 +44,7 @@ const CourseCover: React.FC<CourseCoverProps> = ({
   }, [courseId]);
 
   return (
-    <div className='lg:w-[800px] w-full lg:h-5/6 h-full flex flex-col gap-6 items-center lg:px-12 px-4 lg:pt-16 pt-12 bg-white lg:border-2 border-t-2 border-primary-tan lg:rounded-t-2xl overflow-y-auto'>
+    <div className='course-card'>
       <div className='w-full flex flex-col gap-4'>
         <p className='lg:text-4xl text-2xl text-center font-bold font-sourceSerif text-secondary-black'>
           {title}
@@ -62,6 +62,4 @@ const CourseCover: React.FC<CourseCoverProps> = ({
       />
     </div>
   );
-};
-
-export default CourseCover;
+}

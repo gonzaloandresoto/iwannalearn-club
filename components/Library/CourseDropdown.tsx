@@ -3,6 +3,7 @@
 import useUserContext from '@/hooks/useUserContext';
 import useOutsideClick from '@/hooks/useOutsideClick';
 import { deleteCourseById } from '@/lib/actions/generate.actions';
+import { Trash2 } from 'lucide-react';
 
 interface CourseDropdownProps {
   courseId: string;
@@ -19,7 +20,7 @@ export default function CourseDropdown({
   return (
     <div
       ref={dropdownRef}
-      className='absolute lg:-left-[208px] -left-[2px] -top-[2px] lg:w-[200px] w-[144px] py-2 bg-white border-2 border-primary-tan shadow-lg rounded-sm'
+      className='absolute lg:-left-[168px] -left-[2px] -top-[2px] w-[160px] py-2 bg-white border-2 border-primary-tan shadow-xl rounded-sm'
     >
       <div className='px-4 py-2'>
         <p className='text-sm text-tertiary-black font-rosario font-bold'>
@@ -30,8 +31,8 @@ export default function CourseDropdown({
         onClick={() => deleteCourseById(courseId || '', user?._id || '')}
         className='w-full flex flex-row gap-2 px-4 py-2 items-center bg-white hover:bg-secondary-tan'
       >
-        <img src='/course-icons/delete.svg' />
-        <p className='text-sm font-rosario'>Delete</p>
+        <Trash2 className='text-tertiary-black' />
+        <p className='text-sm text-tertiary-black font-rosario'>Delete</p>
       </button>
     </div>
   );

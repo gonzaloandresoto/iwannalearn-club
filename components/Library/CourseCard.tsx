@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useRef, use, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import CourseDropdown from './CourseDropdown';
+import { getCourseProgressById } from '@/lib/actions/generate.actions';
+import { MoreHorizontal } from 'lucide-react';
 
 interface CourseCardProps {
   title: string;
@@ -12,8 +14,8 @@ interface CourseCardProps {
 export default function CourseCard({ title, courseId }: CourseCardProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [courseProgress, setCourseProgress] = useState<number>(0);
-
   const progressBarRef = useRef<HTMLDivElement>(null);
+
   const progressBarWidth =
     courseProgress &&
     progressBarRef.current &&
@@ -21,22 +23,20 @@ export default function CourseCard({ title, courseId }: CourseCardProps) {
 
   useEffect(() => {
     if (!courseId) return;
-    fetch('/api/course-progress', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: courseId }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCourseProgress(data);
-      });
+
+    const getCourseProgress = async () => {
+      const progress = await getCourseProgressById(courseId);
+      if (progress) {
+        setCourseProgress(progress.progress);
+      }
+    };
+
+    getCourseProgress();
   }, []);
 
   return (
-    <div>
-      <div className='relative h-[32px] w-[144px] flex flex-col justify-center px-2 border-b-0 border-2 border-primary-tan'>
+    <div className='max-w-[480px] w-full'>
+      <div className='relative h-[32px] w-[144px] flex flex-col justify-center bg-white px-2 border-b-0 border-2 border-primary-tan'>
         <button
           className='w-[20px] h-[20px] flex items-center justify-center'
           onClick={(e) => {
@@ -44,7 +44,7 @@ export default function CourseCard({ title, courseId }: CourseCardProps) {
             setIsDropdownOpen(!isDropdownOpen);
           }}
         >
-          <img src='/course-icons/more.svg' />
+          <MoreHorizontal />
         </button>
         {isDropdownOpen && (
           <CourseDropdown
@@ -55,7 +55,7 @@ export default function CourseCard({ title, courseId }: CourseCardProps) {
       </div>
       <Link
         href={`/course/${courseId}`}
-        className='lg:w-[480px] w-full min-w-[320px] h-[240px] flex flex-col justify-between px-4 py-4 rounded-r-md rounded-bl-md border-2 border-primary-tan '
+        className='w-full h-[240px] flex flex-col justify-between bg-white px-4 py-4 rounded-r-md rounded-bl-md border-2 border-primary-tan '
       >
         <p className='text-2xl font-semibold font-rosario w-2/3'>{title}</p>
 
