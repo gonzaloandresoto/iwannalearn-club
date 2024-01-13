@@ -19,6 +19,7 @@ export default function CourseGrid() {
 
   useEffect(() => {
     if (!user) return;
+
     const getCourses = async () => {
       const courses = await getCourseByUserId(user?._id || '');
       setCourses(courses);
