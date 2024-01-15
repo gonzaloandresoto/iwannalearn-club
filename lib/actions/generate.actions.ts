@@ -1075,18 +1075,10 @@ export async function createCourseCustom(
     });
 
     const courseCreationPromise = (async () => {
-      // await connectToDatabase();
+      await connectToDatabase();
 
       const course = await generateCourseDetailsCustom(customAttributes.topic);
       if (!course) throw new Error('Course could not be generated');
-
-      // console.log('COURSE ARRAY TOC', customAttributes.tableOfContents);
-      // course.table_of_contents = customAttributes.tableOfContents.map(
-      //   (unit, index) => ({
-      //     title: unit.title,
-      //     id: index + 1,
-      //   })
-      // );
 
       course.table_of_contents = await generateLessonTitlesCustom(
         customAttributes.tableOfContents
