@@ -1,64 +1,42 @@
 'use client';
 
-import useUserContext from '@/hooks/useUserContext';
-import { createCourse } from '@/lib/actions/generate.actions';
-
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import React from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';
 import { Sparkles } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 interface SearchBarProps {
-  setIsGenerating?: (isGenerating: boolean) => void;
   setCustomizeDrawer: (customizeDrawer: boolean) => void;
   topic: string;
   setTopic: (topic: string) => void;
 }
 
 export default function SearchBar({
-  setIsGenerating,
   setCustomizeDrawer,
   topic,
   setTopic,
 }: SearchBarProps) {
-  const router = useRouter();
-  const { user } = useUserContext();
-  // const [topic, setTopic] = useState<string>('');
-
-  // const handleCourseCreation = async (
-  //   e: React.MouseEvent<HTMLButtonElement>,
-  //   topic: string,
-  //   userId: string
-  // ) => {
-  //   e.preventDefault();
-  //   if (!topic || !userId) return;
-
-  //   setIsGenerating(true);
-  //   const response = await createCourse(topic, userId);
-
-  //   if ('message' in response) {
-  //     toast(response.message, {
-  //       position: 'top-center',
-  //       autoClose: 3000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: false,
-  //       progress: undefined,
-  //       theme: 'dark',
-  //     });
-  //   } else {
-  //     router.push(`/course/${response.courseId}`);
-  //   }
-  // };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTopic(e.target.value);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (topic.length === 0) {
+      e.preventDefault();
+      toast.error('Please enter a topic to search for.', {
+        position: 'top-center',
+      });
+    } else {
+      e.preventDefault();
+      setCustomizeDrawer(true);
+    }
+  };
+
   return (
-    <form className='max-w-[720px] w-full md:h-[64px] flex items-center px-2 py-2 bg-white border-2 border-primary-tan rounded-md'>
+    <form
+      onSubmit={handleSubmit}
+      className='max-w-[720px] w-full md:h-[64px] flex items-center px-2 py-2 bg-white border-2 border-primary-tan rounded-md'
+    >
       <input
         type='text'
         value={topic}
@@ -67,11 +45,7 @@ export default function SearchBar({
         className='w-full h-full bg-white outline-none md:text-lg text-base placeholder:text-secondary-black font-rosario'
       />
       <button
-        // onClick={(e) => handleCourseCreation(e, topic || '', user?._id || '')}
-        onClick={(e) => {
-          e.preventDefault();
-          setCustomizeDrawer(true);
-        }}
+        type='submit'
         className='md:h-[48px] flex flex-row items-center gap-2 px-4 py-2 text-tertiary-tan md:text-xl bg-secondary-black rounded-md font-rosario'
       >
         <Sparkles className='md:w-[20px] w-[16px]' />

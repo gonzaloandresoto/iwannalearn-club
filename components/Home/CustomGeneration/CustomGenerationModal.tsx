@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 import useOutsideClick from '@/hooks/useOutsideClick';
 
 // ----- Custom Generation Components ----- //
-import GenerationType from './CustomGeneration/GenerationType';
-import CoreConcepts from './CustomGeneration/CoreConcepts';
-import ProposeTOC from './CustomGeneration/ProposeTOC';
+import GenerationType from './GenerationType';
+import CoreConcepts from './CoreConcepts';
+import ProposeTOC from './ProposeTOC';
 
 // ----- Custom Generation Types ----- //
 interface CustomGenerationProps {
@@ -24,7 +24,7 @@ interface CustomAttributes {
   experienceLevel: string;
 }
 
-export default function CustomGeneration({
+export default function CustomGenerationModal({
   setCustomizeDrawer,
   topic,
 }: CustomGenerationProps) {

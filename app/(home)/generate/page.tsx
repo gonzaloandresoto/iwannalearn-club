@@ -1,40 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import useUserContext from '@/hooks/useUserContext';
-
+import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
-
-import { getMostRecentCourse } from '@/lib/actions/generate.actions';
 
 import GeneratingCourse from '@/components/Home/GeneratingCourse';
 import RecommendedTopics from '@/components/Home/RecommendedTopics';
 import SearchBar from '@/components/Home/SearchBar';
-import CustomGeneration from '@/components/Home/CustomGeneration';
+import CustomGenerationModal from '@/components/Home/CustomGeneration/CustomGenerationModal';
 
 export default function Generate() {
-  const router = useRouter();
-  const { user } = useUserContext();
-
   const [topic, setTopic] = useState<string>('');
-
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [customizeDrawer, setCustomizeDrawer] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!isGenerating) return;
-
-    const timer = setTimeout(async () => {
-      const data = await getMostRecentCourse(user?._id || '');
-      if (data?.courseId) {
-        router.push(`/course/${data.courseId}`);
-      }
-    }, 30000);
-
-    return () => clearTimeout(timer);
-  }, [isGenerating]);
 
   return (
     <div className='main-page justify-center'>
@@ -45,7 +23,6 @@ export default function Generate() {
           <p className='md:text-5xl text-3xl text-secondary-black font-bold font-sourceSerif'>
             iWannaLearn
           </p>
-          {/* <SearchBar setIsGenerating={setIsGenerating} /> */}
           <SearchBar
             topic={topic}
             setTopic={setTopic}
@@ -70,7 +47,7 @@ export default function Generate() {
                 ></motion.div>
               )}
               {customizeDrawer && (
-                <CustomGeneration
+                <CustomGenerationModal
                   topic={topic}
                   setCustomizeDrawer={setCustomizeDrawer}
                 />

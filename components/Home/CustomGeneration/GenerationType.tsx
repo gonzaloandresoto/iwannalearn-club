@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import useUserContext from '@/hooks/useUserContext';
@@ -8,6 +8,7 @@ import useUserContext from '@/hooks/useUserContext';
 import {
   createCourse,
   generateSampleTopics,
+  getMostRecentCourse,
 } from '@/lib/actions/generate.actions';
 
 import EmptyState from './EmptyState';
@@ -25,6 +26,19 @@ export default function GenerationType({
 
   const router = useRouter();
   const { user } = useUserContext();
+
+  useEffect(() => {
+    if (!generating) return;
+
+    const timer = setTimeout(async () => {
+      const response = await getMostRecentCourse(user?._id || '');
+      if (response?.courseId) {
+        router.push(`/course/${response.courseId}`);
+      }
+    }, 30000);
+
+    return () => clearTimeout(timer);
+  }, [generating]);
 
   const fastGeneration = async () => {
     // function to generate course (same as before)
