@@ -21,7 +21,7 @@ export default function GeneratingCourse() {
   }, []);
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className='flex flex-col items-center gap-8'>
       <div className='flex flex-col gap-2 items-center'>
         <FallingLines
           color='#0C54A8'
@@ -36,7 +36,7 @@ export default function GeneratingCourse() {
         </p>
       </div>
 
-      <div className='flex flex-col gap-2 sm:w-[400px] w-full h-[160px] px-2 py-4 border-2 border-primary-tan rounded-md'>
+      <div className='flex flex-col gap-2 max-w-[400px] w-full h-[160px] px-2 py-4 border-2 border-primary-tan rounded-md'>
         <p className='text-center text-tertiary-black font-medium font-sourceSerif'>
           Fun Learning Facts
         </p>

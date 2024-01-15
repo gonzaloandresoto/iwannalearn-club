@@ -6,7 +6,7 @@
 /* CONTAINERS */
 
 .main-page {
-  @apply max-w-[1280px] flex grow flex-col items-center p-4 bg-tertiary-tan;
+  @apply flex grow flex-col items-center p-4 bg-tertiary-tan;
 }
 
 .course-page {
@@ -32,11 +32,15 @@
 }
 
 .secondary-button {
-  @apply px-4 py-1 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md text-sm text-tertiary-black font-rosario font-semibold;
+  @apply flex items-center gap-2 px-4 py-1 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md text-tertiary-black font-rosario font-semibold;
 }
 
 .option-button {
   @apply w-full flex items-center justify-between px-4 py-2 bg-tertiary-tan hover:bg-secondary-tan border-2 border-primary-tan rounded-md lg:text-lg text-base text-secondary-black text-left font-rosario;
+}
+
+.generate-button {
+  @apply w-1/2 h-[88px] flex grow items-center justify-center gap-2 text-lg font-semibold font-rosario rounded-md;
 }
 
 /* TEXT */

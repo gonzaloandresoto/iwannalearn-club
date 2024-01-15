@@ -62,7 +62,7 @@ const QuizContent: React.FC<QuizContentProps> = ({
                   </p>
 
                   {quizItem.id === selectedAnswer ? (
-                    <CheckCircle2 className='w-[24px] text-tertiary-tan' />
+                    <CheckCircle2 className='flex-none min-w-[24px] text-tertiary-tan' />
                   ) : (
                     <Circle className='w-[24px] text-primary-tan group-hover:text-tertiary-black' />
                   )}
