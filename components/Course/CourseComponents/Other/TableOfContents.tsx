@@ -65,7 +65,7 @@ export default function TableOfContents({
             key={index}
             className='w-full flex items-center justify-between lg:py-4 py-3 border-b-2 border-primary-tan'
           >
-            <div className='flex flex-col gap-2'>
+            <div className='flex flex-col gap-4'>
               <p className='lg:text-base text-sm text-tertiary-black font-bold font-rosario uppercase'>
                 {'Unit ' + (index + 1) + ': '}
               </p>

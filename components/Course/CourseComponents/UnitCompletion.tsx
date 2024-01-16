@@ -33,8 +33,8 @@ export default function UnitCompletion({
   });
 
   return (
-    <div className='course-card flex flex-col'>
-      <div className='flex grow flex-col gap-4 justify-center items-center'>
+    <div className='course-card'>
+      <div className='course-card-inner h-full flex flex-col gap-6 justify-center pb-[120px]'>
         <p className='lg:text-xl text-lg text-secondary-black font-bold font-rosario text-center'>
           {`Congratulations on completing Unit ${unitContent?.order}`}
         </p>
@@ -44,7 +44,7 @@ export default function UnitCompletion({
         <p className='lg:text-xl text-lg text-secondary-black font-semibold font-rosario text-center'>{`awarded on ${today}`}</p>
       </div>
 
-      <div className='max-w-[876px] w-full min-h-[88px] flex gap-2 bg-white p-[16px] justify-center border-t-2 border-primary-tan'>
+      <div className='fixed bottom-0 max-w-[876px] w-full min-h-[88px] flex gap-2 bg-white p-[16px] justify-center border-t-2 border-primary-tan'>
         <Link
           href={route}
           className='main-button '
