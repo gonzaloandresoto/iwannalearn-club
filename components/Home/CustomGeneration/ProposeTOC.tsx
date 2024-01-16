@@ -1,6 +1,6 @@
 import useUserContext from '@/hooks/useUserContext';
 import { createCourseCustom } from '@/lib/actions/generate.actions';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import GeneratingCourse from '../GeneratingCourse';

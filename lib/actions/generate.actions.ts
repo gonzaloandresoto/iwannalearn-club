@@ -551,9 +551,9 @@ export async function getCourseByUserId(
     const courses = await Course.find(
       { _id: { $in: userCourseIds } },
       { title: 1 }
-    );
+    ).sort({ createdAt: -1 }); // Sort by completedAt field in descending order
 
-    return courses;
+    return JSON.parse(JSON.stringify(courses));
   } catch (error) {
     handleError(error);
     return [];
@@ -811,59 +811,6 @@ export const generateCourseDetailsCustom = async (
   return courseObject;
 };
 
-const create_lessonsCUS = {
-  name: 'create_lessons',
-  description: 'creates lessons for a course',
-  parameters: {
-    type: 'object',
-    properties: {
-      lessons: {
-        type: 'array',
-        items: {
-          type: 'object',
-          properties: {
-            title: {
-              type: 'string',
-              description: 'the title of the lesson',
-            },
-            content: {
-              type: 'string',
-              description: 'the content of the lesson',
-            },
-            quiz: {
-              type: 'object',
-              properties: {
-                question: {
-                  type: 'string',
-                  description: 'the question of the quiz',
-                },
-                options: {
-                  type: 'array',
-                  items: {
-                    type: 'string',
-                    description:
-                      'the potential answer options for the quiz question',
-                  },
-                  minItems: 4,
-                  maxItems: 4,
-                },
-                answer: {
-                  type: 'number',
-                  description:
-                    'the index of the correct answer option for the quiz question',
-                  enum: [0, 1, 2, 3],
-                },
-              },
-              required: ['question', 'options', 'answer'],
-            },
-          },
-          required: ['title', 'content', 'quiz'],
-        },
-      },
-    },
-  },
-};
-
 async function createUnitsAndLessonsCustom(
   course: any,
   courseId: string,
@@ -903,7 +850,7 @@ async function createUnitsAndLessonsCustom(
           content: lesson.content,
           unitId: newUnit._id,
         });
-        console.log('✅ Uploaded Lesson', newLesson);
+        // console.log('✅ Uploaded Lesson', newLesson);
 
         // Create quiz if it exists in the lesson
         if (lesson.quiz) {
@@ -922,7 +869,7 @@ async function createUnitsAndLessonsCustom(
             unitId: newUnit._id,
           });
 
-          console.log('✅ Uploaded Quiz', newQuiz);
+          // console.log('✅ Uploaded Quiz', newQuiz);
 
           // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
           await UserQuiz.create({
