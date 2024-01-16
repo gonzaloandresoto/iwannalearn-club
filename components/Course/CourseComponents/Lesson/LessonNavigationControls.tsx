@@ -31,7 +31,7 @@ export default function LessonNavigationControls({
   };
 
   return (
-    <div className='w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan'>
+    <div className='fixed bottom-0 max-w-[876px] w-full min-h-[88px] flex gap-2 bg-white p-[16px] justify-end border-t-2 border-primary-tan lg:px-10 px-4'>
       <button
         onClick={() => handlePrev()}
         className='main-button disabled:opacity-50'

@@ -10,7 +10,7 @@ export default async function CourseContent({
 }) {
   const course = await getCourseById(id);
   return (
-    <section className='course-page'>
+    <section className='flex grow flex-col items-center bg-tertiary-tan'>
       {course ? (
         <CourseCover
           courseId={course?._id.toString()}

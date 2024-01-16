@@ -1,5 +1,10 @@
+'use client';
+
 import QuizContent from './Quiz/QuizContent';
 import LessonContent from './Lesson/LessonContent';
+import LessonNavigationControls from './Lesson/LessonNavigationControls';
+import QuizNavigationControls from './Quiz/QuizNavigationControls';
+import { useState } from 'react';
 
 interface UnitContentItems {
   _id: string;
@@ -29,30 +34,48 @@ const CourseCard: React.FC<CourseCardProps> = ({
   activePage,
   setActivePage,
 }) => {
+  const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const currentItem = unitContent[activePage];
+  const correctAnswer = Number(currentItem.answer);
   return (
     <div className='course-card'>
-      <div className='w-full h-full overflow-y-auto'>
+      <div className='course-card-inner h-max'>
         {currentItem?.type === 'lesson' && (
           <LessonContent
             item={currentItem}
-            activePage={activePage}
-            setActivePage={setActivePage}
-            unitLength={unitContent.length}
-            courseId={courseId}
             unitId={unitId}
           />
         )}
         {currentItem?.type === 'quiz' && (
           <QuizContent
             item={currentItem}
-            activePage={activePage}
-            setActivePage={setActivePage}
-            unitLength={unitContent.length}
-            courseId={courseId}
+            selectedAnswer={selectedAnswer}
+            setSelectedAnswer={setSelectedAnswer}
           />
         )}
       </div>
+      {currentItem?.type === 'lesson' && (
+        <LessonNavigationControls
+          activePage={activePage}
+          setActivePage={setActivePage}
+          unitLength={unitContent.length}
+          courseId={courseId}
+          unitId={unitId}
+        />
+      )}
+      {currentItem?.type === 'quiz' && (
+        <QuizNavigationControls
+          activePage={activePage}
+          setActivePage={setActivePage}
+          unitLength={unitContent.length}
+          courseId={courseId}
+          unitId={currentItem.unitId}
+          quizId={currentItem._id}
+          selectedAnswer={selectedAnswer}
+          setSelectedAnswer={setSelectedAnswer}
+          correctAnswer={correctAnswer}
+        />
+      )}
     </div>
   );
 };

@@ -45,21 +45,23 @@ export default function CourseCover({
 
   return (
     <div className='course-card'>
-      <div className='w-full flex flex-col gap-4'>
-        <p className='lg:text-4xl text-2xl text-center font-bold font-sourceSerif text-secondary-black'>
-          {title}
-        </p>
-        <p className='md:text-lg text-base text-tertiary-black font-medium font-rosario'>
-          {summary}
-        </p>
+      <div className='course-card-inner h-full items-center gap-6'>
+        <div className='w-full flex flex-col items-center gap-4'>
+          <p className='lg:text-4xl text-2xl text-center font-bold font-sourceSerif text-secondary-black'>
+            {title}
+          </p>
+          <p className='md:text-lg text-base text-center text-tertiary-black font-medium font-rosario'>
+            {summary}
+          </p>
+        </div>
+        <div className='h-[2px] bg-primary-tan w-1/3'></div>
+        <TableOfContents
+          tableOfContents={tableOfContents}
+          courseId={courseId}
+          nextUnit={nextUnit}
+          unitCompletions={unitCompletions}
+        />
       </div>
-      <div className='h-[2px] bg-primary-tan w-1/3'></div>
-      <TableOfContents
-        tableOfContents={tableOfContents}
-        courseId={courseId}
-        nextUnit={nextUnit}
-        unitCompletions={unitCompletions}
-      />
     </div>
   );
 }

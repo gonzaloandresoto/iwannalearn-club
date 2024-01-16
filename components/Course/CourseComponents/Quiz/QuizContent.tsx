@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import QuizNavigationControls from './QuizNavigationControls';
 import { CheckCircle2, Circle } from 'lucide-react';
 
 interface Choice {
@@ -19,27 +17,20 @@ interface Content {
 
 interface QuizContentProps {
   item: Content;
-  activePage: number;
-  setActivePage: (page: number) => void;
-  unitLength: number;
-  courseId: string;
+  selectedAnswer: string;
+  setSelectedAnswer: (answer: string) => void;
 }
 
 const QuizContent: React.FC<QuizContentProps> = ({
   item,
-  activePage,
-  setActivePage,
-  unitLength,
-  courseId,
+  selectedAnswer,
+  setSelectedAnswer,
 }) => {
-  const [selectedAnswer, setSelectedAnswer] = useState<string>('');
-  const correctAnswer = Number(item.answer);
-
   const parsedChoices: Choice[] =
     (item.choices && (JSON.parse(item.choices) as Choice[])) || [];
 
   return (
-    <div className='course-content'>
+    <div className='lesson-quiz-content'>
       <div className='w-full h-full flex flex-col items-center gap-8'>
         <p className='lg:text-4xl text-2xl text-center font-bold font-sourceSerif text-secondary-black'>
           {item.question}
@@ -71,17 +62,6 @@ const QuizContent: React.FC<QuizContentProps> = ({
             })}
         </div>
       </div>
-
-      <QuizNavigationControls
-        activePage={activePage}
-        setActivePage={setActivePage}
-        unitLength={unitLength}
-        courseId={courseId}
-        unitId={item.unitId}
-        quizId={item._id}
-        selectedAnswer={selectedAnswer}
-        correctAnswer={correctAnswer}
-      />
     </div>
   );
 };

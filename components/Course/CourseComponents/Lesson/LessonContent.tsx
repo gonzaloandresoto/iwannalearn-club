@@ -1,30 +1,21 @@
 import LessonNavigationControls from './LessonNavigationControls';
+import LessonActionsDesktop from './LessonActionsDesktop';
 
 interface Content {
   title?: string;
   content?: string;
+  _id: string;
 }
 
-interface TextLessonContentProps {
+interface LessonContentProps {
   item: Content;
-  activePage: number;
-  setActivePage: (page: number) => void;
-  unitLength: number;
-  courseId: string;
   unitId: string;
 }
 
-const LessonContent: React.FC<TextLessonContentProps> = ({
-  item,
-  activePage,
-  setActivePage,
-  unitLength,
-  courseId,
-  unitId,
-}) => {
+export default function LessonContent({ item, unitId }: LessonContentProps) {
   return (
-    <div className='course-content'>
-      <div className='w-full flex flex-col grow gap-4 overflow-y-auto'>
+    <div className='lesson-quiz-content'>
+      <div className='w-full flex flex-col gap-6'>
         <p className='lg:text-4xl text-2xl text-left font-bold font-sourceSerif text-secondary-black'>
           {item?.title}
         </p>
@@ -32,15 +23,11 @@ const LessonContent: React.FC<TextLessonContentProps> = ({
           {item?.content}
         </p>
       </div>
-      <LessonNavigationControls
-        activePage={activePage}
-        setActivePage={setActivePage}
-        unitLength={unitLength}
-        courseId={courseId}
+
+      <LessonActionsDesktop
+        lesson={item}
         unitId={unitId}
       />
     </div>
   );
-};
-
-export default LessonContent;
+}

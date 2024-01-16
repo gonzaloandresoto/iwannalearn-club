@@ -35,10 +35,11 @@ const TOCLesson = ({ lesson, courseId }: TOCLessonProps) => {
               height={20}
             />
           ) : (
-            <img
+            <Image
               src='/course-icons/completed.svg'
               width={20}
               height={20}
+              alt='completed icon'
             />
           )}
         </>

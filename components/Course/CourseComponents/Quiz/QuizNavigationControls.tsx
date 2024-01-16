@@ -15,6 +15,7 @@ interface QuizNavigationControlsProps {
   unitId: string;
   quizId: string;
   selectedAnswer: string;
+  setSelectedAnswer: (answer: string) => void;
   correctAnswer: number;
 }
 
@@ -26,6 +27,7 @@ export default function QuizNavigationControls({
   unitId,
   quizId,
   selectedAnswer,
+  setSelectedAnswer,
   correctAnswer,
 }: QuizNavigationControlsProps) {
   const router = useRouter();
@@ -50,13 +52,14 @@ export default function QuizNavigationControls({
       await markQuizCompleted(quizId, userId);
       setActivePage(activePage + 1);
     }
+    setSelectedAnswer('');
     setWasQuizUpdated(!wasQuizUpdated);
   };
 
   return (
-    <div className='w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan'>
+    <div className='fixed bottom-0 max-w-[876px] w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan lg:px-10 px-4'>
       <button
-        onClick={() => handleNext()}
+        onClick={handleNext}
         className='main-button disabled:bg-secondary-blue'
         disabled={Number(selectedAnswer) !== correctAnswer}
       >

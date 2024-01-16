@@ -1,5 +1,3 @@
-'use client';
-
 import CourseGrid from '@/components/Library/CourseGrid';
 
 export default function Library() {

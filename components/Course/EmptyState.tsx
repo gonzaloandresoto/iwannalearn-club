@@ -4,7 +4,7 @@ import { FallingLines } from 'react-loader-spinner';
 
 export default function EmptyState() {
   return (
-    <div className='course-card justify-center'>
+    <div className='course-card flex items-center justify-center'>
       <FallingLines
         color='#0C54A8'
         width='100'

@@ -19,7 +19,7 @@ const rosario = Rosario({
 export const metadata: Metadata = {
   title: 'iWannaLearn',
   description:
-    'An ai-powered learning experience for all. Generate digestable courses on the fly, similar to Duolingo or Headway.',
+    'iWannaLearn is an AI-powered learning experience for all. Generate easy to learn courses on the fly, similar to Duolingo or Headway. We are the best way to learn anything, anywhere, anytime.',
 };
 
 export default function RootLayout({
@@ -36,7 +36,7 @@ export default function RootLayout({
         <body
           className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}
         >
-          <section className='min-w-screen min-h-screen flex flex-col overflow-hidden'>
+          <section className='min-w-screen min-h-screen flex'>
             <ToastContainer />
             {children}
             <Analytics />

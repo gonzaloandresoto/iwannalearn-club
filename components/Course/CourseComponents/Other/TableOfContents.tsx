@@ -46,7 +46,7 @@ export default function TableOfContents({
     ) {
       return 'Start';
     } else if (status === 'COMPLETE') {
-      return 'Complete';
+      return 'Done';
     } else if (status === 'IN_PROGRESS') {
       return 'Continue';
     } else {
@@ -79,13 +79,13 @@ export default function TableOfContents({
                 router.push(`/course/${courseId}/${item.unitId}`);
               }}
               disabled={isDisabled}
-              className={`flex-none px-4 py-1 text-lg text-tertiary-tan font-rosario rounded-sm disabled:opacity-60 ${
-                status === 'Complete' || status === 'Locked'
+              className={`flex-none px-4 py-1 lg:text-lg text-sm text-tertiary-tan font-rosario rounded-sm disabled:opacity-60 ${
+                status === 'Done' || status === 'Locked'
                   ? 'bg-secondary-black'
                   : 'bg-primary-green'
               }`}
             >
-              {status}
+              <p>{status}</p>
             </button>
           </div>
         );

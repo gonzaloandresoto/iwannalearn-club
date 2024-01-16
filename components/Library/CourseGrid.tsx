@@ -22,7 +22,11 @@ export default function CourseGrid() {
 
     const getCourses = async () => {
       const courses = await getCourseByUserId(user?._id || '');
-      setCourses(courses);
+
+      if (courses) {
+        console.log(courses);
+        setCourses(courses);
+      }
     };
 
     getCourses();
