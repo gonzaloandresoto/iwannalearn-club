@@ -43,7 +43,7 @@ export default function Generate() {
                     opacity: 0,
                     transition: { duration: 0.24, ease: 'easeIn' },
                   }}
-                  className='fixed top-0 w-screen h-screen bg-secondary-black'
+                  className='fixed z-40 top-0 w-screen h-screen bg-secondary-black'
                 ></motion.div>
               )}
               {customizeDrawer && (

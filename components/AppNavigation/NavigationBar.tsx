@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const NavigationBar = () => {
   return (
-    <div className='sticky w-full min-h-[72px] flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>
+    <div className='sticky top-0 z-30 min-h-[72px] w-full flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>
       <Link href='/generate'>
         <Image
           src='/assets/logo-circle.png'
