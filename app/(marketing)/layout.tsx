@@ -7,7 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className='w-full h-[100vh] flex flex-col overflow-y-scroll'>
+    <section className='flex grow flex-col'>
       <NavigationBar />
       {children}
     </section>
