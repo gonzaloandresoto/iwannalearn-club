@@ -85,7 +85,7 @@ export async function getUnitElementsById(id: string) {
       (a, b) => a.order - b.order
     );
 
-    return unitContent;
+    return JSON.parse(JSON.stringify(unitContent));
   } catch (error) {
     handleError(error);
   }

@@ -81,7 +81,8 @@ const create_lessons = {
             },
             content: {
               type: 'string',
-              description: 'the content of the lesson',
+              description:
+                'the content of the lesson separated by a new line in between paragraps',
             },
             quiz: {
               type: 'object',
@@ -192,7 +193,7 @@ const generateLessons = async (
   const prompt = [
     {
       role: 'system',
-      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your quality is text-book level, and as informative as Wikipedia. Based on a course outline, you will write detailed two paragraph informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Content should not describe what it will teach, but rather actually provide useful information. Each lesson should mantain the context of the course and not overlap with other lessons.`,
+      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your quality is text-book level, and leverages Wikipedia's vast information, along witht he content created by subject experts in the field. Based on the course outline, you will write a detailed two paragraph informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Content should not describe what it will teach, but rather actually provide useful information. Each lesson should mantain the context of the course and SHOULD NOT overlap with other lessons.`,
     },
     {
       role: 'user',
@@ -635,7 +636,7 @@ export const generateSampleTopics = async (
     {
       role: 'system',
       content:
-        'You are an expert teacher with extensive knowledge in diverse subjects. When a student provides a topic, list 5 key concepts central to understanding that topic. Your first source of reference should be Wikipedia. Each concept should be directly related to the main topic and described in a concise, informative manner.',
+        ' As a highly knowledgeable teacher, please utilize Wikipedia as your main source to identify and provide a list of five fundamental concepts that are crucial for comprehending a specific subject. It is important that each concept is directly linked to the main topic and presented in a concise and informative manner.',
     },
     {
       role: 'user',
@@ -708,7 +709,7 @@ export const generateSampleTOC = async (
     {
       role: 'system',
       content:
-        'You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your students will give you a topic, and you will consolidate the concepts given to you into a table of contents with 4 units. The 4 units should encompass the concepts the user wants to learn about the topic, but should not stary from the main topic. It should also be ordered in a way that makes sense.',
+        'As an experienced educator, please create a meticulously organized and comprehensive table of contents comprising four units. These units should be centered around a specific topic chosen by students, and should effectively incorporate the specific concepts they have provided. It is crucial that the units thoroughly address the requested concepts while maintaining a clear focus on the main topic. Additionally, please ensure that the units are logically arranged to facilitate a coherent and structured learning experience.',
     },
     {
       role: 'user',
@@ -738,7 +739,7 @@ export const generateSampleTOC = async (
   );
 
   const TOC = functioneResponse?.tableOfContents;
-  console.log('TOC', TOC);
+  console.log('TOCZ', TOC);
   return TOC;
 };
 
@@ -954,7 +955,7 @@ async function generateLessonTitlesCustom(
       },
       {
         role: 'user',
-        content: `This is the unit title: ${unit.title}. DOn't overlap with these ${unitTitles}`,
+        content: `This is the unit title: ${unit.title}. DOn't overlap with these units under any ciscumstance: ${unitTitles}`,
       },
     ] as any;
 

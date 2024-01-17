@@ -23,6 +23,7 @@ export default function CoreConcepts({
       ...customAttributes,
       concepts: [...customAttributes.concepts, missingConcept],
     });
+    setMissingConcept('');
   };
 
   const generateTOC = async () => {
