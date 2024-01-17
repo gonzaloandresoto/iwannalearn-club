@@ -37,6 +37,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const currentItem = unitContent[activePage];
   const correctAnswer = Number(currentItem?.answer);
+
   return (
     <div className='course-card'>
       <div className='course-card-inner h-max'>

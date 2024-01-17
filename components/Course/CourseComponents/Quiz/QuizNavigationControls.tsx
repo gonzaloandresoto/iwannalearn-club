@@ -3,9 +3,14 @@
 import useTOCContext from '@/hooks/useTOCContext';
 import useUserContext from '@/hooks/useUserContext';
 import { markQuizCompleted } from '@/lib/actions/quiz.actions';
-import { updateUnitStatus } from '@/lib/actions/unit.actions';
+import {
+  getNextUncompletedUnit,
+  updateUnitStatus,
+} from '@/lib/actions/unit.actions';
+import next from 'next';
 
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 interface QuizNavigationControlsProps {
   activePage: number;
@@ -33,6 +38,15 @@ export default function QuizNavigationControls({
   const router = useRouter();
   const { user } = useUserContext();
   const { wasQuizUpdated, setWasQuizUpdated } = useTOCContext();
+  const [nextUnit, setNextUnit] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getNextUnit = async () => {
+      const nextUnitId = await getNextUncompletedUnit(courseId);
+      setNextUnit(nextUnitId || null);
+    };
+    getNextUnit();
+  }, [wasQuizUpdated]);
 
   const handleNext = async () => {
     const userId = user?._id || '';
@@ -52,6 +66,7 @@ export default function QuizNavigationControls({
       await markQuizCompleted(quizId, userId);
       setActivePage(activePage + 1);
     }
+    setNextUnit(null);
     setSelectedAnswer('');
     setWasQuizUpdated(!wasQuizUpdated);
   };

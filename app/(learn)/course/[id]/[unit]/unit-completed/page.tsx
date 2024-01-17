@@ -15,7 +15,7 @@ export default async function Completed({
 
   return (
     <div className='course-page'>
-      {nextUnit && unitContent ? (
+      {unitContent ? (
         <UnitCompletion
           unitContent={unitContent}
           nextUnitId={nextUnit || null}
