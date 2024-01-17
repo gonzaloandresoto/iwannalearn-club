@@ -66,7 +66,7 @@ export default function QuizNavigationControls({
       await markQuizCompleted(quizId, userId);
       setActivePage(activePage + 1);
     }
-    setNextUnit(null);
+
     setSelectedAnswer('');
     setWasQuizUpdated(!wasQuizUpdated);
   };

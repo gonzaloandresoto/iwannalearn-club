@@ -1,5 +1,7 @@
 'use client';
 
+import useUserContext from '@/hooks/useUserContext';
+import { updateUnitStatus } from '@/lib/actions/unit.actions';
 import { useRouter } from 'next/navigation';
 
 interface LessonNavigationControlsProps {
@@ -18,10 +20,12 @@ export default function LessonNavigationControls({
   unitId,
 }: LessonNavigationControlsProps) {
   const router = useRouter();
+  const { user } = useUserContext();
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activePage === unitLength - 1 && courseId && unitId) {
-      router.push(`/course/${courseId}/${unitId}/unit-completed`);
+      await updateUnitStatus(unitId, user?._id || '', 'COMPLETE'),
+        router.push(`/course/${courseId}/${unitId}/unit-completed`);
     }
     setActivePage(activePage + 1);
   };

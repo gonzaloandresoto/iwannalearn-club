@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import React from 'react';
 
-function LessonActionsDesktop({ lesson, unitId }: any) {
+function LessonActionsDesktop({ lesson, unitId, setLoading }: any) {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const ref = useOutsideClick(() => setIsOpen(false));
   return (
@@ -31,6 +31,7 @@ function LessonActionsDesktop({ lesson, unitId }: any) {
           unitId={unitId}
           dropdownRef={ref}
           setIsOpen={setIsOpen}
+          setLoading={setLoading}
         />
       )}
     </div>
@@ -39,10 +40,12 @@ function LessonActionsDesktop({ lesson, unitId }: any) {
 
 export default LessonActionsDesktop;
 
-function Dropdown({ lesson, unitId, dropdownRef, setIsOpen }: any) {
+function Dropdown({ lesson, unitId, dropdownRef, setIsOpen, setLoading }: any) {
   const { user } = useUserContext();
+
   const deeper = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     setIsOpen(false);
 
     // show a loading state
@@ -75,7 +78,7 @@ function Dropdown({ lesson, unitId, dropdownRef, setIsOpen }: any) {
         <NotebookPen className='max-w-[20px]' />
         <p>Go deeper</p>
       </button>
-      <button className='dropdown-button'>
+      {/* <button className='dropdown-button'>
         <Blocks className='max-w-[20px]' />
         <p>Explain like im 5</p>
       </button>
@@ -90,16 +93,7 @@ function Dropdown({ lesson, unitId, dropdownRef, setIsOpen }: any) {
       <button className='dropdown-button'>
         <Eye className='max-w-[20px]' />
         <p>Give me an example</p>
-      </button>
+      </button> */}
     </div>
   );
 }
-
-// go deeper
-// regenerate Content
-// explain like im 5
-
-// add an imageConfigDefault
-
-// add a video
-// give me an example

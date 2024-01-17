@@ -1,5 +1,7 @@
-import LessonNavigationControls from './LessonNavigationControls';
+'use client';
+import { useState } from 'react';
 import LessonActionsDesktop from './LessonActionsDesktop';
+import EmptyState from '@/components/Home/CustomGeneration/EmptyState';
 
 interface Content {
   title?: string;
@@ -13,6 +15,10 @@ interface LessonContentProps {
 }
 
 export default function LessonContent({ item, unitId }: LessonContentProps) {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  if (loading) return <EmptyState />;
+
   return (
     <div className='lesson-quiz-content'>
       <div className='w-full flex flex-col gap-6'>
@@ -27,6 +33,7 @@ export default function LessonContent({ item, unitId }: LessonContentProps) {
       <LessonActionsDesktop
         lesson={item}
         unitId={unitId}
+        setLoading={setLoading}
       />
     </div>
   );
