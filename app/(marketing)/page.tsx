@@ -45,6 +45,7 @@ export default function Page() {
         <div className='max-w-[1024px] w-full grid sm:grid-cols-2 grid-cols-1 SM:gap-12 gap-4'>
           {courseGridData.map((course) => (
             <GridCard
+              key={course.title}
               title={course.title}
               subtitle={course.subtitle}
               href={course.href}
