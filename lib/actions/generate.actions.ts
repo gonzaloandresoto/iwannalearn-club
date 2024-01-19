@@ -34,6 +34,7 @@ const unit_schema = {
     lessons: {
       type: 'array',
       items: lesson_schema,
+      minItems: 4,
     },
   },
   required: ['title', 'lessons'],
@@ -96,7 +97,7 @@ const create_lessons = {
                   items: {
                     type: 'string',
                     description:
-                      'the potential answer options for the quiz question',
+                      'the potential answer options for the quiz question.',
                   },
                   minItems: 4,
                   maxItems: 4,
@@ -193,15 +194,19 @@ const generateLessons = async (
   const prompt = [
     {
       role: 'system',
-      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your quality is text-book level, and leverages Wikipedia's vast information, along witht he content created by subject experts in the field. Based on the course outline, you will write a detailed two paragraph informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Content should not describe what it will teach, but rather actually provide useful information. Each lesson should mantain the context of the course and SHOULD NOT overlap with other lessons.`,
+
+      // content: `Here are instructions from the user outlining your goals and how you should respond:
+      // You are a superhuman tutor that will teach a person about any subject in technical detail. Your methods are inspired by the teaching methodology of Richard Feynman. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding.
+      // `,
+      content: `Here are instructions from the user outlining your goals and how you should respond:  You are a superhuman tutor that will teach a person about any course topic in technical detail. Your methods are inspired by the teaching methodology of Richard Feynman. Your quality is text-book level, and leverages Wikipedia's vast information, along with the content created by subject experts in the field. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Content should not describe what it will teach, but rather actually provide useful information. !IMPORTANT -> Each lesson should mantain the context of the course and SHOULD NOT overlap with other lessons.`,
     },
     {
       role: 'user',
       content: `Course: ${course.title}
-Course Summary: ${course.summary}
-Unit: ${unit.title}
-
-Write detailed lesson content for each.`,
+      Course Summary: ${course.summary}
+      Unit: ${unit.title}
+      Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')},
+      Write detailed lesson content for each.`,
     },
   ] as any;
 
