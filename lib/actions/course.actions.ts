@@ -237,7 +237,7 @@ export const goDeeper = async (
   lesson: any,
   unitId: string,
   comment: string
-): Promise<void> => {
+): Promise<string> => {
   console.log('GOING DEEPER');
   const prompt = [
     {
@@ -263,12 +263,10 @@ export const goDeeper = async (
 
   const result = response.choices[0].message.content;
 
-  console.log('FINAL DEEPER RESULT', result);
-
   // upload
   await connectToDatabase();
 
   await Element.findOneAndUpdate({ _id: lesson._id }, { content: result });
 
-  return;
+  return 'Reload';
 };
