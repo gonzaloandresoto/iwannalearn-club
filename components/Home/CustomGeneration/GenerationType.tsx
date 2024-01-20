@@ -8,13 +8,13 @@ import useUserContext from '@/hooks/useUserContext';
 import {
   createCourse,
   generateSampleTopics,
-  getMostRecentCourse,
 } from '@/lib/actions/generate.actions';
 
 import EmptyState from './EmptyState';
 import GeneratingCourse from '../GeneratingCourse';
 
 import { Settings2, Zap } from 'lucide-react';
+import { getMostRecentCourse } from '@/lib/actions/course.actions';
 
 export default function GenerationType({
   customAttributes,

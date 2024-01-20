@@ -384,237 +384,9 @@ export async function createCourse(
   }
 }
 
-// Get course details by id
-
-export async function getCourseById(id: string) {
-  try {
-    await connectToDatabase();
-
-    const course = await Course.findById(id);
-
-    const newTableOfContents = JSON.parse(course.tableOfContents);
-
-    for (const item in newTableOfContents) {
-      const unitName = newTableOfContents[item].title;
-
-      const unit = await Unit.findOne({ title: unitName, courseId: id });
-
-      if (unit && unit._id) {
-        newTableOfContents[item].unitId = unit._id.toString();
-      } else {
-        return;
-      }
-    }
-
-    // console.log('🚀 ~ tableOfContents:', newTableOfContents);
-
-    course.tableOfContents = JSON.stringify(newTableOfContents);
-
-    // console.log('🚀 ~ course:', course);
-
-    if (!course) throw new Error('Course not found');
-
-    return course;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-// Get course progress percent by id
-
-export async function getCourseProgressById(id: string) {
-  try {
-    await connectToDatabase();
-
-    const units = await Unit.find({
-      courseId: { $in: id },
-    });
-
-    if (!units) throw new Error('Units not found');
-
-    const unitIds = units.map((unit) => unit._id);
-    // console.log('🚀 ~ unitIds:', unitIds);
-
-    const quizzes = await UserQuiz.find({ unitId: { $in: unitIds } });
-    // console.log('🚀 ~ quizzes:', quizzes);
-
-    if (!quizzes) throw new Error('Quizzes not found');
-
-    let total = quizzes.length;
-    let completed = quizzes.filter((quiz) => quiz.completed).length;
-    const progress = Math.round((completed / total) * 100);
-
-    return { progress: progress };
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-// Piece together course content
-
-export async function getCourseContentById(id: string) {
-  try {
-    await connectToDatabase();
-    const units = await Unit.find({
-      courseId: { $in: id },
-    }).sort({ order: 1 });
-
-    if (!units) throw new Error('Units not found');
-
-    const unitIds = units.map((unit) => unit._id);
-
-    //Fetching quizzes and lessons
-    const courseQuizzes = await Quiz.find({ unitId: { $in: unitIds } });
-    const courseLessons = await Element.find({ unitId: { $in: unitIds } });
-
-    //Fetching the user quizzes
-    const courseQuizIds = courseQuizzes.map((quiz) => quiz._id);
-    // console.log('🚀 ~ courseQuizIds:', courseQuizIds);
-    const userQuizes = await UserQuiz.find({ quizId: { $in: courseQuizIds } });
-    // console.log('🚀 ~ userQuizes:', userQuizes);
-
-    //Giving each quiz its completion status
-    const mergedQuizes = courseQuizzes.map((quiz) => {
-      const userQuiz = userQuizes.find((userQuiz) =>
-        userQuiz.quizId.equals(quiz._id)
-      );
-      return {
-        ...quiz._doc,
-        completed: userQuiz ? userQuiz.completed : false,
-      };
-    });
-
-    // console.log('🚀 ~ mergedQuizes:', mergedQuizes);
-
-    //Merging the quizzes and lessons
-    const mergedCourse = [...courseLessons, ...mergedQuizes].sort(
-      (a, b) => a.order - b.order
-    );
-
-    // console.log('🚀 ~ mergedCourse:', mergedCourse);
-
-    // Strucuture the course content by unit
-    const groupedCourse = units.reduce((acc, unit) => {
-      acc[unit._id.toString()] = {
-        unitName: unit.title,
-        courseId: unit.courseId,
-        content: mergedCourse.filter((content) =>
-          content.unitId.equals(unit._id)
-        ),
-      };
-      return acc;
-    }, {});
-    return groupedCourse;
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-export async function deleteCourseById(
-  courseId: string,
-  userId: string
-): Promise<void> {
-  if (!courseId || !userId) return;
-  try {
-    await connectToDatabase();
-
-    await UserCourse.findOneAndDelete({ courseId: courseId, userId: userId });
-
-    const remainingUsersOnCourse = await UserCourse.find({
-      courseId: courseId,
-    });
-
-    if (remainingUsersOnCourse.length === 0) {
-      console.log('NO MORE USERS ON COURSE, SO DELETING ENTIRE COURSE');
-      await Course.deleteOne({ _id: courseId });
-    }
-
-    return;
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-interface CourseForUser {
-  _id: string;
-  title: string;
-}
-
-export async function getCourseByUserId(
-  userId: string
-): Promise<CourseForUser[]> {
-  if (!userId) return [];
-  try {
-    await connectToDatabase();
-
-    const userCourses = await UserCourse.find(
-      { userId: userId },
-      { courseId: 1 }
-    );
-
-    const userCourseIds = userCourses.map((course) => course.courseId);
-
-    const courses = await Course.find(
-      { _id: { $in: userCourseIds } },
-      { title: 1 }
-    ).sort({ createdAt: -1 }); // Sort by completedAt field in descending order
-
-    return JSON.parse(JSON.stringify(courses));
-  } catch (error) {
-    handleError(error);
-    return [];
-  }
-}
-
-export async function getMostRecentCourse(userId: string) {
-  if (!userId) return;
-  try {
-    await connectToDatabase();
-
-    const mostRecentCourse = await UserCourse.find({ userId: userId })
-      .sort({ createdAt: -1 })
-      .limit(1);
-
-    if (!mostRecentCourse) return { message: 'No course found' };
-
-    return { courseId: mostRecentCourse[0].courseId };
-  } catch (error) {
-    handleError(error);
-  }
-}
-
 //////////////////////////  CUSTOM GENERATION CODE  //////////////////////////
 
-// const lesson_schema = {
-//   type: 'object',
-//   properties: {
-//     title: {
-//       type: 'string',
-//       description: 'the title of the lesson',
-//     },
-//   },
-//   required: ['title'],
-// };
-
-// const unit_schema = {
-//   type: 'object',
-//   properties: {
-//     title: {
-//       type: 'string',
-//       description: 'the title of the section',
-//     },
-//     lessons: {
-//       type: 'array',
-//       items: lesson_schema,
-//     },
-//   },
-//   required: ['title', 'lessons'],
-// };
-// const create_course = {
-//   name: 'create_course',
-//   description: 'creates a new course',
-//   parameters: course_schema,
-// };
+// Schemas ---------------------------------------------------------------------
 
 const suggest_concepts = {
   name: 'suggest_concepts',
@@ -633,6 +405,60 @@ const suggest_concepts = {
     required: ['concepts'],
   },
 };
+
+const suggest_TOC = {
+  name: 'suggest_TOC',
+  description: 'create a table of contents for a topic with its given concepts',
+  parameters: {
+    type: 'object',
+    properties: {
+      tableOfContents: {
+        type: 'array',
+        description: 'the table of contents for the topic',
+        items: {
+          type: 'object',
+          properties: {
+            title: {
+              type: 'string',
+              description:
+                'the title of the unit, worded like a duolingo blogpost',
+            },
+            id: {
+              type: 'number',
+              description: 'the id of the unit',
+              enum: [1, 2, 3, 4],
+            },
+          },
+          required: ['title', 'id'],
+        },
+        minItems: 4,
+      },
+    },
+  },
+};
+
+const custom_course_schema = {
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+      description: 'the title of the course',
+    },
+    summary: {
+      type: 'string',
+      description: 'a short summary of the course',
+    },
+  },
+  required: ['title', 'summary'],
+};
+
+const custom_create_course = {
+  name: 'custom_create_course',
+  description: 'creates a new course',
+  parameters: custom_course_schema,
+};
+
+// Schemas ---------------------------------------------------------------------
 
 export const generateSampleTopics = async (
   topic: string
@@ -675,37 +501,6 @@ export const generateSampleTopics = async (
   return topics;
 };
 
-const suggest_TOC = {
-  name: 'suggest_TOC',
-  description: 'create a table of contents for a topic with its given concepts',
-  parameters: {
-    type: 'object',
-    properties: {
-      tableOfContents: {
-        type: 'array',
-        description: 'the table of contents for the topic',
-        items: {
-          type: 'object',
-          properties: {
-            title: {
-              type: 'string',
-              description:
-                'the title of the unit, worded like a duolingo blogpost',
-            },
-            id: {
-              type: 'number',
-              description: 'the id of the unit',
-              enum: [1, 2, 3, 4],
-            },
-          },
-          required: ['title', 'id'],
-        },
-        minItems: 4,
-      },
-    },
-  },
-};
-
 export const generateSampleTOC = async (
   topic: string,
   concepts: string
@@ -746,27 +541,6 @@ export const generateSampleTOC = async (
   const TOC = functioneResponse?.tableOfContents;
   console.log('TOCZ', TOC);
   return TOC;
-};
-
-const custom_course_schema = {
-  type: 'object',
-  properties: {
-    title: {
-      type: 'string',
-      description: 'the title of the course',
-    },
-    summary: {
-      type: 'string',
-      description: 'a short summary of the course',
-    },
-  },
-  required: ['title', 'summary'],
-};
-
-const custom_create_course = {
-  name: 'custom_create_course',
-  description: 'creates a new course',
-  parameters: custom_course_schema,
 };
 
 interface CourseDetails {
