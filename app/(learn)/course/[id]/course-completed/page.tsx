@@ -1,5 +1,6 @@
 import CourseCompletion from '@/components/Course/CourseComponents/CourseCompletion';
-import { getCourseById } from '@/lib/actions/generate.actions';
+import { getCourseById } from '@/lib/actions/course.actions';
+
 import console from 'console';
 
 export default async function CourseCompleted({ params }: any) {

@@ -1,7 +1,7 @@
-import { getCourseById } from '@/lib/actions/generate.actions';
 import CourseCover from '@/components/Course/CourseComponents/CourseCover';
 
 import EmptyState from '@/components/Course/EmptyState';
+import { getCourseById } from '@/lib/actions/course.actions';
 
 export default async function CourseContent({
   params: { id },

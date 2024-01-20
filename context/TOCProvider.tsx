@@ -1,5 +1,6 @@
 'use client';
 
+import { getCourseProgressById } from '@/lib/actions/course.actions';
 import {
   createContext,
   useState,
@@ -44,17 +45,11 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!id) return;
-    fetch('/api/course-progress', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: id }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCourseProgress(data);
-      });
+    const courseProgress = async () => {
+      const progress = await getCourseProgressById(id);
+      setCourseProgress(progress);
+    };
+    courseProgress();
   }, [id, wasQuizUpdated]);
 
   useEffect(() => {

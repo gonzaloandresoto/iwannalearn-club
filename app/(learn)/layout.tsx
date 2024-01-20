@@ -10,7 +10,7 @@ export default function RootLayout({
   return (
     <UserProvider>
       <TOCProvider>
-        <section className='w-full h-[100vh] flex flex-col'>
+        <section className='w-full h-[100vh] flex flex-col bg-tertiary-tan'>
           <NavigationBar />
           {children}
         </section>
