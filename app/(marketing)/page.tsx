@@ -1,39 +1,30 @@
-import Footer from '@/components/Marketing/Footer';
+import { auth } from '@clerk/nextjs';
 import { Stars } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const courseGridData = [
-  {
-    subtitle: 'Explore endless topics, from business concepts to history',
-    title: 'Learn any subject',
-    href: 'course-toc.png',
-  },
-  {
-    title: 'Customize your experience',
-    subtitle: 'Tailor the topics you cover, and how you learn them',
-    href: 'customize-course.png',
-  },
-  // {
-  //   title: 'Ask questions',
-  //   subtitle: 'Talk directly with an AI expert in the field',
-  //   href: 'hero-examples.png',
-  // },
-  // {
-  //   title: 'Track your progress',
-  //   subtitle: 'Keep motivated with learning streaks and milestones',
-  //   href: 'hero-examples.png',
-  // },
-];
+import Footer from '@/components/Marketing/Footer';
+import { courseGridData } from '@/constants';
 
 export default function Page() {
+  // --- REDIRECTION TO MAIN IF NO SESSION --- //
+  const { userId } = auth();
+  if (userId) {
+    redirect('/generate');
+  }
+
   return (
     <div className='grow bg-tertiary-tan'>
       <div className='w-full flex flex-col  items-center px-4  bg-tertiary-tan'>
-        <div className='max-w-[1024px] w-full h-[320px] flex flex-col gap-8 items-center justify-center '>
-          <p className='md:text-6xl text-4xl text-secondary-black text-center font-bold font-serif'>
+        <div className='max-w-[1024px] w-full flex flex-col gap-8 items-center justify-center py-16'>
+          <h1 className='md:text-6xl text-4xl text-secondary-black text-center font-bold font-serif'>
             Learn anything with AI
-          </p>
+          </h1>
+          <h3 className='max-w-[700px] md:text-lg text-center font-sourceSerif font-medium'>
+            Unlimited, easy-to-learn AI generated courses on any subject,
+            accompanied by an expert AI tutor.
+          </h3>
           <Link href='/signup'>
             <button className='bg-secondary-black  text-tertiary-tan flex flex-row items-center gap-4 px-6 py-4 rounded-md hover:bg-tertiary-black md:text-2xl text-lg'>
               <Stars />
@@ -43,7 +34,7 @@ export default function Page() {
         </div>
 
         <div className='max-w-[1024px] w-full grid sm:grid-cols-2 grid-cols-1 SM:gap-12 gap-4'>
-          {courseGridData.map((course) => (
+          {courseGridData?.map((course) => (
             <GridCard
               key={course.title}
               title={course.title}

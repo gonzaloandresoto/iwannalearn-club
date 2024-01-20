@@ -52,3 +52,26 @@ export const learningFunFacts = [
   'Emotional state can impact learning efficiency. Positive emotions enhance the ability to learn new information.',
   'Visual learning is powerful \u2013 almost 50% of the brain is involved in visual processing.',
 ];
+
+export const courseGridData = [
+  {
+    subtitle: 'Explore endless topics, from business concepts to history',
+    title: 'Learn any subject',
+    href: 'course-toc.png',
+  },
+  {
+    title: 'Customize your experience',
+    subtitle: 'Tailor the topics you cover, and how you learn them',
+    href: 'customize-course.png',
+  },
+  // {
+  //   title: 'Ask questions',
+  //   subtitle: 'Talk directly with an AI expert in the field',
+  //   href: 'hero-examples.png',
+  // },
+  // {
+  //   title: 'Track your progress',
+  //   subtitle: 'Keep motivated with learning streaks and milestones',
+  //   href: 'hero-examples.png',
+  // },
+];

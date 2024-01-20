@@ -18,8 +18,7 @@ const rosario = Rosario({
 
 export const metadata: Metadata = {
   title: 'iWannaLearn',
-  description:
-    'iWannaLearn is an AI-powered learning experience for all. Generate easy to learn courses on the fly, similar to Duolingo or Headway. We are the best way to learn anything, anywhere, anytime.',
+  description: `iWannaLearn is an AI-powered learning platform where you can generate courses with artificial intelligence and talk to an AI tutor. Whether you're passionate about history, celebrities sciences, or anything in between, our platform tailors content to your preferences, making education fun, engaging and efficient.`,
 };
 
 export default function RootLayout({
@@ -28,21 +27,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      afterSignInUrl='/generate'
-      afterSignUpUrl='/onboarding'
-    >
-      <html lang='en'>
-        <body
-          className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}
-        >
-          <section className='min-w-screen min-h-screen flex'>
+    <html lang='en'>
+      <body
+        className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}
+      >
+        <section className='min-w-screen min-h-screen flex'>
+          <ClerkProvider
+            afterSignInUrl='/generate'
+            afterSignUpUrl='/onboarding'
+          >
             <ToastContainer />
             {children}
             <Analytics />
-          </section>
-        </body>
-      </html>
-    </ClerkProvider>
+          </ClerkProvider>
+        </section>
+      </body>
+    </html>
   );
 }
