@@ -2,8 +2,10 @@
 
 import useUserContext from '@/hooks/useUserContext';
 import useOutsideClick from '@/hooks/useOutsideClick';
-import { deleteCourseById } from '@/lib/actions/generate.actions';
+
 import { Trash2 } from 'lucide-react';
+import { deleteCourseById } from '@/lib/actions/course.actions';
+import { usePathname } from 'next/navigation';
 
 interface CourseDropdownProps {
   courseId: string;
@@ -14,11 +16,13 @@ export default function CourseDropdown({
   courseId,
   setIsDropdownOpen,
 }: CourseDropdownProps) {
+  const pathname = usePathname();
   const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
   const { user } = useUserContext();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    deleteCourseById(courseId || '', user?._id || '');
+    if (!user || !courseId) return;
+    deleteCourseById(courseId, user?._id, pathname);
     setIsDropdownOpen(false);
   };
 
