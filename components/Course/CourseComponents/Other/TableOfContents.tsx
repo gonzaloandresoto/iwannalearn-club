@@ -74,7 +74,7 @@ export default function TableOfContents({
             <Link
               href={{
                 pathname: `/course/${courseId}/${item.unitId}`,
-                // query: { activePage: 0 },
+                query: { activePage: 0 },
               }}
               style={{
                 pointerEvents: isDisabled ? 'none' : 'auto',

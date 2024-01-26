@@ -1,20 +1,15 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import useTOCContext from '@/hooks/useTOCContext';
 import useUserContext from '@/hooks/useUserContext';
-import { markQuizCompleted } from '@/lib/actions/quiz.actions';
-import {
-  getNextUncompletedUnit,
-  updateUnitStatus,
-} from '@/lib/actions/unit.actions';
-import next from 'next';
+import { useCreateQueryString } from '@/hooks/useCreateQueryString';
 
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { markQuizCompleted } from '@/lib/actions/quiz.actions';
+import { updateUnitStatus } from '@/lib/actions/unit.actions';
 
 interface QuizNavigationControlsProps {
   activePage: number;
-  setActivePage: (page: number) => void;
   unitLength: number;
   courseId: string;
   unitId: string;
@@ -26,7 +21,6 @@ interface QuizNavigationControlsProps {
 
 export default function QuizNavigationControls({
   activePage,
-  setActivePage,
   unitLength,
   courseId,
   unitId,
@@ -37,16 +31,13 @@ export default function QuizNavigationControls({
 }: QuizNavigationControlsProps) {
   const router = useRouter();
   const { user } = useUserContext();
-  const { wasQuizUpdated, setWasQuizUpdated } = useTOCContext();
-  const [nextUnit, setNextUnit] = useState<string | null>(null);
+  const createQueryString = useCreateQueryString();
 
-  useEffect(() => {
-    const getNextUnit = async () => {
-      const nextUnitId = await getNextUncompletedUnit(courseId);
-      setNextUnit(nextUnitId || null);
-    };
-    getNextUnit();
-  }, [wasQuizUpdated]);
+  const { wasQuizUpdated, setWasQuizUpdated } = useTOCContext();
+
+  const pathname = `/course/${courseId}/${unitId}`;
+  const nextPage = (activePage + 1).toString();
+  const nextPageQuery = createQueryString('activePage', nextPage);
 
   const handleNext = async () => {
     const userId = user?._id || '';
@@ -61,10 +52,10 @@ export default function QuizNavigationControls({
         markQuizCompleted(quizId, userId),
         updateUnitStatus(unitId, userId, 'IN_PROGRESS'),
       ]);
-      setActivePage(activePage + 1);
+      router.push(pathname + '?' + nextPageQuery);
     } else {
       await markQuizCompleted(quizId, userId);
-      setActivePage(activePage + 1);
+      router.push(pathname + '?' + nextPageQuery);
     }
 
     setSelectedAnswer('');

@@ -28,7 +28,7 @@ export default function CourseCard({
   }, [progress]);
 
   return (
-    <div className='max-w-[480px] w-full'>
+    <div className='md:w-[480px] w-full'>
       <div className='relative h-[32px] w-[144px] flex flex-col justify-center bg-white px-2 border-b-0 border-2 border-primary-tan'>
         <button
           className='w-[20px] h-[20px] flex items-center justify-center'

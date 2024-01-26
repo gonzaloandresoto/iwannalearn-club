@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import CourseCard from '@/components/Course/CourseComponents/CourseCard';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { getUnitElementsById } from '@/lib/actions/unit.actions';
 import EmptyState from '@/components/Course/EmptyState';
 
@@ -21,8 +21,8 @@ interface UnitContent {
 
 export default function UnitContent() {
   const { id, unit } = useParams<{ id: string; unit: string }>();
+  const activePage = useSearchParams().get('activePage');
   const [unitContent, setUnitContent] = useState<UnitContent[]>([]);
-  const [activePage, setActivePage] = useState<number>(0);
 
   useEffect(() => {
     const getUnitContent = async () => {
@@ -41,8 +41,7 @@ export default function UnitContent() {
           unitId={unit}
           courseId={id}
           unitContent={unitContent}
-          activePage={activePage}
-          setActivePage={setActivePage}
+          activePage={activePage ? parseInt(activePage) : 0}
         />
       ) : (
         <EmptyState />

@@ -22,7 +22,6 @@ interface UnitContentItems {
 interface CourseCardProps {
   unitContent: UnitContentItems[];
   activePage: number;
-  setActivePage: (page: number) => void;
   unitId: string;
   courseId: string;
 }
@@ -32,7 +31,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   courseId,
   unitContent,
   activePage,
-  setActivePage,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const currentItem = unitContent[activePage];
@@ -58,7 +56,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
       {currentItem?.type === 'lesson' && (
         <LessonNavigationControls
           activePage={activePage}
-          setActivePage={setActivePage}
           unitLength={unitContent.length}
           courseId={courseId}
           unitId={unitId}
@@ -67,7 +64,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
       {currentItem?.type === 'quiz' && (
         <QuizNavigationControls
           activePage={activePage}
-          setActivePage={setActivePage}
           unitLength={unitContent.length}
           courseId={courseId}
           unitId={currentItem.unitId}
