@@ -1,6 +1,4 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface TableofContentsItem {
   id: string;
@@ -27,7 +25,6 @@ export default function TableOfContents({
   courseId,
   unitCompletions,
 }: TableOfContentsProps) {
-  const router = useRouter();
   const tableOfContentsArray: TableofContentsItem[] =
     JSON.parse(tableOfContents);
 
@@ -74,11 +71,14 @@ export default function TableOfContents({
               </p>
             </div>
 
-            <button
-              onClick={() => {
-                router.push(`/course/${courseId}/${item.unitId}`);
+            <Link
+              href={{
+                pathname: `/course/${courseId}/${item.unitId}`,
+                // query: { activePage: 0 },
               }}
-              disabled={isDisabled}
+              style={{
+                pointerEvents: isDisabled ? 'none' : 'auto',
+              }}
               className={`flex-none px-4 py-1 lg:text-lg text-sm text-tertiary-tan font-rosario rounded-sm disabled:opacity-60 ${
                 status === 'Done' || status === 'Locked'
                   ? 'bg-secondary-black'
@@ -86,7 +86,7 @@ export default function TableOfContents({
               }`}
             >
               <p>{status}</p>
-            </button>
+            </Link>
           </div>
         );
       })}
