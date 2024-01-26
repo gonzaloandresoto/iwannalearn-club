@@ -24,6 +24,8 @@
     "react-loader-spinner": "^6.1.6",
     "react-spinners": "^0.13.8",
     "react-toastify": "^9.1.3",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1",
     "svix": "^1.15.0"
   },
   "devDependencies": {

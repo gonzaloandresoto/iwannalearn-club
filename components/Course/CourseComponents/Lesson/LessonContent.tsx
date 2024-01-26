@@ -1,7 +1,9 @@
-'use client';
-import { useState } from 'react';
-import LessonActionsDesktop from './LessonActionsDesktop';
-import EmptyState from '@/components/Home/CustomGeneration/EmptyState';
+// import { useState } from 'react';
+// import LessonActionsDesktop from './LessonActionsDesktop';
+// import EmptyState from '@/components/Home/CustomGeneration/EmptyState';
+import { useEffect, useState } from 'react';
+import { remark } from 'remark';
+import html from 'remark-html';
 
 interface Content {
   title?: string;
@@ -15,9 +17,25 @@ interface LessonContentProps {
 }
 
 export default function LessonContent({ item, unitId }: LessonContentProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [htmlContent, setHtmlContent] = useState('');
 
-  if (loading) return <EmptyState />;
+  useEffect(() => {
+    const convertMarkdownToHtml = async (markdown: string) => {
+      try {
+        const result = await remark()
+          .use(html, { sanitize: false })
+          .process(markdown);
+        setHtmlContent(result.toString());
+      } catch (error) {
+        console.error('Error converting Markdown to HTML:', error);
+        setHtmlContent('Error displaying content');
+      }
+    };
+
+    if (item.content) {
+      convertMarkdownToHtml(item.content);
+    }
+  }, [item.content]);
 
   return (
     <div className='lesson-quiz-content'>
@@ -25,16 +43,21 @@ export default function LessonContent({ item, unitId }: LessonContentProps) {
         <p className='lg:text-4xl text-2xl text-left font-bold font-sourceSerif text-secondary-black'>
           {item?.title}
         </p>
-        <p className='md:text-xl text-lg text-tertiary-black font-medium font-rosario'>
-          {item?.content}
-        </p>
+        <div
+          className='lesson-text flex flex-col gap-2'
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
       </div>
-
-      <LessonActionsDesktop
-        lesson={item}
-        unitId={unitId}
-        setLoading={setLoading}
-      />
     </div>
   );
+}
+
+// if (loading) return <EmptyState />;
+
+{
+  /* <LessonActionsDesktop
+  lesson={item}
+  unitId={unitId}
+  setLoading={setLoading}
+/> */
 }

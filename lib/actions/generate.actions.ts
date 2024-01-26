@@ -83,39 +83,45 @@ const create_lessons = {
             content: {
               type: 'string',
               description:
-                'the content of the lesson separated by a new line in between paragraps',
-            },
-            quiz: {
-              type: 'object',
-              properties: {
-                question: {
-                  type: 'string',
-                  description: 'the question of the quiz',
-                },
-                options: {
-                  type: 'array',
-                  items: {
-                    type: 'string',
-                    description:
-                      'the potential answer options for the quiz question.',
-                  },
-                  minItems: 4,
-                  maxItems: 4,
-                },
-                answer: {
-                  type: 'number',
-                  description:
-                    'the index of the correct answer option for the quiz question',
-                  enum: [0, 1, 2, 3],
-                },
-              },
-              required: ['question', 'options', 'answer'],
+                'the content of the lesson in markdown format, without repeating the title',
             },
           },
           required: ['title', 'content', 'quiz'],
         },
+        minItems: 2,
+        maxItems: 4,
       },
     },
+  },
+};
+
+const create_quiz = {
+  name: 'create_quiz',
+  description: 'creates a quiz for a lesson',
+  parameters: {
+    type: 'object',
+    properties: {
+      question: {
+        type: 'string',
+        description: 'the question of the quiz',
+      },
+      options: {
+        type: 'array',
+        items: {
+          type: 'string',
+          description: 'the potential answer options for the quiz question.',
+        },
+        minItems: 4,
+        maxItems: 4,
+      },
+      answer: {
+        type: 'number',
+        description:
+          'the index of the correct answer option for the quiz question',
+        enum: [0, 1, 2, 3],
+      },
+    },
+    required: ['question', 'options', 'answer'],
   },
 };
 
@@ -182,10 +188,47 @@ const generateCourse = async (topic: string): Promise<Course> => {
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
   // console.log('DONE GENERATING COURSE', courseObject);
-  return courseObject;
+  return JSON.parse(JSON.stringify(courseObject));
 };
 
 // Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')}
+
+const generateQuiz = async (lesson: Lesson): Promise<Quiz> => {
+  const prompt = [
+    {
+      role: 'system',
+      content: `You are a superhuman tutor that generates lesson quizzes based STRICTLY on the title and content given to you. The quiz should be multiple choice, with 4 options.`,
+    },
+    {
+      role: 'user',
+      content: `lesson_title: ${lesson.title},
+      lesson_content: ${lesson.content}
+      Create a quiz.`,
+    },
+  ] as any;
+
+  const res = await openai.chat.completions.create({
+    messages: prompt,
+    model: 'gpt-3.5-turbo-1106',
+    tools: [
+      {
+        type: 'function',
+        function: create_quiz,
+      },
+    ],
+    tool_choice: {
+      type: 'function',
+      function: {
+        name: 'create_quiz',
+      },
+    },
+  });
+  const quizObject = JSON.parse(
+    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+  );
+  // console.log('Quiz Object', quizObject);
+  return JSON.parse(JSON.stringify(quizObject));
+};
 
 const generateLessons = async (
   course: Course,
@@ -194,11 +237,13 @@ const generateLessons = async (
   const prompt = [
     {
       role: 'system',
+      content: `You are a superhuman tutor that will teach a person about any course topic in technical detail. Your methods are inspired by the teaching methodology of Richard Feynman. Your quality is text-book level, and leverages Wikipedia's vast information, along with the content created by subject experts in the field. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined. Content should not describe what it will teach, but rather actually provide useful information.
+      
+      !IMPORTANT-> LESSON CONTENT SHOULD BE IN MARKDOWN FORMAT AND STRUCTURED – DO NOT ADD A LESSON TITLE WITHIN THE BODY CONTENT.
 
-      // content: `Here are instructions from the user outlining your goals and how you should respond:
-      // You are a superhuman tutor that will teach a person about any subject in technical detail. Your methods are inspired by the teaching methodology of Richard Feynman. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding.
-      // `,
-      content: `Here are instructions from the user outlining your goals and how you should respond:  You are a superhuman tutor that will teach a person about any course topic in technical detail. Your methods are inspired by the teaching methodology of Richard Feynman. Your quality is text-book level, and leverages Wikipedia's vast information, along with the content created by subject experts in the field. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Content should not describe what it will teach, but rather actually provide useful information. !IMPORTANT -> Each lesson should mantain the context of the course and SHOULD NOT overlap with other lessons.`,
+      !IMPORTANT -> THERE SHOULD BE A MINIMUM OF THREE LESSONS PER UNIT.
+      
+      !IMPORTANT -> Each lesson should mantain the context of the course and SHOULD NOT overlap with other lessons.`,
     },
     {
       role: 'user',
@@ -229,8 +274,15 @@ const generateLessons = async (
   const lessonsObject = JSON.parse(
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
-  // console.log('Lessons Object', lessonsObject);
-  return lessonsObject.lessons;
+
+  for (let lesson of lessonsObject.lessons) {
+    let quiz = await generateQuiz(lesson as Lesson);
+    lesson.quiz = quiz;
+  }
+
+  // console.log('Lessons Object ', lessonsObject);
+  // console.log('Lessons Object LESSONS ', lessonsObject.lessons);
+  return JSON.parse(JSON.stringify(lessonsObject.lessons));
 };
 
 // Function to assign a course to a user

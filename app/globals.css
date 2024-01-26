@@ -75,6 +75,34 @@
   @apply lg:text-2xl text-xl text-tertiary-black font-semibold;
 }
 
+.lesson-text {
+  @apply md:text-xl text-lg text-tertiary-black font-medium font-rosario;
+}
+
+.lesson-text h2 {
+  @apply text-xl text-tertiary-black font-bold mt-4;
+}
+
+.lesson-text h3 {
+  @apply text-xl text-tertiary-black font-bold mt-4;
+}
+
+.lesson-text ol {
+  @apply list-inside list-disc my-1;
+}
+
+.lesson-text ul {
+  @apply list-inside list-disc my-1;
+}
+
+.lesson-text li {
+  @apply mb-2;
+}
+
+.lesson-text li p {
+  @apply inline;
+}
+
 /* COMPONENTS */
 
 .dropdown {
