@@ -193,7 +193,7 @@ const generateCourse = async (topic: string): Promise<Course> => {
 
 // Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')}
 
-const generateQuiz = async (lesson: Lesson): Promise<Quiz | undefined> => {
+const generateQuiz = async (lesson: Lesson): Promise<Quiz> => {
   try {
     const prompt = [
       {
@@ -231,7 +231,11 @@ const generateQuiz = async (lesson: Lesson): Promise<Quiz | undefined> => {
     return JSON.parse(JSON.stringify(quizObject));
   } catch (error) {
     handleError(error);
-    return undefined;
+    return {
+      question: '',
+      options: [],
+      answer: 0,
+    };
   }
 };
 
@@ -354,41 +358,45 @@ async function createUnitsAndLessons(
 
     // Create lesson and quiz entries in database, parallel, asynchronously
     const lessonPromises = lessons.map(async (lesson, j) => {
-      const newLesson = await Element.create({
-        ...lesson,
-        type: 'lesson',
-        order: j + 1,
-        title: lesson.title,
-        content: lesson.content,
-        unitId: newUnit._id,
-      });
-      // console.log('✅ Uploaded Lesson', newLesson);
-
-      // Create quiz if it exists in the lesson
-      if (lesson.quiz) {
-        const newQuiz = await Quiz.create({
-          ...lesson.quiz,
-          type: 'quiz',
-          question: lesson.quiz.question,
+      try {
+        const newLesson = await Element.create({
+          ...lesson,
+          type: 'lesson',
           order: j + 1,
-          choices: JSON.stringify(
-            lesson.quiz.options.map((option, optionIndex) => ({
-              id: optionIndex,
-              option: option,
-            }))
-          ),
-          answer: lesson.quiz.answer,
+          title: lesson.title,
+          content: lesson.content,
           unitId: newUnit._id,
         });
+        // console.log('✅ Uploaded Lesson', newLesson);
 
-        // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
-        await UserQuiz.create({
-          userId: userId,
-          quizId: newQuiz._id,
-          unitId: newUnit._id,
-          completed: false,
-        });
-        // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
+        // Create quiz if it exists in the lesson
+        if (lesson.quiz) {
+          const newQuiz = await Quiz.create({
+            ...lesson.quiz,
+            type: 'quiz',
+            question: lesson.quiz.question,
+            order: j + 1,
+            choices: JSON.stringify(
+              lesson.quiz.options.map((option, optionIndex) => ({
+                id: optionIndex,
+                option: option,
+              }))
+            ),
+            answer: lesson.quiz.answer,
+            unitId: newUnit._id,
+          });
+
+          // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
+          await UserQuiz.create({
+            userId: userId,
+            quizId: newQuiz._id,
+            unitId: newUnit._id,
+            completed: false,
+          });
+          // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
+        }
+      } catch (error) {
+        handleError(error);
       }
     });
 
