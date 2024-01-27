@@ -293,19 +293,21 @@ const generateLessons = async (
       res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     );
 
-    for (let lesson of lessonsObject.lessons) {
-      let quiz = await generateQuiz(lesson as Lesson);
+    const quizPromises = lessonsObject.lessons.map(async (lesson: Lesson) => {
+      const quiz = await generateQuiz(lesson);
       lesson.quiz = quiz;
-    }
+      return lesson;
+    });
+
+    const lessonsWithQuizzes = await Promise.all(quizPromises);
+    return lessonsWithQuizzes;
 
     // console.log('Lessons Object ', lessonsObject);
     // console.log('Lessons Object LESSONS ', lessonsObject.lessons);
-    return JSON.parse(JSON.stringify(lessonsObject.lessons));
   } catch (error) {
     handleError(error);
     return [];
   }
-  console.log('GENERATING LESSON');
 };
 
 // Function to assign a course to a user
