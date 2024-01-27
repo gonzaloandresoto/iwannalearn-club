@@ -193,105 +193,115 @@ const generateCourse = async (topic: string): Promise<Course> => {
 
 // Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')}
 
-const generateQuiz = async (lesson: Lesson): Promise<Quiz> => {
-  const prompt = [
-    {
-      role: 'system',
-      content: `You are a superhuman tutor that generates lesson quizzes based STRICTLY on the title and content given to you. The quiz should be multiple choice, with 4 options.`,
-    },
-    {
-      role: 'user',
-      content: `lesson_title: ${lesson.title},
-      lesson_content: ${lesson.content}
-      Create a quiz.`,
-    },
-  ] as any;
-
-  const res = await openai.chat.completions.create({
-    messages: prompt,
-    model: 'gpt-3.5-turbo-1106',
-    tools: [
+const generateQuiz = async (lesson: Lesson): Promise<Quiz | undefined> => {
+  try {
+    const prompt = [
       {
+        role: 'system',
+        content: `You are a superhuman tutor that generates lesson quizzes based STRICTLY on the title and content given to you. The quiz should be multiple choice, with 4 options.`,
+      },
+      {
+        role: 'user',
+        content: `lesson_title: ${lesson.title},
+        lesson_content: ${lesson.content}
+        Create a quiz.`,
+      },
+    ] as any;
+
+    const res = await openai.chat.completions.create({
+      messages: prompt,
+      model: 'gpt-3.5-turbo-1106',
+      tools: [
+        {
+          type: 'function',
+          function: create_quiz,
+        },
+      ],
+      tool_choice: {
         type: 'function',
-        function: create_quiz,
+        function: {
+          name: 'create_quiz',
+        },
       },
-    ],
-    tool_choice: {
-      type: 'function',
-      function: {
-        name: 'create_quiz',
-      },
-    },
-  });
-  const quizObject = JSON.parse(
-    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
-  );
-  // console.log('Quiz Object', quizObject);
-  return JSON.parse(JSON.stringify(quizObject));
+    });
+    const quizObject = JSON.parse(
+      res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+    );
+    console.log('Quiz Object', quizObject);
+    return JSON.parse(JSON.stringify(quizObject));
+  } catch (error) {
+    handleError(error);
+    return undefined;
+  }
 };
 
 const generateLessons = async (
   course: Course,
   unit: Unit
 ): Promise<Lesson[]> => {
-  console.log('GENERATING LESSON');
-  const prompt = [
-    {
-      role: 'system',
-      content: `You are a superhuman educator specilaizing in ${course.title} in technical detail. Your content quality is text-book level, and leverages Wikipedia's vast information. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined. Avoid descirbing what youll teach or include in each lesson, but actually provide the educational content.
-
-      !IMPORTANT -> LESSON CONTENT SHOULD BE INFORMATIVE, PROVIDING ACTUAL CONTENT THAT CAN BE LEARNED.
-
-      !IMPORTANT -> DO NOT DESCRIBE WHAT YOU WILL TEACH OR WHAT WILL BE IN THE LESSON UNDER ANY CIRCUMSTANCES.
-      
-      !IMPORTANT-> LESSON CONTENT SHOULD BE STRUCTURED IN MARKDOWN FORMAT AND SHOULD FOLLOW BEST PRACTICES – DO NOT ADD A LESSON TITLE WITHIN THE BODY CONTENT.
-
-      !IMPORTANT -> AVOID CONCLUSIONS AND SUMMARIES IN THE LESSON CONTENT.
-
-      !IMPORTANT -> THERE SHOULD BE A MINIMUM OF THREE LESSONS PER UNIT.
-
-      !IMPORTANT -> LESSON CONTENT SHOULD NOT OVERLAP WITH OTHER LESSONS.
-      
-      !IMPORTANT -> LESSONS SHOULD MANTAIN THE CONTEXT OF THE COURSE.`,
-    },
-    {
-      role: 'user',
-      content: `Course: ${course.title}
-      Course Summary: ${course.summary}
-      Unit: ${unit.title}
-      Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')},
-      Write detailed infromative lesson content for each.`,
-    },
-  ] as any;
-
-  const res = await openai.chat.completions.create({
-    messages: prompt,
-    model: 'gpt-3.5-turbo-1106',
-    tools: [
+  try {
+    const prompt = [
       {
+        role: 'system',
+        content: `You are a superhuman educator specilaizing in ${course.title} in technical detail. Your content quality is text-book level, and leverages Wikipedia's vast information. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined. Avoid descirbing what youll teach or include in each lesson, but actually provide the educational content.
+  
+        !IMPORTANT -> LESSON CONTENT SHOULD BE INFORMATIVE, PROVIDING ACTUAL CONTENT THAT CAN BE LEARNED.
+  
+        !IMPORTANT -> DO NOT DESCRIBE WHAT YOU WILL TEACH OR WHAT WILL BE IN THE LESSON UNDER ANY CIRCUMSTANCES.
+        
+        !IMPORTANT-> LESSON CONTENT SHOULD BE STRUCTURED IN MARKDOWN FORMAT AND SHOULD FOLLOW BEST PRACTICES – DO NOT ADD A LESSON TITLE WITHIN THE BODY CONTENT.
+  
+        !IMPORTANT -> AVOID CONCLUSIONS AND SUMMARIES IN THE LESSON CONTENT.
+  
+        !IMPORTANT -> THERE SHOULD BE A MINIMUM OF THREE LESSONS PER UNIT.
+  
+        !IMPORTANT -> LESSON CONTENT SHOULD NOT OVERLAP WITH OTHER LESSONS.
+        
+        !IMPORTANT -> LESSONS SHOULD MANTAIN THE CONTEXT OF THE COURSE.`,
+      },
+      {
+        role: 'user',
+        content: `Course: ${course.title}
+        Course Summary: ${course.summary}
+        Unit: ${unit.title}
+        Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')},
+        Write detailed infromative lesson content for each.`,
+      },
+    ] as any;
+
+    const res = await openai.chat.completions.create({
+      messages: prompt,
+      model: 'gpt-3.5-turbo-1106',
+      tools: [
+        {
+          type: 'function',
+          function: create_lessons,
+        },
+      ],
+      tool_choice: {
         type: 'function',
-        function: create_lessons,
+        function: {
+          name: 'create_lessons',
+        },
       },
-    ],
-    tool_choice: {
-      type: 'function',
-      function: {
-        name: 'create_lessons',
-      },
-    },
-  });
-  const lessonsObject = JSON.parse(
-    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
-  );
+    });
+    const lessonsObject = JSON.parse(
+      res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+    );
 
-  for (let lesson of lessonsObject.lessons) {
-    let quiz = await generateQuiz(lesson as Lesson);
-    lesson.quiz = quiz;
+    for (let lesson of lessonsObject.lessons) {
+      let quiz = await generateQuiz(lesson as Lesson);
+      lesson.quiz = quiz;
+    }
+
+    // console.log('Lessons Object ', lessonsObject);
+    // console.log('Lessons Object LESSONS ', lessonsObject.lessons);
+    return JSON.parse(JSON.stringify(lessonsObject.lessons));
+  } catch (error) {
+    handleError(error);
+    return [];
   }
-
-  // console.log('Lessons Object ', lessonsObject);
-  // console.log('Lessons Object LESSONS ', lessonsObject.lessons);
-  return JSON.parse(JSON.stringify(lessonsObject.lessons));
+  console.log('GENERATING LESSON');
 };
 
 // Function to assign a course to a user
