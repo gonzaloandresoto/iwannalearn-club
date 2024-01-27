@@ -242,12 +242,11 @@ export const goDeeper = async (
   const prompt = [
     {
       role: 'system',
-      content:
-        'You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. You are to expand on the given paragraph, providing more detail. Cover what the student is asking about, and anything else you think is relevant.',
+      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in ${unitId}. You are to expand on the given paragraph, providing more detail. Cover what the student is asking about, and anything else you think is relevant.`,
     },
     {
       role: 'user',
-      content: `Responsd in text use newline '\n\n' separators in between paragraphs. This is the unit: ${unitId},
+      content: `Respond using markdown format. This is the unit: ${unitId},
                 This is the lesson: ${lesson.title},
                 This is what I would like to know more about: ${comment}
                 This is the paragraph: ${lesson.content}.

@@ -87,6 +87,10 @@
   @apply text-xl text-tertiary-black font-bold mt-4;
 }
 
+.lesson-text h4 {
+  @apply text-xl text-tertiary-black font-bold mt-4;
+}
+
 .lesson-text ol {
   @apply list-inside list-disc my-1;
 }

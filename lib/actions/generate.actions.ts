@@ -234,16 +234,25 @@ const generateLessons = async (
   course: Course,
   unit: Unit
 ): Promise<Lesson[]> => {
+  console.log('GENERATING LESSON');
   const prompt = [
     {
       role: 'system',
-      content: `You are a superhuman tutor that will teach a person about any course topic in technical detail. Your methods are inspired by the teaching methodology of Richard Feynman. Your quality is text-book level, and leverages Wikipedia's vast information, along with the content created by subject experts in the field. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined. Content should not describe what it will teach, but rather actually provide useful information.
+      content: `You are a superhuman educator specilaizing in ${course.title} in technical detail. Your content quality is text-book level, and leverages Wikipedia's vast information. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined. Avoid descirbing what youll teach or include in each lesson, but actually provide the educational content.
+
+      !IMPORTANT -> LESSON CONTENT SHOULD BE INFORMATIVE, PROVIDING ACTUAL CONTENT THAT CAN BE LEARNED.
+
+      !IMPORTANT -> DO NOT DESCRIBE WHAT YOU WILL TEACH OR WHAT WILL BE IN THE LESSON UNDER ANY CIRCUMSTANCES.
       
-      !IMPORTANT-> LESSON CONTENT SHOULD BE IN MARKDOWN FORMAT AND STRUCTURED – DO NOT ADD A LESSON TITLE WITHIN THE BODY CONTENT.
+      !IMPORTANT-> LESSON CONTENT SHOULD BE STRUCTURED IN MARKDOWN FORMAT AND SHOULD FOLLOW BEST PRACTICES – DO NOT ADD A LESSON TITLE WITHIN THE BODY CONTENT.
+
+      !IMPORTANT -> AVOID CONCLUSIONS AND SUMMARIES IN THE LESSON CONTENT.
 
       !IMPORTANT -> THERE SHOULD BE A MINIMUM OF THREE LESSONS PER UNIT.
+
+      !IMPORTANT -> LESSON CONTENT SHOULD NOT OVERLAP WITH OTHER LESSONS.
       
-      !IMPORTANT -> Each lesson should mantain the context of the course and SHOULD NOT overlap with other lessons.`,
+      !IMPORTANT -> LESSONS SHOULD MANTAIN THE CONTEXT OF THE COURSE.`,
     },
     {
       role: 'user',
@@ -251,7 +260,7 @@ const generateLessons = async (
       Course Summary: ${course.summary}
       Unit: ${unit.title}
       Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')},
-      Write detailed lesson content for each.`,
+      Write detailed infromative lesson content for each.`,
     },
   ] as any;
 
@@ -560,8 +569,9 @@ export const generateSampleTOC = async (
   const prompt = [
     {
       role: 'system',
-      content:
-        'As an experienced educator, please create a meticulously organized and comprehensive table of contents comprising four units. These units should be centered around a specific topic chosen by students, and should effectively incorporate the specific concepts they have provided. It is crucial that the units thoroughly address the requested concepts while maintaining a clear focus on the main topic. Additionally, please ensure that the units are logically arranged to facilitate a coherent and structured learning experience.',
+      content: `Create a meticulously organized and comprehensive table of contents comprising four units. These units should be centered around a specific topic chosen by student, and should effectively incorporate the specific concepts they have provided. It is crucial that the units thoroughly address the requested concepts while maintaining a clear focus on the main topic. Additionally, please ensure that the units are logically arranged to facilitate a coherent and structured learning experience.
+        
+      !IMPORTANT -> UNIT TITLES SHOULD NOT CONTAIN THE WORD UNIT IN THEM, AVOID FORMATS LIKE "UNIT X: TITLE" INSETAD JUST PROVIDE THE TITLE.`,
     },
     {
       role: 'user',
@@ -828,10 +838,6 @@ async function generateLessonTitlesCustom(
   return newTOC;
 }
 
-interface CustomCourseUnit {
-  title: string;
-  order: number;
-}
 interface CustomCourse {
   topic: string;
   concepts: string[];
@@ -844,6 +850,7 @@ export async function createCourseCustom(
   customAttributes: CustomCourse,
   userId: string
 ): Promise<any> {
+  console.log('GENERATING CUSTOM COURSE');
   try {
     const timeoutPromise = new Promise<{ message: string }>((resolve) => {
       setTimeout(() => {
