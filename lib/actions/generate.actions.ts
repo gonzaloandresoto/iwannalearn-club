@@ -476,7 +476,7 @@ export async function createCourse(
       // console.log('✅ Assigned Course to User');
 
       createUnitsAndLessons(course, newCourseId, userId);
-      // console.log('✅ Units and Lessons created');
+      console.log('✅ Units and Lessons created');
 
       return { courseId: newCourseId };
     })();
@@ -723,56 +723,71 @@ async function createUnitsAndLessonsCustom(
       // Generate lesson contents
       const lessons = await generateLessons(course, unit);
 
+      console.log('CUSTOM LESSONS GENERATED WILL NOW UPLOAD');
+
       if (!lessons) throw new Error('Lessons could not be generated');
 
       // Create lesson and quiz entries in database, parallel, asynchronously
       const lessonPromises = lessons.map(async (lesson, j) => {
-        const newLesson = await Element.create({
-          ...lesson,
-          type: 'lesson',
-          order: j + 1,
-          title: lesson.title,
-          content: lesson.content,
-          unitId: newUnit._id,
-        });
-        // console.log('✅ Uploaded Lesson', newLesson);
-
-        // Create quiz if it exists in the lesson
-        if (lesson.quiz) {
-          const newQuiz = await Quiz.create({
-            ...lesson.quiz,
-            type: 'quiz',
-            question: lesson.quiz.question,
+        try {
+          const newLesson = await Element.create({
+            ...lesson,
+            type: 'lesson',
             order: j + 1,
-            choices: JSON.stringify(
-              lesson.quiz.options.map((option, optionIndex) => ({
-                id: optionIndex,
-                option: option,
-              }))
-            ),
-            answer: lesson.quiz.answer,
+            title: lesson.title,
+            content: lesson.content,
             unitId: newUnit._id,
           });
 
-          // console.log('✅ Uploaded Quiz', newQuiz);
+          if (!newLesson)
+            throw new Error('Lesson could not be saved to database');
+          // console.log('✅ Uploaded Lesson', newLesson);
 
-          // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
-          await UserQuiz.create({
-            userId: userId,
-            quizId: newQuiz._id,
-            unitId: newUnit._id,
-            completed: false,
-          });
-          // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
+          // Create quiz if it exists in the lesson
+          if (lesson.quiz) {
+            const newQuiz = await Quiz.create({
+              ...lesson.quiz,
+              type: 'quiz',
+              question: lesson.quiz.question,
+              order: j + 1,
+              choices: JSON.stringify(
+                lesson.quiz.options.map((option, optionIndex) => ({
+                  id: optionIndex,
+                  option: option,
+                }))
+              ),
+              answer: lesson.quiz.answer,
+              unitId: newUnit._id,
+            });
+
+            if (!newQuiz)
+              throw new Error('Quiz could not be saved to database');
+
+            // console.log('✅ Uploaded Quiz', newQuiz);
+
+            // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
+            const newUserQuiz = await UserQuiz.create({
+              userId: userId,
+              quizId: newQuiz._id,
+              unitId: newUnit._id,
+              completed: false,
+            });
+
+            if (!newUserQuiz)
+              throw new Error('UserQuiz could not be saved to database');
+            // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
+          }
+        } catch (error) {
+          handleError(error);
         }
       });
 
+      console.log('DONE WITH ALL LESSON / QUIZ GENERATION');
       await Promise.all(lessonPromises);
     }
   );
 
   await Promise.all(unitPromises);
-  console.log('DONE WITH EVERYTHING');
 }
 
 // Function to create an upload the course
@@ -913,11 +928,14 @@ export async function createCourseCustom(
         customAttributes.tableOfContents
       );
 
+      if (!course.table_of_contents)
+        throw new Error('Table of contents could not be generated');
+
       const newCourseId = await createAndUploadCourseCustom(course, userId);
       // console.log('✅ Uploaded Course', newCourseId);
 
       await assignCourseToUser(userId, newCourseId);
-      // console.log('✅ Assigned Course to User');
+      console.log('✅ Assigned Course to User');
 
       createUnitsAndLessonsCustom(course, newCourseId, userId);
       // console.log('✅ Units and Lessons created');
