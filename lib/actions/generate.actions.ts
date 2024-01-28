@@ -11,6 +11,7 @@ import UserQuiz from '../database/models/userquiz.model';
 
 import { handleError } from '../utils';
 import UserUnit from '../database/models/userunit.model';
+import console from 'console';
 
 // SCHEMAS ---------------------------------------------------------------------
 const lesson_schema = {
@@ -86,7 +87,7 @@ const create_lessons = {
                 'the content of the lesson in markdown format, without repeating the title',
             },
           },
-          required: ['title', 'content', 'quiz'],
+          required: ['title', 'content'],
         },
         minItems: 2,
         maxItems: 4,
@@ -156,8 +157,7 @@ const generateCourse = async (topic: string): Promise<Course> => {
   const prompt = [
     {
       role: 'system',
-      content:
-        'You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your students will ask about some high level topic and you will generate a textbook quality course on the topic for them.',
+      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in ${topic}. Your students will ask about some high level topic and you will generate a textbook quality course on the topic for them.`,
     },
     {
       role: 'user',
@@ -293,6 +293,8 @@ const generateLessons = async (
       res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     );
 
+    console.log('Lessons Object ', lessonsObject);
+
     const quizPromises = lessonsObject.lessons.map(async (lesson: Lesson) => {
       const quiz = await generateQuiz(lesson);
       lesson.quiz = quiz;
@@ -369,6 +371,9 @@ async function createUnitsAndLessons(
           content: lesson.content,
           unitId: newUnit._id,
         });
+
+        if (!newLesson)
+          throw new Error('Lesson could not be saved to database');
         // console.log('✅ Uploaded Lesson', newLesson);
 
         // Create quiz if it exists in the lesson
@@ -388,13 +393,19 @@ async function createUnitsAndLessons(
             unitId: newUnit._id,
           });
 
+          if (!newQuiz) throw new Error('Quiz could not be saved to database');
+
           // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
-          await UserQuiz.create({
+          const newUserQuiz = await UserQuiz.create({
             userId: userId,
             quizId: newQuiz._id,
             unitId: newUnit._id,
             completed: false,
           });
+
+          if (!newUserQuiz)
+            throw new Error('UserQuiz could not be saved to database');
+
           // --------- NO LONGER REQUIRED AS WE ARE NOT TRACKING QUIZ PROGRESS, ONLY UNIT PROGRESS --------- //
         }
       } catch (error) {
@@ -412,18 +423,25 @@ async function createAndUploadCourse(
   course: Course,
   userId: string
 ): Promise<string> {
-  const tableOfContents = course.table_of_contents.map((unit, index) => ({
-    title: unit.title,
-    id: index + 1,
-  }));
+  try {
+    const tableOfContents = course.table_of_contents.map((unit, index) => ({
+      title: unit.title,
+      id: index + 1,
+    }));
 
-  const newCourse = await Course.create({
-    ...course,
-    tableOfContents: JSON.stringify(tableOfContents),
-    userId: userId,
-  });
+    const newCourse = await Course.create({
+      ...course,
+      tableOfContents: JSON.stringify(tableOfContents),
+      userId: userId,
+    });
 
-  return newCourse._id;
+    if (!newCourse) throw new Error('Course could not be saved to database');
+
+    return newCourse._id;
+  } catch (error) {
+    handleError(error);
+    return '';
+  }
 }
 
 // Main function called to create the course + upload its contents to the database
