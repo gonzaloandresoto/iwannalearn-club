@@ -293,7 +293,7 @@ const generateLessons = async (
       res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     );
 
-    console.log('Lessons Object ', lessonsObject);
+    console.log('LESSON OBJ ALONE ', JSON.stringify(lessonsObject, null, 4));
 
     const quizPromises = lessonsObject.lessons.map(async (lesson: Lesson) => {
       const quiz = await generateQuiz(lesson);
@@ -302,10 +302,11 @@ const generateLessons = async (
     });
 
     const lessonsWithQuizzes = await Promise.all(quizPromises);
+    console.log(
+      'LESSON + QUIZ OBJ ',
+      JSON.stringify(lessonsWithQuizzes, null, 4)
+    );
     return lessonsWithQuizzes;
-
-    // console.log('Lessons Object ', lessonsObject);
-    // console.log('Lessons Object LESSONS ', lessonsObject.lessons);
   } catch (error) {
     handleError(error);
     return [];
@@ -353,10 +354,14 @@ async function createUnitsAndLessons(
       status: 'NOT_STARTED',
     });
 
-    // console.log('✅ Uploaded Unit', newUnit);
+    console.log('✅ Uploaded Unit', newUnit);
+
+    console.log('WILL NOW GENERATE LESSONS');
 
     // Generate lesson contents
     const lessons = await generateLessons(course, unit);
+
+    console.log('LESSONS GENERATED< WILL NOW UPLOAD');
 
     if (!lessons) throw new Error('Lessons could not be generated');
 
@@ -374,7 +379,7 @@ async function createUnitsAndLessons(
 
         if (!newLesson)
           throw new Error('Lesson could not be saved to database');
-        // console.log('✅ Uploaded Lesson', newLesson);
+        console.log('✅ Uploaded Lesson', newLesson);
 
         // Create quiz if it exists in the lesson
         if (lesson.quiz) {
