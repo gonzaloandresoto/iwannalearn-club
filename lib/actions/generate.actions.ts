@@ -279,17 +279,19 @@ const generateLessons = async (
   
         !IMPORTANT -> DO NOT DESCRIBE WHAT YOU WILL TEACH OR WHAT WILL BE IN THE LESSON UNDER ANY CIRCUMSTANCES.
         
+        !IMPORTANT -> EACH LESSON SHOULD BE ACCOMPANIED BY A QUIZ BASED ON THE CONTENT
+        
         !IMPORTANT-> LESSON CONTENT SHOULD BE STRUCTURED IN MARKDOWN FORMAT AND SHOULD FOLLOW BEST PRACTICES – DO NOT ADD A LESSON TITLE WITHIN THE BODY CONTENT.
-  
+        
         !IMPORTANT -> AVOID CONCLUSIONS AND SUMMARIES IN THE LESSON CONTENT.
-  
+        
         !IMPORTANT -> THERE SHOULD BE A MINIMUM OF THREE LESSONS PER UNIT.
-  
+        
         !IMPORTANT -> LESSON CONTENT SHOULD NOT OVERLAP WITH OTHER LESSONS.
         
         !IMPORTANT -> LESSONS SHOULD MANTAIN THE CONTEXT OF THE COURSE.
         
-        !IMPORTANT -> EACH LESSON SHOULD BE ACCOMPANIED BY A QUIZ BASED ON THE CONTENT`,
+        `,
       },
       {
         role: 'user',
@@ -297,7 +299,7 @@ const generateLessons = async (
         Course Summary: ${course.summary}
         Unit: ${unit.title}
         Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')},
-        Write detailed infromative lesson content for each.`,
+        Write detailed infromative lesson content for each and ALWAYS INCLUDE THE QUIZ.`,
       },
     ] as any;
 
