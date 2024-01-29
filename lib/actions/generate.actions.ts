@@ -68,7 +68,7 @@ const create_course = {
 
 const create_lessons = {
   name: 'create_lessons',
-  description: 'creates lessons for a course',
+  description: 'creates lessons for a course along with a quiz per lesson',
   parameters: {
     type: 'object',
     properties: {
@@ -86,8 +86,34 @@ const create_lessons = {
               description:
                 'the content of the lesson in markdown format, without repeating the title',
             },
+            quiz: {
+              type: 'object',
+              properties: {
+                question: {
+                  type: 'string',
+                  description: 'the question of the quiz',
+                },
+                options: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                    description:
+                      'the potential answer options for the quiz question.',
+                  },
+                  minItems: 4,
+                  maxItems: 4,
+                },
+                answer: {
+                  type: 'number',
+                  description:
+                    'the index of the correct answer option for the quiz question',
+                  enum: [0, 1, 2, 3],
+                },
+              },
+              required: ['question', 'options', 'answer'],
+            },
           },
-          required: ['title', 'content'],
+          required: ['title', 'content', 'quiz'],
         },
         minItems: 2,
         maxItems: 4,
@@ -247,7 +273,7 @@ const generateLessons = async (
     const prompt = [
       {
         role: 'system',
-        content: `You are a superhuman educator specilaizing in ${course.title} in technical detail. Your content quality is text-book level, and leverages Wikipedia's vast information. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined. Avoid descirbing what youll teach or include in each lesson, but actually provide the educational content.
+        content: `You are a superhuman educator specilaizing in ${course.title} in technical detail. Your content quality is text-book level, and leverages Wikipedia's vast information. You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Based on the course outline, you will write a detailed informative lesson content for each of the lessons outlined. Avoid descirbing what youll teach or include in each lesson, but actually provide the educational content. Always include a quiz for each lesson.
   
         !IMPORTANT -> LESSON CONTENT SHOULD BE INFORMATIVE, PROVIDING ACTUAL CONTENT THAT CAN BE LEARNED.
   
@@ -261,7 +287,9 @@ const generateLessons = async (
   
         !IMPORTANT -> LESSON CONTENT SHOULD NOT OVERLAP WITH OTHER LESSONS.
         
-        !IMPORTANT -> LESSONS SHOULD MANTAIN THE CONTEXT OF THE COURSE.`,
+        !IMPORTANT -> LESSONS SHOULD MANTAIN THE CONTEXT OF THE COURSE.
+        
+        !IMPORTANT -> EACH LESSON SHOULD BE ACCOMPANIED BY A QUIZ BASED ON THE CONTENT`,
       },
       {
         role: 'user',
@@ -293,20 +321,22 @@ const generateLessons = async (
       res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     );
 
-    console.log('LESSON OBJ ALONE ', JSON.stringify(lessonsObject, null, 4));
+    return lessonsObject.lessons;
 
-    const quizPromises = lessonsObject.lessons.map(async (lesson: Lesson) => {
-      const quiz = await generateQuiz(lesson);
-      lesson.quiz = quiz;
-      return lesson;
-    });
+    // console.log('LESSON OBJ ALONE ', JSON.stringify(lessonsObject, null, 4));
 
-    const lessonsWithQuizzes = await Promise.all(quizPromises);
-    console.log(
-      'LESSON + QUIZ OBJ ',
-      JSON.stringify(lessonsWithQuizzes, null, 4)
-    );
-    return lessonsWithQuizzes;
+    // const quizPromises = lessonsObject.lessons.map(async (lesson: Lesson) => {
+    //   const quiz = await generateQuiz(lesson);
+    //   lesson.quiz = quiz;
+    //   return lesson;
+    // });
+
+    // const lessonsWithQuizzes = await Promise.all(quizPromises);
+    // console.log(
+    //   'LESSON + QUIZ OBJ ',
+    //   JSON.stringify(lessonsWithQuizzes, null, 4)
+    // );
+    // return lessonsWithQuizzes;
   } catch (error) {
     handleError(error);
     return [];
@@ -701,6 +731,7 @@ async function createUnitsAndLessonsCustom(
   courseId: string,
   userId: string
 ): Promise<void> {
+  if (!course.table_of_contents) throw new Error('No table of contents');
   const unitPromises = course.table_of_contents.map(
     async (unit: any, index: number) => {
       const newUnit = await Unit.create({
