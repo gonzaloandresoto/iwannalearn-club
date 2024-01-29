@@ -66,7 +66,7 @@ const create_course = {
   parameters: course_schema,
 };
 
-const create_lessons = {
+const create_lessonsOLD = {
   name: 'create_lessons',
   description: 'creates lessons for a course along with a quiz per lesson',
   parameters: {
@@ -117,6 +117,59 @@ const create_lessons = {
         },
         minItems: 2,
         maxItems: 4,
+      },
+    },
+  },
+};
+
+const create_lessons = {
+  name: 'create_lessons',
+  description: 'creates lessons for a course',
+  parameters: {
+    type: 'object',
+    properties: {
+      lessons: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            title: {
+              type: 'string',
+              description: 'the title of the lesson',
+            },
+            content: {
+              type: 'string',
+              description: 'the content of the lesson',
+            },
+            quiz: {
+              type: 'object',
+              properties: {
+                question: {
+                  type: 'string',
+                  description: 'the question of the quiz',
+                },
+                options: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                    description:
+                      'the potential answer options for the quiz question',
+                  },
+                  minItems: 4,
+                  maxItems: 4,
+                },
+                answer: {
+                  type: 'number',
+                  description:
+                    'the index of the correct answer option for the quiz question',
+                  enum: [0, 1, 2, 3],
+                },
+              },
+              required: ['question', 'options', 'answer'],
+            },
+          },
+          required: ['title', 'content', 'quiz'],
+        },
       },
     },
   },
@@ -269,6 +322,48 @@ const generateLessons = async (
   course: Course,
   unit: Unit
 ): Promise<Lesson[]> => {
+  const prompt = [
+    {
+      role: 'system',
+      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your quality is text-book level, and as informative as Wikipedia. Based on a course outline, you will write detailed markdown informative lesson content for each of the lessons outlined along with a quiz question to test the student's understanding. Content should not describe what it will teach, but rather actually provide useful information. Each lesson should mantain the context of the course and not overlap with other lessons.`,
+    },
+    {
+      role: 'user',
+      content: `Course: ${course.title}
+Course Summary: ${course.summary}
+Unit: ${unit.title}
+Lessons: ${unit.lessons.map((lesson) => lesson.title).join(', ')}
+Write detailed lesson content for each.`,
+    },
+  ] as any;
+
+  const res = await openai.chat.completions.create({
+    messages: prompt,
+    model: 'gpt-3.5-turbo-1106',
+    tools: [
+      {
+        type: 'function',
+        function: create_lessons,
+      },
+    ],
+    tool_choice: {
+      type: 'function',
+      function: {
+        name: 'create_lessons',
+      },
+    },
+  });
+  const lessonsObject = JSON.parse(
+    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+  );
+  // console.log('Lessons Object', lessonsObject);
+  return lessonsObject.lessons;
+};
+
+const generateLessonsNEW = async (
+  course: Course,
+  unit: Unit
+): Promise<Lesson[]> => {
   try {
     const prompt = [
       {
@@ -280,7 +375,7 @@ const generateLessons = async (
         !IMPORTANT -> DO NOT DESCRIBE WHAT YOU WILL TEACH OR WHAT WILL BE IN THE LESSON UNDER ANY CIRCUMSTANCES.
         
         !IMPORTANT -> EACH LESSON SHOULD BE ACCOMPANIED BY A QUIZ BASED ON THE CONTENT
-        
+
         !IMPORTANT-> LESSON CONTENT SHOULD BE STRUCTURED IN MARKDOWN FORMAT AND SHOULD FOLLOW BEST PRACTICES – DO NOT ADD A LESSON TITLE WITHIN THE BODY CONTENT.
         
         !IMPORTANT -> AVOID CONCLUSIONS AND SUMMARIES IN THE LESSON CONTENT.
