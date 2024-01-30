@@ -26,7 +26,6 @@ export default function ProfileCard() {
           {user?.firstName} {user?.lastName}
         </p>
         <div className='flex flex-row gap-4'>
-          <button className='secondary-button'>Edit profile</button>
           <SignOutButton>
             <button className='secondary-button'>Sign out</button>
           </SignOutButton>
