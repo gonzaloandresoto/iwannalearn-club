@@ -6,7 +6,9 @@ import useUserContext from '@/hooks/useUserContext';
 import { getCoursesByUserId } from '@/lib/actions/course.actions';
 
 import CourseCard from '../Library/CourseCard';
-import EmptyState from '../EmptyState';
+import EmptyState from './EmptyState';
+import LoadingState from './LoadingState';
+
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface Course {
@@ -16,27 +18,29 @@ interface Course {
 }
 
 export default function CourseGrid() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [courses, setCourses] = useState<Course[]>([]);
   const [page, setPage] = useState<number>(0);
   const isNext = useRef<boolean>(false);
   const { user } = useUserContext();
 
-  useEffect(() => {
+  const getCourses = async () => {
     if (!user) return;
+    setLoading(true);
+    const fetchedCourses = await getCoursesByUserId({
+      userId: user?._id,
+      page: page,
+      limit: 6,
+    });
 
-    const getCourses = async () => {
-      const courses = await getCoursesByUserId({
-        userId: user?._id,
-        page: page,
-        limit: 6,
-      });
+    if (fetchedCourses.courses) {
+      setCourses(fetchedCourses.courses);
+      isNext.current = fetchedCourses.isNext;
+    }
+    setLoading(false);
+  };
 
-      if (courses.courses) {
-        setCourses(courses.courses);
-        isNext.current = courses.isNext;
-      }
-    };
-
+  useEffect(() => {
     getCourses();
   }, [user, page]);
 
@@ -49,6 +53,8 @@ export default function CourseGrid() {
       return;
     }
   };
+
+  if (loading) return <LoadingState />;
 
   if (courses?.length === 0)
     return (
@@ -85,7 +91,7 @@ export default function CourseGrid() {
           </div>
 
           <button
-            disabled={!isNext.current}
+            disabled={!isNext.current || loading}
             onClick={() => handlePageChange('next')}
             className='flex items-center justify-center gap-2 py-1 px-3 hover:bg-tertiary-black bg-secondary-black text-tertiary-tan font-medium rounded-md disabled:bg-tertiary-black'
           >
