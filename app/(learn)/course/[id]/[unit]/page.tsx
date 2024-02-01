@@ -20,7 +20,10 @@ interface UnitContent {
 }
 
 export default function UnitContent() {
-  const { id, unit } = useParams<{ id: string; unit: string }>();
+  const { id, unit } = useParams<{ id: string; unit: string }>() || {
+    id: '',
+    unit: '',
+  };
   const activePage = useSearchParams()?.get('activePage');
   const [unitContent, setUnitContent] = useState<UnitContent[]>([]);
   const [generatedNewContent, setGeneratedNewContent] = useState(false);

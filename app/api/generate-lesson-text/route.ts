@@ -94,6 +94,5 @@ export async function POST(request: Request) {
     return new StreamingTextResponse(stream);
   } catch (error) {
     handleError(error);
-    return '';
   }
 }

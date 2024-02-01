@@ -18,10 +18,12 @@ export default function NavigationBar() {
   const { setId, tableOfContents, courseProgress } = useTOCContext();
 
   useEffect(() => {
-    setId(params.id);
+    if (params) {
+      setId(params.id);
+    }
   }, []);
 
-  let route = params.unit ? `/course/${params.id}` : '/library';
+  let route = params && params.unit ? `/course/${params.id}` : '/library';
 
   return (
     <div className='z-50 min-h-[72px] w-full flex flex-row items-center justify-between px-4 lg:px-32 bg-tertiary-tan'>

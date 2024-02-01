@@ -8,7 +8,7 @@ export const useCreateQueryString = () => {
 
   const createQueryString = useCallback(
     (name: string, value: any) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams?.toString());
       params.set(name, value);
 
       return params.toString();
