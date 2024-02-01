@@ -2,8 +2,30 @@
 
 import { connectToDatabase } from '../database';
 import Element from '../database/models/element.model';
-import openai from '../openai/index';
+import UserQuiz from '../database/models/userquiz.model';
 import { handleError } from '../utils';
+
+export const saveGeneratedLessonText = async (
+  lessonId: string,
+  completion: string
+) => {
+  try {
+    await connectToDatabase();
+
+    const newLesson = await Element.findOneAndUpdate(
+      { _id: lessonId },
+      { content: completion }
+    );
+
+    console.log('LESSON CONTENT GENERATED', newLesson);
+
+    if (!newLesson) {
+      throw new Error('Lesson not found');
+    }
+  } catch (error) {
+    handleError(error);
+  }
+};
 
 // const generateElement = async (courseTopic: string, unitName: string) => {
 //   const stringifiedSchema = JSON.stringify(elementSchema);

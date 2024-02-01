@@ -2,6 +2,7 @@
 // import LessonActionsDesktop from './LessonActionsDesktop';
 // import EmptyState from '@/components/Home/CustomGeneration/EmptyState';
 import useTOCContext from '@/hooks/useTOCContext';
+import { saveGeneratedLessonText } from '@/lib/actions/element.action';
 import { useCompletion } from 'ai/react';
 import { set } from 'mongoose';
 
@@ -71,6 +72,7 @@ export default function LessonContent({
     const getLessonContent = async () => {
       const completion = await complete('dont respond');
       if (completion) {
+        await saveGeneratedLessonText(item._id, completion);
         setLessonContent(completion);
         setGeneratedNewContent?.(!generatedNewContent);
       }

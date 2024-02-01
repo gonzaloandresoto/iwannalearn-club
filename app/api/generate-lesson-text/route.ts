@@ -1,12 +1,9 @@
-'use server';
-
 import { handleError } from '@/lib/utils';
 import openai from '@/lib/openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
-import { connectToDatabase } from '@/lib/database';
-import Element from '@/lib/database/models/element.model';
+import { saveGeneratedLessonText } from '@/lib/actions/element.action';
 
-// export const runtime = 'edge';
+export const runtime = 'edge';
 
 export async function POST(request: Request) {
   try {
@@ -73,18 +70,6 @@ export async function POST(request: Request) {
     const stream = OpenAIStream(response, {
       onCompletion: async (completion: string) => {
         try {
-          await connectToDatabase();
-
-          const newLesson = await Element.findOneAndUpdate(
-            { _id: lessonId },
-            { content: completion }
-          );
-
-          console.log('LESSON CONTENT GENERATED', newLesson);
-
-          if (!newLesson) {
-            throw new Error('Lesson not found');
-          }
         } catch (error) {
           handleError(error);
         }
