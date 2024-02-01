@@ -1,6 +1,7 @@
 'use server';
 import { connectToDatabase } from '../database';
 import openai from '../openai/index';
+import { OpenAIStream, StreamingTextResponse } from 'ai';
 
 import Unit from '../database/models/unit.model';
 import Course from '../database/models/course.model';
@@ -11,7 +12,6 @@ import UserQuiz from '../database/models/userquiz.model';
 
 import { handleError } from '../utils';
 import UserUnit from '../database/models/userunit.model';
-import console from 'console';
 
 // SCHEMAS ---------------------------------------------------------------------
 const lesson_schema = {
@@ -962,7 +962,7 @@ const custom_create_lesson_titles = {
   parameters: {
     type: 'object',
     properties: {
-      unit: { type: 'array', items: lesson_schema, minItems: 1, maxItems: 3 },
+      unit: { type: 'array', items: lesson_schema, minItems: 2, maxItems: 5 },
     },
   },
 };
@@ -1069,6 +1069,94 @@ export async function createCourseCustom(
       // console.log('✅ Units and Lessons created');
 
       // return course;
+      return { courseId: newCourseId };
+    })();
+
+    return await Promise.race([courseCreationPromise, timeoutPromise]);
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+}
+
+// ----------------- GENERATE AS YOU GO ----------------- //
+
+export async function createCourseCustomV2(
+  customAttributes: CustomCourse,
+  userId: string
+): Promise<any> {
+  console.log('GENERATING CUSTOM COURSE');
+  try {
+    const timeoutPromise = new Promise<{ message: string }>((resolve) => {
+      setTimeout(() => {
+        resolve({
+          message: `Course creation is taking longer than expected. We'll redirect you shortly.`,
+        });
+      }, 9000);
+    });
+
+    const courseCreationPromise = (async () => {
+      await connectToDatabase();
+
+      const course = await generateCourseDetailsCustom(customAttributes.topic);
+      if (!course) throw new Error('Course could not be generated');
+
+      const generatedTOC = await generateLessonTitlesCustom(
+        customAttributes.tableOfContents
+      );
+
+      course.table_of_contents = generatedTOC;
+
+      if (!course.table_of_contents)
+        throw new Error('Table of contents could not be generated');
+
+      const newCourseId = await createAndUploadCourseCustom(course, userId);
+      // console.log('✅ Uploaded Course', newCourseId);
+
+      await assignCourseToUser(userId, newCourseId);
+
+      for (let item in generatedTOC) {
+        const unitTitle = generatedTOC[item].title;
+
+        // Uploading the unit to the database
+        const uploadedUnit = await Unit.create({
+          title: unitTitle,
+          courseId: newCourseId,
+          order: generatedTOC[item].order,
+        });
+        if (!uploadedUnit)
+          throw new Error('Unit could not be saved to database');
+
+        const uploadedUserUnit = await UserUnit.create({
+          userId: userId,
+          unitId: uploadedUnit._id,
+          courseId: newCourseId,
+          status: 'NOT_STARTED',
+        });
+
+        if (!uploadedUserUnit)
+          throw new Error('UserUnit could not be saved to database');
+
+        // creating all the lessons for each unit
+        const unitLessons = generatedTOC[item].lessons;
+
+        unitLessons.forEach(async (lesson, index) => {
+          const lessonTitle = lesson.title;
+
+          // Uploading the lesson to the database
+          const uploadedLesson = await Element.create({
+            title: lessonTitle,
+            content: 'generate',
+            type: 'lesson',
+            order: index + 1,
+            unitId: uploadedUnit._id,
+          });
+
+          if (!uploadedLesson)
+            throw new Error('Lesson could not be saved to database');
+        });
+      }
+
       return { courseId: newCourseId };
     })();
 

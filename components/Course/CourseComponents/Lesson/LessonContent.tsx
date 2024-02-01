@@ -1,7 +1,13 @@
 // import { useState } from 'react';
 // import LessonActionsDesktop from './LessonActionsDesktop';
 // import EmptyState from '@/components/Home/CustomGeneration/EmptyState';
-import { useEffect, useState } from 'react';
+import useTOCContext from '@/hooks/useTOCContext';
+import { useCompletion } from 'ai/react';
+import { set } from 'mongoose';
+
+// import { generateLessonContent } from '@/lib/actions/generate.actions';
+import { useSearchParams } from 'next/navigation';
+import { use, useEffect, useState } from 'react';
 import { remark } from 'remark';
 import html from 'remark-html';
 
@@ -14,10 +20,66 @@ interface Content {
 interface LessonContentProps {
   item: Content;
   unitId: string;
+  generatedNewContent?: boolean;
+  setGeneratedNewContent?: (value: boolean) => void;
 }
 
-export default function LessonContent({ item, unitId }: LessonContentProps) {
+export default function LessonContent({
+  item,
+  unitId,
+  generatedNewContent,
+  setGeneratedNewContent,
+}: LessonContentProps) {
+  const activePage = useSearchParams()?.get('activePage');
+  const [lessonContent, setLessonContent] = useState<string>('');
   const [htmlContent, setHtmlContent] = useState('');
+  const { courseDetails } = useTOCContext();
+
+  const unitTitle =
+    courseDetails &&
+    courseDetails?.tableOfContents &&
+    JSON.parse(courseDetails.tableOfContents).find(
+      (item: any) => item.unitId === unitId
+    )?.title;
+
+  const {
+    completion,
+    complete,
+    stop,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+  } = useCompletion({
+    api: '/api/generate-lesson-text',
+    body: {
+      lessonId: item._id,
+      courseTitle: courseDetails && courseDetails.title,
+      courseSummary: courseDetails && courseDetails.summary,
+      unitTitle: unitTitle,
+      unitLessons:
+        courseDetails.tableOfContents &&
+        JSON.parse(courseDetails?.tableOfContents),
+      lessonTitle: item.title,
+    },
+  });
+
+  useEffect(() => {
+    setLessonContent(item.content || '');
+  }, [item]);
+
+  useEffect(() => {
+    const getLessonContent = async () => {
+      const completion = await complete('dont respond');
+      if (completion) {
+        setLessonContent(completion);
+        setGeneratedNewContent?.(!generatedNewContent);
+      }
+    };
+
+    if (lessonContent === 'generate') {
+      getLessonContent();
+    }
+  }, [lessonContent]);
 
   useEffect(() => {
     const convertMarkdownToHtml = async (markdown: string) => {
@@ -32,10 +94,12 @@ export default function LessonContent({ item, unitId }: LessonContentProps) {
       }
     };
 
-    if (item.content) {
-      convertMarkdownToHtml(item.content);
+    if (lessonContent === 'generate') {
+      convertMarkdownToHtml(completion);
+    } else {
+      convertMarkdownToHtml(lessonContent);
     }
-  }, [item.content]);
+  }, [lessonContent, completion]);
 
   return (
     <div className='lesson-quiz-content'>
@@ -61,3 +125,19 @@ export default function LessonContent({ item, unitId }: LessonContentProps) {
   setLoading={setLoading}
 /> */
 }
+
+// const generateLessonText = async () => {
+//   const unitTitle = JSON.parse(courseDetails.tableOfContents).find(
+//     (item: any) => item.unitId === unitId
+//   )?.title;
+
+//   const lessonContentText = await generateLessonContent({
+//     courseTitle: courseDetails.title,
+//     courseSummary: courseDetails.summary,
+//     unitTitle: unitTitle,
+//     unitLessons: JSON.parse(courseDetails?.tableOfContents),
+//     lessonTitle: item.title,
+//   });
+//   setLessonContent(lessonContentText);
+// };
+// generateLessonText();

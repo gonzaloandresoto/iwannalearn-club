@@ -1,5 +1,8 @@
 import useUserContext from '@/hooks/useUserContext';
-import { createCourseCustom } from '@/lib/actions/generate.actions';
+import {
+  createCourseCustom,
+  createCourseCustomV2,
+} from '@/lib/actions/generate.actions';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -49,7 +52,7 @@ export default function ProposeTOC({
     });
 
     // Call createCourseCustom with updated attributes
-    const response = await createCourseCustom(
+    const response = await createCourseCustomV2(
       {
         ...customAttributes,
         tableOfContents: filteredTableOfContents,

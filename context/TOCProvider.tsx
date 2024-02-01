@@ -1,6 +1,9 @@
 'use client';
 
-import { getCourseProgressById } from '@/lib/actions/course.actions';
+import {
+  getCourseById,
+  getCourseProgressById,
+} from '@/lib/actions/course.actions';
 import {
   createContext,
   useState,
@@ -18,6 +21,7 @@ interface ITOCContext {
   setCourseProgress: Dispatch<SetStateAction<number>>;
   wasQuizUpdated: boolean;
   setWasQuizUpdated: Dispatch<SetStateAction<boolean>>;
+  courseDetails: any;
 }
 
 interface ITableOfContents {
@@ -42,6 +46,16 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
   );
   const [courseProgress, setCourseProgress] = useState<number>(0);
   const [wasQuizUpdated, setWasQuizUpdated] = useState<boolean>(false);
+  const [courseDetails, setCourseDetails] = useState<any>({});
+
+  useEffect(() => {
+    if (!id) return;
+    const courseDetails = async () => {
+      const courseDetailsData = await getCourseById(id);
+      setCourseDetails(courseDetailsData);
+    };
+    courseDetails();
+  }, [id]);
 
   useEffect(() => {
     if (!id) return;
@@ -76,6 +90,7 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
   const value = {
     id,
     setId,
+    courseDetails,
     tableOfContents,
     setTableOfContents,
     courseProgress,

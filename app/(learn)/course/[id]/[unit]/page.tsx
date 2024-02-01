@@ -21,8 +21,9 @@ interface UnitContent {
 
 export default function UnitContent() {
   const { id, unit } = useParams<{ id: string; unit: string }>();
-  const activePage = useSearchParams().get('activePage');
+  const activePage = useSearchParams()?.get('activePage');
   const [unitContent, setUnitContent] = useState<UnitContent[]>([]);
+  const [generatedNewContent, setGeneratedNewContent] = useState(false);
 
   useEffect(() => {
     const getUnitContent = async () => {
@@ -32,7 +33,7 @@ export default function UnitContent() {
       }
     };
     getUnitContent();
-  }, [unit]);
+  }, [unit, generatedNewContent]);
 
   return (
     <div className='course-page'>
@@ -42,6 +43,8 @@ export default function UnitContent() {
           courseId={id}
           unitContent={unitContent}
           activePage={activePage ? parseInt(activePage) : 0}
+          generatedNewContent={generatedNewContent}
+          setGeneratedNewContent={setGeneratedNewContent}
         />
       ) : (
         <EmptyState />

@@ -184,7 +184,7 @@ export async function getCourseById(id: string) {
 
     if (!course) throw new Error('Course not found');
 
-    return course;
+    return JSON.parse(JSON.stringify(course));
   } catch (error) {
     console.log(error);
   }

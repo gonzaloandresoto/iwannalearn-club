@@ -24,6 +24,8 @@ interface CourseCardProps {
   activePage: number;
   unitId: string;
   courseId: string;
+  generatedNewContent?: boolean;
+  setGeneratedNewContent?: (value: boolean) => void;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
@@ -31,6 +33,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
   courseId,
   unitContent,
   activePage,
+  setGeneratedNewContent,
+  generatedNewContent,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const currentItem = unitContent[activePage];
@@ -43,6 +47,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <LessonContent
             item={currentItem}
             unitId={unitId}
+            generatedNewContent={generatedNewContent}
+            setGeneratedNewContent={setGeneratedNewContent}
           />
         )}
         {currentItem?.type === 'quiz' && (
