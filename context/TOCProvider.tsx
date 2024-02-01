@@ -2,8 +2,10 @@
 
 import {
   getCourseById,
+  getCourseContentById,
   getCourseProgressById,
 } from '@/lib/actions/course.actions';
+
 import {
   createContext,
   useState,
@@ -68,23 +70,13 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!id) return;
-    fetch('/api/course-content', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: id }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // if (Object.values(data).some((item) => item.content.length == 0)) {
-        //   setTimeout(() => {
-        //     setIsTOCLoaded((prev) => !prev), 3000;
-        //   });
-        // } else {
-        setTableOfContents(data);
-        // }
-      });
+    const getTableOfContents = async () => {
+      const TOC = await getCourseContentById(id);
+      if (TOC) {
+        setTableOfContents(TOC);
+      }
+    };
+    getTableOfContents();
   }, [id, wasQuizUpdated]);
 
   const value = {
