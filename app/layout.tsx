@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
 import { Inter, Source_Serif_4, Rosario } from 'next/font/google';
 import './globals.css';
@@ -36,6 +37,7 @@ export default function RootLayout({
             afterSignInUrl='/generate'
             afterSignUpUrl='/onboarding'
           >
+            <SpeedInsights />
             <ToastContainer />
             {children}
             <Analytics />
