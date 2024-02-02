@@ -10,6 +10,7 @@ import Unit from '../database/models/unit.model';
 import UserQuiz from '../database/models/userquiz.model';
 import Quiz from '../database/models/quiz.model';
 import { revalidatePath } from 'next/cache';
+import UserUnit from '../database/models/userunit.model';
 
 interface CourseForUser {
   _id: string;
@@ -71,22 +72,16 @@ export async function getCourseProgressById(id: string): Promise<number> {
   try {
     await connectToDatabase();
 
-    const units = await Unit.find({
+    const units = await UserUnit.find({
       courseId: { $in: id },
     });
 
-    if (!units) throw new Error('Units not found');
+    if (!units) throw new Error('Units not found for this course: ' + id);
 
-    const unitIds = units.map((unit) => unit._id);
-    // console.log('🚀 ~ unitIds:', unitIds);
+    const completedUnits = units.filter((unit) => unit.status === 'COMPLETE');
 
-    const quizzes = await UserQuiz.find({ unitId: { $in: unitIds } });
-    // console.log('🚀 ~ quizzes:', quizzes);
-
-    if (!quizzes) throw new Error('Quizzes not found');
-
-    let total = quizzes.length;
-    let completed = quizzes.filter((quiz) => quiz.completed).length;
+    let total = units.length;
+    let completed = completedUnits.length;
     const progress = Math.round((completed / total) * 100);
 
     if (progress) {
@@ -152,7 +147,7 @@ export async function getCourseContentById(id: string) {
       };
       return acc;
     }, {});
-    return groupedCourse;
+    return JSON.parse(JSON.stringify(groupedCourse));
   } catch (error) {
     handleError(error);
   }
