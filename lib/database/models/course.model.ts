@@ -6,6 +6,7 @@ const CourseSchema = new Schema(
     summary: { type: String, required: true },
     tableOfContents: { type: String, required: true },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    doneGenerating: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

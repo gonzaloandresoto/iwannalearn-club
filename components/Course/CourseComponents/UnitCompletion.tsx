@@ -1,3 +1,6 @@
+'use client';
+
+import useUserContext from '@/hooks/useUserContext';
 import Link from 'next/link';
 
 interface UnitContentItem {
@@ -18,8 +21,9 @@ export default function UnitCompletion({
   unitContent,
   nextUnitId,
 }: UnitCompletionProps) {
+  const { user } = useUserContext();
   let route;
-  if (!nextUnitId) {
+  if (!nextUnitId && user) {
     route = `/course/${unitContent?.courseId}/course-completed`;
   } else {
     route = `/course/${unitContent?.courseId}/${nextUnitId}`;

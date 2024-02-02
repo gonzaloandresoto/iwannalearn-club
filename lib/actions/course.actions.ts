@@ -16,6 +16,7 @@ interface CourseForUser {
   _id: string;
   title: string;
   progress: number;
+  createdAt: string;
 }
 
 interface UserCoursesResponse {
@@ -43,7 +44,7 @@ export async function getCoursesByUserId(
     const userCourses = await UserCourse.find({ userId: userId })
       .populate({
         path: 'courseId',
-        select: 'title completed updatedAt',
+        select: 'title completed updatedAt createdAt',
       })
       .skip(page * limit)
       .limit(limit)
@@ -263,4 +264,27 @@ export const goDeeper = async (
   await Element.findOneAndUpdate({ _id: lesson._id }, { content: result });
 
   return 'Reload';
+};
+
+export const getRecentCourses = async ({ page, limit }: any) => {
+  try {
+    await connectToDatabase();
+
+    // await Course.updateMany({}, { $set: { doneGenerating: false } })
+    //   .then((result) => {
+    //     console.log('Update result:', result);
+    //   })
+    //   .catch((err) => {
+    //     console.error('Update error:', err);
+    //   });
+
+    const recentCourses = await Course.find({ doneGenerating: true })
+      .sort({ createdAt: -1 })
+      .skip(page * limit)
+      .limit(limit);
+
+    return JSON.parse(JSON.stringify(recentCourses));
+  } catch (error) {
+    handleError(error);
+  }
 };

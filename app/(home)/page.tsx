@@ -8,6 +8,8 @@ import GeneratingCourse from '@/components/Home/GeneratingCourse';
 import RecommendedTopics from '@/components/Home/RecommendedTopics';
 import SearchBar from '@/components/Home/SearchBar';
 import CustomGenerationModal from '@/components/Home/CustomGeneration/CustomGenerationModal';
+import CourseGrid from '@/components/Home/CourseGrid';
+import { SignedOut } from '@clerk/nextjs';
 
 export default function Generate() {
   const [topic, setTopic] = useState<string>('');
@@ -19,16 +21,22 @@ export default function Generate() {
       {isGenerating ? (
         <GeneratingCourse />
       ) : (
-        <div className='flex flex-col gap-4 items-center justify-center'>
-          <p className='md:text-5xl text-3xl text-secondary-black font-bold font-sourceSerif'>
-            iWannaLearn
-          </p>
-          <SearchBar
-            topic={topic}
-            setTopic={setTopic}
-            setCustomizeDrawer={setCustomizeDrawer}
-          />
-          <RecommendedTopics setIsGenerating={setIsGenerating} />
+        <div className='flex flex-col gap-8 items-center'>
+          <div className='flex flex-col gap-4 items-center w-full py-24'>
+            <p className='md:text-5xl text-3xl text-secondary-black font-bold font-sourceSerif'>
+              iWannaLearn
+            </p>
+            <SearchBar
+              topic={topic}
+              setTopic={setTopic}
+              setCustomizeDrawer={setCustomizeDrawer}
+            />
+            <RecommendedTopics setIsGenerating={setIsGenerating} />
+          </div>
+          <SignedOut>
+            <CourseGrid />
+          </SignedOut>
+
           <>
             <AnimatePresence>
               {customizeDrawer && (

@@ -32,6 +32,7 @@ export default function QuizNavigationControls({
   const router = useRouter();
   const { user } = useUserContext();
   const createQueryString = useCreateQueryString();
+  const userId = user?._id;
 
   const { wasQuizUpdated, setWasQuizUpdated } = useTOCContext();
 
@@ -39,27 +40,40 @@ export default function QuizNavigationControls({
   const nextPage = (activePage + 1).toString();
   const nextPageQuery = createQueryString('activePage', nextPage);
 
-  const handleNext = async () => {
-    const userId = user?._id || '';
-    if (activePage === unitLength - 1 && courseId && unitId) {
-      await Promise.all([
-        markQuizCompleted(quizId, userId),
-        updateUnitStatus(unitId, userId, 'COMPLETE'),
-      ]);
-      router.push(`/course/${courseId}/${unitId}/unit-completed`);
-    } else if (activePage === 1) {
-      await Promise.all([
-        markQuizCompleted(quizId, userId),
-        updateUnitStatus(unitId, userId, 'IN_PROGRESS'),
-      ]);
-      router.push(pathname + '?' + nextPageQuery);
-    } else {
-      await markQuizCompleted(quizId, userId);
-      router.push(pathname + '?' + nextPageQuery);
-    }
+  // const handleNext = async () => {
+  //   const userId = user?._id || '';
+  //   if (activePage === unitLength - 1 && courseId && unitId) {
+  //     await Promise.all([
+  //       markQuizCompleted(quizId, userId),
+  //       updateUnitStatus(unitId, userId, 'COMPLETE'),
+  //     ]);
+  //     router.push(`/course/${courseId}/${unitId}/unit-completed`);
+  //   } else if (activePage === 1) {
+  //     await Promise.all([
+  //       markQuizCompleted(quizId, userId),
+  //       updateUnitStatus(unitId, userId, 'IN_PROGRESS'),
+  //     ]);
+  //     router.push(pathname + '?' + nextPageQuery);
+  //   } else {
+  //     await markQuizCompleted(quizId, userId);
+  //     router.push(pathname + '?' + nextPageQuery);
+  //   }
 
+  //   setSelectedAnswer('');
+  //   setWasQuizUpdated(!wasQuizUpdated);
+  // };
+
+  const handleNext = async () => {
+    if (activePage === unitLength - 1 && courseId && unitId) {
+      if (userId) markQuizCompleted(quizId, userId);
+
+      router.push(`/course/${courseId}/${unitId}/unit-completed`);
+    } else if (activePage === 1 && userId) {
+      updateUnitStatus(unitId, userId, 'IN_PROGRESS');
+    }
     setSelectedAnswer('');
     setWasQuizUpdated(!wasQuizUpdated);
+    router.push(pathname + '?' + nextPageQuery);
   };
 
   return (

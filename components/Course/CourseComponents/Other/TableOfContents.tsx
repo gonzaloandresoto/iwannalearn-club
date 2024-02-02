@@ -1,3 +1,4 @@
+import useUserContext from '@/hooks/useUserContext';
 import Link from 'next/link';
 
 interface TableofContentsItem {
@@ -25,11 +26,14 @@ export default function TableOfContents({
   courseId,
   unitCompletions,
 }: TableOfContentsProps) {
+  const { user } = useUserContext();
   const tableOfContentsArray: TableofContentsItem[] =
     JSON.parse(tableOfContents);
 
   const unitStatus = (unitId: string, index: number) => {
     if (!unitCompletions) return 'Locked';
+
+    if (!user?._id) return 'Start';
 
     const status = unitCompletions[unitId]?.status;
     const prevStatus =
@@ -60,7 +64,7 @@ export default function TableOfContents({
         return (
           <div
             key={index}
-            className='w-full flex items-center justify-between lg:py-4 py-3 border-b-2 border-primary-tan'
+            className='w-full flex items-center justify-between gap-4 lg:py-4 py-3 border-b-2 border-primary-tan'
           >
             <div className='flex flex-col gap-4'>
               <p className='lg:text-base text-sm text-tertiary-black font-bold font-rosario uppercase'>

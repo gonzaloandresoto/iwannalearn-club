@@ -15,6 +15,7 @@ interface Course {
   _id: string;
   title: string;
   progress: number;
+  createdAt: string;
 }
 
 export default function CourseGrid() {
@@ -73,6 +74,8 @@ export default function CourseGrid() {
             courseId={course._id}
             title={course.title}
             progress={course.progress}
+            createdAt={course.createdAt}
+            noAuth={true}
           />
         ))}
       </div>

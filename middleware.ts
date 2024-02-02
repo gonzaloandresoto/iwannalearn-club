@@ -8,8 +8,15 @@ export default authMiddleware({
     '/signin',
     '/signup',
     '/api/webhook/clerk',
+    '/course/(.*)',
+    '/logsnag/(.*)',
   ],
-  ignoredRoutes: ['/api/webhook/clerk, /onboarding'],
+  ignoredRoutes: [
+    '/api/webhook/clerk',
+    '/onboarding',
+    '/course/(.*)',
+    '/logsnag/(.*)',
+  ],
   afterAuth: (auth, req) => {
     if (!auth.userId && !auth.isPublicRoute) {
       return NextResponse.redirect(new URL('/', req.nextUrl).href);

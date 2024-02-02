@@ -49,7 +49,7 @@ export default function RecommendedTopics({
             onClick={() =>
               handleCourseCreation(item?.topic || '', user?._id || '')
             }
-            className='flex-none px-4 py-1 bg-white border-2 border-primary-tan rounded-md text-secondary-black md:text-base text-sm font-rosario'
+            className='secondary-button'
           >
             {item.topic}
           </button>

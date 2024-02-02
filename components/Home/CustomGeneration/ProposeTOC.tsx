@@ -1,13 +1,17 @@
+'use client';
+
 import useUserContext from '@/hooks/useUserContext';
+import { useLogSnag } from '@logsnag/next';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+
 import {
   createCourseCustom,
   createCourseCustomV2,
 } from '@/lib/actions/generate.actions';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'react-toastify';
-import GeneratingCourse from '../GeneratingCourse';
 
+import GeneratingCourse from '../GeneratingCourse';
 const formatSampleTOC = (toc: string[]) => {
   return toc.map((item: any) => `${item.id}. ${item.title}`).join('\n');
 };
@@ -21,8 +25,11 @@ export default function ProposeTOC({
     formatSampleTOC(customAttributes.tableOfContents)
   );
 
+  const { track, setUserId, setDebug } = useLogSnag();
   const router = useRouter();
   const { user } = useUserContext();
+
+  setUserId(user?._id || '');
 
   const CustomGeneration = async () => {
     if (!text) return;
@@ -49,6 +56,17 @@ export default function ProposeTOC({
     setCustomAttributes({
       ...customAttributes,
       tableOfContents: filteredTableOfContents,
+    });
+
+    track({
+      channel: 'learn',
+      event: 'Course Created',
+      icon: '📚',
+      notify: true,
+      tags: {
+        type: 'custom',
+        generation: 'v2',
+      },
     });
 
     // Call createCourseCustom with updated attributes

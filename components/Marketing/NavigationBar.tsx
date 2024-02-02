@@ -21,7 +21,7 @@ export default function NavigationBar() {
             Contact
           </Link>
           <SignedIn>
-            <Link href='/generate'>
+            <Link href='/'>
               <button className='nav-text hover:underline'>Home</button>
             </Link>
           </SignedIn>

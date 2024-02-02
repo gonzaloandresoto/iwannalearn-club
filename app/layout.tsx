@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { LogSnagProvider } from '@logsnag/next';
 import { Analytics } from '@vercel/analytics/react';
 import { Inter, Source_Serif_4, Rosario } from 'next/font/google';
 import './globals.css';
@@ -29,12 +30,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
+      <head>
+        <LogSnagProvider
+          token='5709588006ef4f56b1a4ab66bf426905'
+          project='iwl'
+        />
+      </head>
       <body
         className={`${inter.className} ${sourceSerif.variable} ${rosario.variable}`}
       >
         <section className='min-w-screen min-h-screen flex'>
           <ClerkProvider
-            afterSignInUrl='/generate'
+            afterSignInUrl='/'
             afterSignUpUrl='/onboarding'
           >
             <SpeedInsights />

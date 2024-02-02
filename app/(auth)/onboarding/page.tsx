@@ -26,14 +26,14 @@ export default function Page() {
   useEffect(() => {
     if (!user) return;
     else if (user.onboarding) {
-      router.push('/generate');
+      router.push('/');
     }
   }, [user]);
 
   const nextPage = async () => {
     if (activePage === 3) {
       await updateUserDetails(user?._id || '', userInfo, true),
-        router.push('/generate');
+        router.push('/');
     } else {
       setActivePage(activePage + 1);
     }

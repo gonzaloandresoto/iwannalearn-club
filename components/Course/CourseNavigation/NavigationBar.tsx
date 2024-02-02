@@ -35,14 +35,6 @@ export default function NavigationBar() {
       </Link>
 
       <div className='flex gap-4'>
-        <button className='hidden w-[40px] h-[40px] flex-none md:flex items-center justify-center bg-secondary-black rounded-md'>
-          <Image
-            src='/course-icons/more-white.svg'
-            alt='more icon'
-            width={18}
-            height={4}
-          />
-        </button>
         <div
           ref={dropdownRef}
           className='relative'
