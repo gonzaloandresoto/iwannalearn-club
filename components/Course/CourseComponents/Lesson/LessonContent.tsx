@@ -16,6 +16,7 @@ interface Content {
 interface LessonContentProps {
   item: Content;
   unitId: string;
+  setGenerating: (value: boolean) => void;
   generatedNewContent?: boolean;
   setGeneratedNewContent?: (value: boolean) => void;
 }
@@ -23,6 +24,7 @@ interface LessonContentProps {
 export default function LessonContent({
   item,
   unitId,
+  setGenerating,
   generatedNewContent,
   setGeneratedNewContent,
 }: LessonContentProps) {
@@ -58,11 +60,13 @@ export default function LessonContent({
 
   useEffect(() => {
     const getLessonContent = async () => {
+      setGenerating(true);
       const completion = await complete('dont respond');
       if (completion) {
         await saveGeneratedLessonText(item._id, completion);
         setLessonContent(completion);
         setGeneratedNewContent?.(!generatedNewContent);
+        setGenerating(false);
       }
     };
 

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 interface LessonNavigationControlsProps {
   activePage: number;
+  generating: boolean;
   unitLength: number;
   courseId: string;
   unitId: string;
@@ -14,7 +15,7 @@ interface LessonNavigationControlsProps {
 
 export default function LessonNavigationControls({
   activePage,
-
+  generating,
   unitLength,
   courseId,
   unitId,
@@ -65,13 +66,14 @@ export default function LessonNavigationControls({
       <button
         onClick={handlePrev}
         className='main-button disabled:opacity-50'
-        disabled={activePage === 0}
+        disabled={activePage === 0 || generating}
       >
         Prev
       </button>
       <button
         onClick={handleNext}
-        className='main-button '
+        className='main-button disabled:opacity-50'
+        disabled={generating}
       >
         Next
       </button>

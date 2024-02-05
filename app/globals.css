@@ -80,11 +80,11 @@
 }
 
 .lesson-text h2 {
-  @apply text-xl text-tertiary-black font-bold mt-4;
+  @apply text-3xl text-tertiary-black font-bold mt-4;
 }
 
 .lesson-text h3 {
-  @apply text-xl text-tertiary-black font-bold mt-4;
+  @apply text-2xl text-tertiary-black font-bold mt-4;
 }
 
 .lesson-text h4 {

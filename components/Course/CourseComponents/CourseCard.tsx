@@ -37,6 +37,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   generatedNewContent,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
+  const [generating, setGenerating] = useState<boolean>(false);
   const currentItem = unitContent[activePage];
   const correctAnswer = Number(currentItem?.answer);
 
@@ -47,6 +48,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <LessonContent
             item={currentItem}
             unitId={unitId}
+            setGenerating={setGenerating}
             generatedNewContent={generatedNewContent}
             setGeneratedNewContent={setGeneratedNewContent}
           />
@@ -62,6 +64,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
       {currentItem?.type === 'lesson' && (
         <LessonNavigationControls
           activePage={activePage}
+          generating={generating}
           unitLength={unitContent.length}
           courseId={courseId}
           unitId={unitId}
