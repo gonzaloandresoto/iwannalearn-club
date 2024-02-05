@@ -11,6 +11,7 @@ import UserQuiz from '../database/models/userquiz.model';
 import Quiz from '../database/models/quiz.model';
 import { revalidatePath } from 'next/cache';
 import UserUnit from '../database/models/userunit.model';
+import { redirect } from 'next/navigation';
 
 interface CourseForUser {
   _id: string;
@@ -284,6 +285,30 @@ export const getRecentCourses = async ({ page, limit }: any) => {
       .limit(limit);
 
     return JSON.parse(JSON.stringify(recentCourses));
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const markCourseAsComplete = async (courseId: string): Promise<void> => {
+  try {
+    await connectToDatabase();
+
+    const course = await Course.findOneAndUpdate(
+      { _id: courseId },
+      { doneGenerating: true }
+    );
+
+    if (!course) throw new Error('Course was not found');
+
+    const userCourse = await UserCourse.findOneAndUpdate(
+      { courseId: courseId },
+      { completed: true }
+    );
+
+    if (!userCourse) throw new Error('Course progress could not be saved');
+
+    // redirect(`/course/${courseId}`);
   } catch (error) {
     handleError(error);
   }

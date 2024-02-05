@@ -1,12 +1,23 @@
+'use client';
+
+import { markCourseAsComplete } from '@/lib/actions/course.actions';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function CourseCompletion({ course }: any) {
+  const router = useRouter();
   const today = new Date().toLocaleDateString('en-us', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+
+  const completeCourse = async () => {
+    await markCourseAsComplete(course?._id);
+    router.push(`/course/${course?._id}`);
+  };
+
   return (
     <div className='course-card'>
       <div className='course-card-inner h-full flex flex-col gap-6 justify-center pb-[120px]'>
@@ -20,12 +31,12 @@ export default function CourseCompletion({ course }: any) {
       </div>
 
       <div className='fixed bottom-0 max-w-[876px] w-full min-h-[88px] flex gap-2 bg-white p-[16px] justify-center border-t-2 border-primary-tan'>
-        <Link
-          href={`/course/${course?._id}`}
-          className='main-button '
+        <button
+          onClick={completeCourse}
+          className='main-button'
         >
-          Continue
-        </Link>
+          Finish
+        </button>
       </div>
     </div>
   );
