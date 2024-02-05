@@ -16,8 +16,6 @@ export async function POST(request: Request) {
       lessonTitle,
     } = // unit lessons is currently just the table of contents
       await request.json();
-
-    console.log('START GENERATING LESSON CONTENT OPEN AI');
     const prompt = [
       {
         role: 'system',
@@ -67,14 +65,7 @@ export async function POST(request: Request) {
       stream: true,
     });
 
-    const stream = OpenAIStream(response, {
-      onCompletion: async (completion: string) => {
-        try {
-        } catch (error) {
-          handleError(error);
-        }
-      },
-    });
+    const stream = OpenAIStream(response);
 
     return new StreamingTextResponse(stream);
   } catch (error) {

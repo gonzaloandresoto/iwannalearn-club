@@ -17,8 +17,6 @@ export const saveGeneratedLessonText = async (
       { content: completion }
     );
 
-    console.log('LESSON CONTENT GENERATED', newLesson);
-
     if (!newLesson) {
       throw new Error('Lesson not found');
     }
