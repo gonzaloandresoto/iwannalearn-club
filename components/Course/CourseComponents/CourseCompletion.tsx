@@ -1,10 +1,11 @@
 'use client';
 
+import useUserContext from '@/hooks/useUserContext';
 import { markCourseAsComplete } from '@/lib/actions/course.actions';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function CourseCompletion({ course }: any) {
+  const { user } = useUserContext();
   const router = useRouter();
   const today = new Date().toLocaleDateString('en-us', {
     weekday: 'long',
@@ -14,7 +15,9 @@ export default function CourseCompletion({ course }: any) {
   });
 
   const completeCourse = async () => {
-    await markCourseAsComplete(course?._id);
+    if (user?._id) {
+      await markCourseAsComplete(course?._id);
+    }
     router.push(`/course/${course?._id}`);
   };
 
