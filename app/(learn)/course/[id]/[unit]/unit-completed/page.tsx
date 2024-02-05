@@ -11,15 +11,14 @@ export default async function Completed({
   params: { id: string; unit: string };
 }) {
   const unitContent = await getUnitContentById(unit);
-  const nextUncompletedUnit = await getNextUncompletedUnit(id);
-  const nextUnit = null;
+  const nextUnit = await getNextUncompletedUnit(id, unit);
 
   return (
     <div className='course-page'>
       {unitContent ? (
         <UnitCompletion
           unitContent={unitContent}
-          nextUnitId={nextUncompletedUnit || null}
+          nextUnitId={nextUnit || null}
         />
       ) : (
         <EmptyState />

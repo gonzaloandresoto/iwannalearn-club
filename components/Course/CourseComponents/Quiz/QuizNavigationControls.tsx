@@ -41,45 +41,22 @@ export default function QuizNavigationControls({
   const nextPageQuery = createQueryString('activePage', nextPage);
 
   // const handleNext = async () => {
-  //   const userId = user?._id || '';
   //   if (activePage === unitLength - 1 && courseId && unitId) {
-  //     await Promise.all([
-  //       markQuizCompleted(quizId, userId),
-  //       updateUnitStatus(unitId, userId, 'COMPLETE'),
-  //     ]);
-  //     router.push(`/course/${courseId}/${unitId}/unit-completed`);
-  //   } else if (activePage === 1) {
-  //     await Promise.all([
-  //       markQuizCompleted(quizId, userId),
-  //       updateUnitStatus(unitId, userId, 'IN_PROGRESS'),
-  //     ]);
-  //     router.push(pathname + '?' + nextPageQuery);
-  //   } else {
-  //     await markQuizCompleted(quizId, userId);
-  //     router.push(pathname + '?' + nextPageQuery);
-  //   }
+  //     if (userId) markQuizCompleted(quizId, userId);
 
+  //     router.push(`/course/${courseId}/${unitId}/unit-completed`);
+  //   } else if (activePage === 1 && userId) {
+  //     updateUnitStatus(unitId, userId, 'IN_PROGRESS');
+  //   }
   //   setSelectedAnswer('');
   //   setWasQuizUpdated(!wasQuizUpdated);
+  //   router.push(pathname + '?' + nextPageQuery);
   // };
-
-  const handleNext = async () => {
-    if (activePage === unitLength - 1 && courseId && unitId) {
-      if (userId) markQuizCompleted(quizId, userId);
-
-      router.push(`/course/${courseId}/${unitId}/unit-completed`);
-    } else if (activePage === 1 && userId) {
-      updateUnitStatus(unitId, userId, 'IN_PROGRESS');
-    }
-    setSelectedAnswer('');
-    setWasQuizUpdated(!wasQuizUpdated);
-    router.push(pathname + '?' + nextPageQuery);
-  };
 
   return (
     <div className='fixed bottom-0 max-w-[876px] w-full min-h-[88px] flex gap-2 pt-[16px] justify-end border-t-2 border-primary-tan lg:px-10 px-4'>
       <button
-        onClick={handleNext}
+        onClick={() => console.log('prev')}
         className='main-button disabled:bg-secondary-blue'
         disabled={Number(selectedAnswer) !== correctAnswer}
       >

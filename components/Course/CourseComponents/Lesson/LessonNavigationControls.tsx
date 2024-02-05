@@ -24,17 +24,34 @@ export default function LessonNavigationControls({
   const { user } = useUserContext();
 
   const pathname = `/course/${courseId}/${unitId}`;
-  const prevPage = (activePage - 1).toString();
-  const nextPage = (activePage + 1).toString();
-  const nextPageQuery = createQueryString('activePage', nextPage);
-  const prevPageQuery = createQueryString('activePage', prevPage);
+  const nextPageQuery = createQueryString(
+    'activePage',
+    (activePage + 1).toString()
+  );
+  const prevPageQuery = createQueryString(
+    'activePage',
+    (activePage - 1).toString()
+  );
 
   const handleNext = async () => {
-    if (activePage === unitLength - 1 && courseId && unitId) {
-      await updateUnitStatus(unitId, user?._id || '', 'COMPLETE');
-      router.push(`/course/${courseId}/${unitId}/unit-completed`);
+    const userId = user?._id;
+
+    if (userId) {
+      if (activePage === unitLength - 1) {
+        await updateUnitStatus(unitId, userId, 'COMPLETE');
+        router.push(`/course/${courseId}/${unitId}/unit-completed`);
+      } else if (activePage === 1) {
+        updateUnitStatus(unitId, userId, 'IN_PROGRESS');
+        router.push(pathname + '?' + nextPageQuery);
+      } else {
+        router.push(pathname + '?' + nextPageQuery);
+      }
     } else {
-      router.push(pathname + '?' + nextPageQuery);
+      if (activePage === unitLength - 1) {
+        router.push(`/course/${courseId}/${unitId}/unit-completed`);
+      } else {
+        router.push(pathname + '?' + nextPageQuery);
+      }
     }
   };
 

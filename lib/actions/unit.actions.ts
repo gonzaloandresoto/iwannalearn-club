@@ -1,12 +1,12 @@
 'use server';
-import Unit from '../database/models/unit.model';
+
 import { connectToDatabase } from '../database';
 import { handleError } from '../utils';
+import Unit from '../database/models/unit.model';
+
 import Quiz from '../database/models/quiz.model';
 import Element from '../database/models/element.model';
-import UserQuiz from '../database/models/userquiz.model';
 import UserUnit from '../database/models/userunit.model';
-import { connect } from 'http2';
 
 export async function updateUnitStatus(
   unitId: string,
@@ -31,32 +31,6 @@ export async function updateUnitStatus(
   }
 }
 
-// export async function addUnitToDatabase(
-//   courseTopic: string,
-//   unitName: string,
-//   courseId: string,
-//   id: string
-// ) {
-//   try {
-//     await connectToDatabase();
-
-//     const newUnit = await Unit.create({
-//       title: unitName,
-//       courseId: courseId,
-//       status: 'NOT_STARTED',
-//       order: id,
-//     });
-
-//     const unitId = newUnit._id;
-
-//     createElement(courseTopic, unitName, unitId);
-
-//     return JSON.parse(JSON.stringify(newUnit));
-//   } catch (error) {
-//     handleError(error);
-//   }
-// }
-
 export async function getUnitContentById(unitId: string) {
   try {
     await connectToDatabase();
@@ -67,7 +41,7 @@ export async function getUnitContentById(unitId: string) {
       return { message: 'No unit found' };
     }
 
-    return unit;
+    return JSON.parse(JSON.stringify(unit));
   } catch (error) {
     handleError(error);
   }
@@ -92,21 +66,28 @@ export async function getUnitElementsById(id: string) {
 }
 
 // Function to get the next uncompleted unit
-export async function getNextUncompletedUnit(courseId: string) {
+export async function getNextUncompletedUnit(
+  courseId: string,
+  unitId: string
+): Promise<string | null> {
   try {
-    const unitCompletions = await getUnitCompletions(courseId);
-
-    if (unitCompletions) {
-      for (const unitId of Object.keys(unitCompletions)) {
-        if (unitCompletions[unitId].status !== 'COMPLETE') {
-          return unitId;
-        }
-      }
+    const currentUnit = await Unit.findById(unitId);
+    if (!currentUnit) {
+      return null;
     }
 
-    return null;
+    const nextUnit = await Unit.findOne(
+      {
+        courseId: courseId,
+        order: { $gt: currentUnit.order },
+      },
+      { _id: 1 }
+    ).sort({ order: 1 });
+
+    return nextUnit ? nextUnit._id.toString() : null;
   } catch (error) {
     handleError(error);
+    return null;
   }
 }
 
