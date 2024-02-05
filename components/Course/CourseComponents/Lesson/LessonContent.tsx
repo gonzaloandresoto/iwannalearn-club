@@ -1,16 +1,11 @@
-// import { useState } from 'react';
-// import LessonActionsDesktop from './LessonActionsDesktop';
-// import EmptyState from '@/components/Home/CustomGeneration/EmptyState';
 import useTOCContext from '@/hooks/useTOCContext';
+import useUserContext from '@/hooks/useUserContext';
 import { saveGeneratedLessonText } from '@/lib/actions/element.action';
 import { useCompletion } from 'ai/react';
-import { set } from 'mongoose';
-
-// import { generateLessonContent } from '@/lib/actions/generate.actions';
-import { useSearchParams } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { remark } from 'remark';
 import html from 'remark-html';
+import gfm from 'remark-gfm';
 
 interface Content {
   title?: string;
@@ -31,10 +26,10 @@ export default function LessonContent({
   generatedNewContent,
   setGeneratedNewContent,
 }: LessonContentProps) {
-  const activePage = useSearchParams()?.get('activePage');
   const [lessonContent, setLessonContent] = useState<string>('');
   const [htmlContent, setHtmlContent] = useState('');
   const { courseDetails } = useTOCContext();
+  const { user } = useUserContext();
 
   const unitTitle =
     courseDetails &&
@@ -43,14 +38,7 @@ export default function LessonContent({
       (item: any) => item.unitId === unitId
     )?.title;
 
-  const {
-    completion,
-    complete,
-    stop,
-    isLoading,
-    handleInputChange,
-    handleSubmit,
-  } = useCompletion({
+  const { completion, complete } = useCompletion({
     api: '/api/generate-lesson-text',
     body: {
       lessonId: item._id,
@@ -78,7 +66,7 @@ export default function LessonContent({
       }
     };
 
-    if (lessonContent === 'generate') {
+    if (lessonContent === 'generate' && user && user._id) {
       getLessonContent();
     }
   }, [lessonContent]);
@@ -88,6 +76,7 @@ export default function LessonContent({
       try {
         const result = await remark()
           .use(html, { sanitize: false })
+          .use(gfm)
           .process(markdown);
         setHtmlContent(result.toString());
       } catch (error) {
@@ -103,6 +92,8 @@ export default function LessonContent({
     }
   }, [lessonContent, completion]);
 
+  console.log('lessonContent:', lessonContent);
+
   return (
     <div className='lesson-quiz-content'>
       <div className='w-full flex flex-col gap-6'>
@@ -111,35 +102,9 @@ export default function LessonContent({
         </p>
         <div
           className='lesson-text flex flex-col gap-2'
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
+          dangerouslySetInnerHTML={{ __html: htmlContent || '' }}
         />
       </div>
     </div>
   );
 }
-
-// if (loading) return <EmptyState />;
-
-{
-  /* <LessonActionsDesktop
-  lesson={item}
-  unitId={unitId}
-  setLoading={setLoading}
-/> */
-}
-
-// const generateLessonText = async () => {
-//   const unitTitle = JSON.parse(courseDetails.tableOfContents).find(
-//     (item: any) => item.unitId === unitId
-//   )?.title;
-
-//   const lessonContentText = await generateLessonContent({
-//     courseTitle: courseDetails.title,
-//     courseSummary: courseDetails.summary,
-//     unitTitle: unitTitle,
-//     unitLessons: JSON.parse(courseDetails?.tableOfContents),
-//     lessonTitle: item.title,
-//   });
-//   setLessonContent(lessonContentText);
-// };
-// generateLessonText();
