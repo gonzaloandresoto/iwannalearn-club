@@ -107,6 +107,22 @@
   @apply inline;
 }
 
+.lesson-text table {
+  @apply w-full my-4;
+}
+
+.lesson-text th {
+  @apply text-tertiary-black font-bold border-b border-primary-tan;
+}
+
+.lesson-text tr {
+  @apply border-b-2 border-primary-tan grid grid-flow-col auto-cols-fr gap-2;
+}
+
+.lesson-text td {
+  @apply text-tertiary-black py-3 text-lg;
+}
+
 /* COMPONENTS */
 
 .dropdown {
