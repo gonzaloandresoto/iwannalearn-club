@@ -21,8 +21,8 @@ interface ITOCContext {
   setTableOfContents: Dispatch<SetStateAction<ITableOfContents[]>>;
   courseProgress: number;
   setCourseProgress: Dispatch<SetStateAction<number>>;
-  wasQuizUpdated: boolean;
-  setWasQuizUpdated: Dispatch<SetStateAction<boolean>>;
+  refresh: boolean;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
   courseDetails: any;
 }
 
@@ -47,7 +47,7 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
     []
   );
   const [courseProgress, setCourseProgress] = useState<number>(0);
-  const [wasQuizUpdated, setWasQuizUpdated] = useState<boolean>(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [courseDetails, setCourseDetails] = useState<any>({});
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
       setCourseProgress(progress);
     };
     courseProgress();
-  }, [id, wasQuizUpdated]);
+  }, [id, refresh]);
 
   useEffect(() => {
     if (!id) return;
@@ -77,7 +77,7 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
       }
     };
     getTableOfContents();
-  }, [id, wasQuizUpdated]);
+  }, [id, refresh]);
 
   const value = {
     id,
@@ -87,8 +87,8 @@ export function TOCProvider({ children }: { children: React.ReactNode }) {
     setTableOfContents,
     courseProgress,
     setCourseProgress,
-    wasQuizUpdated,
-    setWasQuizUpdated,
+    refresh,
+    setRefresh,
   };
 
   return <TOCContext.Provider value={value}>{children}</TOCContext.Provider>;

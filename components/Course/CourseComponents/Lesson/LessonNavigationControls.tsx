@@ -1,6 +1,7 @@
 'use client';
 
 import { useCreateQueryString } from '@/hooks/useCreateQueryString';
+import useTOCContext from '@/hooks/useTOCContext';
 import useUserContext from '@/hooks/useUserContext';
 import { updateUnitStatus } from '@/lib/actions/unit.actions';
 import { useRouter } from 'next/navigation';
@@ -23,6 +24,7 @@ export default function LessonNavigationControls({
   const router = useRouter();
   const createQueryString = useCreateQueryString();
   const { user } = useUserContext();
+  const { refresh, setRefresh } = useTOCContext();
 
   const pathname = `/course/${courseId}/${unitId}`;
   const nextPageQuery = createQueryString(
@@ -40,6 +42,7 @@ export default function LessonNavigationControls({
     if (userId) {
       if (activePage === unitLength - 1) {
         await updateUnitStatus(unitId, userId, 'COMPLETE');
+        setRefresh(!refresh);
         router.push(`/course/${courseId}/${unitId}/unit-completed`);
       } else if (activePage === 1) {
         updateUnitStatus(unitId, userId, 'IN_PROGRESS');
