@@ -3,41 +3,25 @@
 import { createCourse } from '@/lib/actions/generate.actions';
 import { recommendedSearches } from '@/constants';
 import useUserContext from '@/hooks/useUserContext';
-
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';
 
 interface RecommendedTopicsProps {
   setIsGenerating: (isGenerating: boolean) => void;
+  setTopic: (topic: string) => void;
+  setCustomizeDrawer: (customizeDrawer: boolean) => void;
 }
 
 export default function RecommendedTopics({
   setIsGenerating,
+  setTopic,
+  setCustomizeDrawer,
 }: RecommendedTopicsProps) {
-  const router = useRouter();
   const { user } = useUserContext();
 
   const handleCourseCreation = async (topic: string, userId: string) => {
     if (!topic || !userId) return;
-
-    setIsGenerating(true);
-    const response = await createCourse(topic, userId);
-
-    if ('message' in response) {
-      toast(response.message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'dark',
-      });
-    } else {
-      router.push(`/course/${response.courseId}`);
-    }
+    setTopic(topic);
+    setCustomizeDrawer(true);
   };
 
   return (

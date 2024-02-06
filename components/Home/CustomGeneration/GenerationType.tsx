@@ -96,17 +96,22 @@ export default function GenerationType({
       <div className='flex flex-row gap-4'>
         <button
           onClick={generateTopics}
-          className='generate-button bg-secondary-tan border-2 border-primary-tan text-secondary-black'
+          className='generate-button bg-primary-blue  text-tertiary-tan'
         >
           <Settings2 />
           <p>Custom</p>
         </button>
         <button
+          disabled
           onClick={fastGeneration}
-          className='generate-button bg-primary-blue text-tertiary-tan'
+          className='generate-button flex-col !gap-0 bg-secondary-tan text-secondary-black border-2 border-primary-tan'
         >
-          <Zap />
-          <p>Fast</p>
+          <div className='flex gap-2'>
+            <Zap />
+            <p>Fast</p>
+          </div>
+
+          <p className='text-sm'>(disabled temporarily)</p>
         </button>
       </div>
     </div>

@@ -31,7 +31,11 @@ export default function Generate() {
               setTopic={setTopic}
               setCustomizeDrawer={setCustomizeDrawer}
             />
-            <RecommendedTopics setIsGenerating={setIsGenerating} />
+            <RecommendedTopics
+              setIsGenerating={setIsGenerating}
+              setTopic={setTopic}
+              setCustomizeDrawer={setCustomizeDrawer}
+            />
           </div>
           <SignedOut>
             <CourseGrid />
