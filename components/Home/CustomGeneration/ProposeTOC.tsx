@@ -34,65 +34,79 @@ export default function ProposeTOC({
   const CustomGeneration = async () => {
     if (!text) return;
 
-    setLoading(true);
-
-    // Splitting text into lines and creating objects with incrementing numbers
-    const updatedTableOfContents = text
-      .split('\n')
-      .map((line: string, index: number) => {
-        const title = line.trim().replace(/^\d+\.\s*/, ''); // Removes the number and period from the start
-        return {
-          order: index + 1,
-          title,
-        };
+    if (!user) {
+      toast('Please login to create a course', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'dark',
       });
+      return;
+    } else {
+      setLoading(true);
 
-    // Filter out empty titles
-    const filteredTableOfContents = updatedTableOfContents.filter(
-      (item: any) => item.title !== ''
-    );
+      // Splitting text into lines and creating objects with incrementing numbers
+      const updatedTableOfContents = text
+        .split('\n')
+        .map((line: string, index: number) => {
+          const title = line.trim().replace(/^\d+\.\s*/, ''); // Removes the number and period from the start
+          return {
+            order: index + 1,
+            title,
+          };
+        });
 
-    // Updating customAttributes with new tableOfContents
-    setCustomAttributes({
-      ...customAttributes,
-      tableOfContents: filteredTableOfContents,
-    });
+      // Filter out empty titles
+      const filteredTableOfContents = updatedTableOfContents.filter(
+        (item: any) => item.title !== ''
+      );
 
-    track({
-      channel: 'learn',
-      event: 'Course Created',
-      icon: '📚',
-      notify: true,
-      tags: {
-        type: 'custom',
-        generation: 'v2',
-      },
-    });
-
-    // Call createCourseCustom with updated attributes
-    const response = await createCourseCustomV2(
-      {
+      // Updating customAttributes with new tableOfContents
+      setCustomAttributes({
         ...customAttributes,
         tableOfContents: filteredTableOfContents,
-      },
-      user?._id || ''
-    );
+      });
 
-    if (response) {
-      if (response.message) {
-        toast(response.message, {
-          position: 'top-center',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false,
-          progress: undefined,
-          theme: 'dark',
-        });
-        return;
-      } else if (response.courseId) {
-        router.push(`/course/${response.courseId}`);
+      track({
+        channel: 'learn',
+        event: 'Course Created',
+        icon: '📚',
+        notify: true,
+        tags: {
+          type: 'custom',
+          generation: 'v2',
+        },
+      });
+
+      // Call createCourseCustom with updated attributes
+      const response = await createCourseCustomV2(
+        {
+          ...customAttributes,
+          tableOfContents: filteredTableOfContents,
+        },
+        user?._id || ''
+      );
+
+      if (response) {
+        if (response.message) {
+          toast(response.message, {
+            position: 'top-center',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            theme: 'dark',
+          });
+          return;
+        } else if (response.courseId) {
+          router.push(`/course/${response.courseId}`);
+        }
       }
     }
   };

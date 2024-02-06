@@ -306,7 +306,7 @@ const generateQuiz = async (lesson: Lesson): Promise<Quiz> => {
     const quizObject = JSON.parse(
       res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     );
-    console.log('Quiz Object', quizObject);
+
     return JSON.parse(JSON.stringify(quizObject));
   } catch (error) {
     handleError(error);
@@ -481,14 +481,14 @@ async function createUnitsAndLessons(
       status: 'NOT_STARTED',
     });
 
-    console.log('✅ Uploaded Unit', newUnit);
+    // console.log('✅ Uploaded Unit', newUnit);
 
-    console.log('WILL NOW GENERATE LESSONS');
+    // console.log('WILL NOW GENERATE LESSONS');
 
     // Generate lesson contents
     const lessons = await generateLessons(course, unit);
 
-    console.log('LESSONS GENERATED< WILL NOW UPLOAD');
+    // console.log('LESSONS GENERATED< WILL NOW UPLOAD');
 
     if (!lessons) throw new Error('Lessons could not be generated');
 
@@ -506,7 +506,7 @@ async function createUnitsAndLessons(
 
         if (!newLesson)
           throw new Error('Lesson could not be saved to database');
-        console.log('✅ Uploaded Lesson', newLesson);
+        // console.log('✅ Uploaded Lesson', newLesson);
 
         // Create quiz if it exists in the lesson
         if (lesson.quiz) {
@@ -603,7 +603,7 @@ export async function createCourse(
       // console.log('✅ Assigned Course to User');
 
       createUnitsAndLessons(course, newCourseId, userId);
-      console.log('✅ Units and Lessons created');
+      // console.log('✅ Units and Lessons created');
 
       return { courseId: newCourseId };
     })();
@@ -728,7 +728,7 @@ export const generateSampleTopics = async (
   );
 
   const topics = functioneResponse?.concepts;
-  console.log('TOPICS WIKI', topics);
+  // console.log('TOPICS WIKI', topics);
   return topics;
 };
 
@@ -771,7 +771,7 @@ export const generateSampleTOC = async (
   );
 
   const TOC = functioneResponse?.tableOfContents;
-  console.log('TOCZ', TOC);
+  // console.log('TOCZ', TOC);
   return TOC;
 };
 
@@ -784,7 +784,7 @@ interface CourseDetails {
 export const generateCourseDetailsCustom = async (
   topic: string
 ): Promise<CourseDetails> => {
-  console.log('START GENERATING COURSE DETAILS OPEN AI');
+  // console.log('START GENERATING COURSE DETAILS OPEN AI');
 
   const prompt = [
     {
@@ -819,7 +819,7 @@ export const generateCourseDetailsCustom = async (
     res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
 
-  console.log('DONE GENERATING COURSE', courseObject);
+  // console.log('DONE GENERATING COURSE', courseObject);
   return courseObject;
 };
 
@@ -851,7 +851,7 @@ async function createUnitsAndLessonsCustom(
       // Generate lesson contents
       const lessons = await generateLessons(course, unit);
 
-      console.log('CUSTOM LESSONS GENERATED WILL NOW UPLOAD');
+      // console.log('CUSTOM LESSONS GENERATED WILL NOW UPLOAD');
 
       if (!lessons) throw new Error('Lessons could not be generated');
 
@@ -910,7 +910,7 @@ async function createUnitsAndLessonsCustom(
         }
       });
 
-      console.log('DONE WITH ALL LESSON / QUIZ GENERATION');
+      // console.log('DONE WITH ALL LESSON / QUIZ GENERATION');
       await Promise.all(lessonPromises);
     }
   );
@@ -973,7 +973,7 @@ async function generateLessonTitlesCustom(
 ): Promise<PostLessonsTOC[]> {
   const unitTitles = toc.map((unit) => unit.title);
   const unitPromises = toc.map(async (unit, index) => {
-    console.log('UNIT TITLE FOR LESSONS: ', unit.title);
+    // console.log('UNIT TITLE FOR LESSONS: ', unit.title);
     const prompt = [
       {
         role: 'system',
@@ -1006,7 +1006,7 @@ async function generateLessonTitlesCustom(
     const unitLessons = JSON.parse(
       res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     ).unit;
-    console.log('DONE GENERATING UNIT LESSONS', unitLessons);
+    // console.log('DONE GENERATING UNIT LESSONS', unitLessons);
 
     return {
       title: unit.title,
@@ -1020,7 +1020,7 @@ async function generateLessonTitlesCustom(
     ...unitResult,
   }));
 
-  console.log('DONE GENERATING ALL UNIT LESSONS', newTOC);
+  // console.log('DONE GENERATING ALL UNIT LESSONS', newTOC);
   return newTOC;
 }
 
@@ -1036,7 +1036,7 @@ export async function createCourseCustom(
   customAttributes: CustomCourse,
   userId: string
 ): Promise<any> {
-  console.log('GENERATING CUSTOM COURSE');
+  // console.log('GENERATING CUSTOM COURSE');
   try {
     const timeoutPromise = new Promise<{ message: string }>((resolve) => {
       setTimeout(() => {
@@ -1063,7 +1063,7 @@ export async function createCourseCustom(
       // console.log('✅ Uploaded Course', newCourseId);
 
       await assignCourseToUser(userId, newCourseId);
-      console.log('✅ Assigned Course to User');
+      // console.log('✅ Assigned Course to User');
 
       createUnitsAndLessonsCustom(course, newCourseId, userId);
       // console.log('✅ Units and Lessons created');
@@ -1085,7 +1085,7 @@ export async function createCourseCustomV2(
   customAttributes: CustomCourse,
   userId: string
 ): Promise<any> {
-  console.log('GENERATING CUSTOM COURSE');
+  // console.log('GENERATING CUSTOM COURSE');
   try {
     const timeoutPromise = new Promise<{ message: string }>((resolve) => {
       setTimeout(() => {

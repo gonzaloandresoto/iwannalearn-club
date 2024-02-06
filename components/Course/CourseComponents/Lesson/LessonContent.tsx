@@ -84,7 +84,6 @@ export default function LessonContent({
           .process(markdown);
         setHtmlContent(result.toString());
       } catch (error) {
-        console.error('Error converting Markdown to HTML:', error);
         setHtmlContent('Error displaying content');
       }
     };
@@ -95,8 +94,6 @@ export default function LessonContent({
       convertMarkdownToHtml(lessonContent);
     }
   }, [lessonContent, completion]);
-
-  console.log('lessonContent:', lessonContent);
 
   return (
     <div className='lesson-quiz-content'>

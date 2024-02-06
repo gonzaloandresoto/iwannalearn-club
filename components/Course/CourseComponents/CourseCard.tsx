@@ -53,13 +53,13 @@ const CourseCard: React.FC<CourseCardProps> = ({
             setGeneratedNewContent={setGeneratedNewContent}
           />
         )}
-        {currentItem?.type === 'quiz' && (
+        {/* {currentItem?.type === 'quiz' && (
           <QuizContent
             item={currentItem}
             selectedAnswer={selectedAnswer}
             setSelectedAnswer={setSelectedAnswer}
           />
-        )}
+        )} */}
       </div>
       {currentItem?.type === 'lesson' && (
         <LessonNavigationControls
@@ -70,7 +70,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           unitId={unitId}
         />
       )}
-      {currentItem?.type === 'quiz' && (
+      {/* {currentItem?.type === 'quiz' && (
         <QuizNavigationControls
           activePage={activePage}
           unitLength={unitContent.length}
@@ -81,7 +81,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           setSelectedAnswer={setSelectedAnswer}
           correctAnswer={correctAnswer}
         />
-      )}
+      )} */}
     </div>
   );
 };

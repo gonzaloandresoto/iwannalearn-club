@@ -34,7 +34,7 @@ export default function QuizNavigationControls({
   const createQueryString = useCreateQueryString();
   const userId = user?._id;
 
-  const { wasQuizUpdated, setWasQuizUpdated } = useTOCContext();
+  // const { wasQuizUpdated, setWasQuizUpdated } = useTOCContext();
 
   const pathname = `/course/${courseId}/${unitId}`;
   const nextPage = (activePage + 1).toString();

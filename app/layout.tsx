@@ -23,6 +23,9 @@ const rosario = Rosario({
 export const metadata: Metadata = {
   title: 'iWannaLearn',
   description: `iWannaLearn is an AI-powered learning platform where you can generate courses with artificial intelligence and talk to an AI tutor. Whether you're passionate about history, celebrities sciences, or anything in between, our platform tailors content to your preferences, making education fun, engaging and efficient.`,
+  twitter: {
+    images: '/twitter-image.png',
+  },
 };
 
 export default function RootLayout({

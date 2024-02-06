@@ -16,7 +16,6 @@ interface UnitCompletionsItem {
 
 interface TableOfContentsProps {
   tableOfContents: string;
-  nextUnit: string | null;
   courseId: string;
   unitCompletions: UnitCompletionsItem | null;
 }

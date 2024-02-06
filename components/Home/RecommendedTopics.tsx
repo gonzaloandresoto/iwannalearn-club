@@ -19,7 +19,7 @@ export default function RecommendedTopics({
   const { user } = useUserContext();
 
   const handleCourseCreation = async (topic: string, userId: string) => {
-    if (!topic || !userId) return;
+    if (!topic) return;
     setTopic(topic);
     setCustomizeDrawer(true);
   };

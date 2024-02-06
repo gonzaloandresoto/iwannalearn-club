@@ -192,7 +192,6 @@ export async function deleteCourseById(
   userId: string,
   path: any
 ): Promise<void> {
-  console.log('PATH: ', path);
   if (!courseId || !userId) return;
   try {
     await connectToDatabase();
@@ -235,7 +234,6 @@ export const goDeeper = async (
   unitId: string,
   comment: string
 ): Promise<string> => {
-  console.log('GOING DEEPER');
   const prompt = [
     {
       role: 'system',

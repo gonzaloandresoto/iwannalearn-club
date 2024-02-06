@@ -10,11 +10,16 @@ import UserPending from '@/components/Onboarding/UserPending';
 import WhyLearn from '@/components/Onboarding/WhyLearn';
 import AccountDetails from '@/components/Onboarding/AccountDetails';
 import { updateUserDetails } from '@/lib/actions/user.actions';
+import { useLogSnag } from '@logsnag/next';
 
 export default function Page() {
   const router = useRouter();
   const [activePage, setActivePage] = useState(0);
+  const { track, setUserId, setDebug } = useLogSnag();
+
   const { user } = useUserContext();
+
+  setUserId(user?._id || '');
 
   const [userInfo, setUserInfo] = useState({
     firstName: user?.firstName || '',
@@ -32,8 +37,17 @@ export default function Page() {
 
   const nextPage = async () => {
     if (activePage === 3) {
-      await updateUserDetails(user?._id || '', userInfo, true),
-        router.push('/');
+      await updateUserDetails(user?._id || '', userInfo, true);
+      track({
+        channel: 'user',
+        event: 'Profile Completed',
+        icon: '👋',
+        notify: true,
+        tags: {
+          atrribution: userInfo.attribution,
+        },
+      });
+      router.push('/');
     } else {
       setActivePage(activePage + 1);
     }

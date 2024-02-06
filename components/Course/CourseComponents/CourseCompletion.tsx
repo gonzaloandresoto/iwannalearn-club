@@ -2,11 +2,15 @@
 
 import useUserContext from '@/hooks/useUserContext';
 import { markCourseAsComplete } from '@/lib/actions/course.actions';
+import { useLogSnag } from '@logsnag/next';
 import { useRouter } from 'next/navigation';
 
 export default function CourseCompletion({ course }: any) {
   const { user } = useUserContext();
   const router = useRouter();
+  const { track, setUserId, setDebug } = useLogSnag();
+  setUserId(user?._id || '');
+
   const today = new Date().toLocaleDateString('en-us', {
     weekday: 'long',
     year: 'numeric',
@@ -17,6 +21,15 @@ export default function CourseCompletion({ course }: any) {
   const completeCourse = async () => {
     if (user?._id) {
       await markCourseAsComplete(course?._id);
+      track({
+        channel: 'learn',
+        event: 'Course Completed',
+        icon: '✅',
+        notify: true,
+        tags: {
+          title: course?.title,
+        },
+      });
     }
     router.push(`/course/${course?._id}`);
   };

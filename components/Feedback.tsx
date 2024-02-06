@@ -53,7 +53,7 @@ const FeedbackCard = ({ setIsOpen }: any) => {
         onSubmit={handleSubmit}
         className='grid gap-4'
       >
-        <h2 className='h2 font-rosario'>What's the issue?</h2>
+        <h2 className='h2 font-rosario'>{`What's the issue?`}</h2>
         <textarea
           rows={6}
           placeholder='Please describe the issue you are facing'

@@ -27,16 +27,13 @@ export default function CourseCover({
   summary,
   tableOfContents,
 }: CourseCoverProps) {
-  const [nextUnit, setNextUnit] = useState<string>('');
   const [unitCompletions, setUnitCompletions] = useState<UnitCompletionsItem>(
     {}
   );
 
   useEffect(() => {
     const fetchData = async () => {
-      const next = await getNextUncompletedUnit(courseId);
       const completions = await getUnitCompletions(courseId);
-      setNextUnit(next?.toString() || '');
       setUnitCompletions(completions);
     };
 
@@ -58,7 +55,6 @@ export default function CourseCover({
         <TableOfContents
           tableOfContents={tableOfContents}
           courseId={courseId}
-          nextUnit={nextUnit}
           unitCompletions={unitCompletions}
         />
       </div>
