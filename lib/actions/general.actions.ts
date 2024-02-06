@@ -7,9 +7,13 @@ import { handleError } from '../utils';
 export const uploadFeedback = async (formData: any) => {
   try {
     await connectToDatabase();
+
+    const userId = formData.get('userId') as string;
+    const transformedUserId = userId ? userId : null;
+
     const feedbackDetails = {
       issue: formData.get('issue') as string,
-      userId: formData.get('userId') as string,
+      userId: transformedUserId,
       type: formData.get('type') as string,
     };
     if (!feedbackDetails.issue) return;

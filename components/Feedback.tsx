@@ -41,6 +41,7 @@ const FeedbackCard = ({ setIsOpen }: any) => {
     formData.append('userId', user?._id || '');
     formData.append('type', FeedbackData.type);
     await uploadFeedback(formData);
+    setIsOpen(false);
   };
 
   return (
