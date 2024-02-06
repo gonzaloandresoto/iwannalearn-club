@@ -9,7 +9,6 @@ import useTOCContext from '@/hooks/useTOCContext';
 import CourseProgress from './CourseProgress';
 import TOCDropdown from './TOCDropdown';
 import useOutsideClick from '@/hooks/useOutsideClick';
-import Image from 'next/image';
 
 export default function NavigationBar() {
   const params = useParams<{ id: string; unit: string }>();
@@ -33,7 +32,6 @@ export default function NavigationBar() {
       >
         <p className='text-tertiary-tan text-base font-bold'>←</p>
       </Link>
-
       <div className='flex gap-4'>
         <div
           ref={dropdownRef}

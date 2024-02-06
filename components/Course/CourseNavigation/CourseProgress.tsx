@@ -1,6 +1,8 @@
 'use client';
 
 import { Dispatch, SetStateAction, useRef } from 'react';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { BookText } from 'lucide-react';
 
 interface CourseProgressProps {
   progressPercent: number;
@@ -27,19 +29,30 @@ export default function CourseProgress({
       }}
       className='h-[40px] flex items-center gap-3 px-4 bg-white rounded-md border-2 border-primary-tan cursor-pointer'
     >
-      <p className='text-sm font-bold font-rosario text-black'>Progress</p>
-      <div
-        ref={progressBarRef}
-        className='w-[120px] h-[10px] bg-primary-tan rounded-sm'
-      >
+      <SignedIn>
+        <p className='text-sm font-bold font-rosario text-black'>Progress</p>
         <div
-          style={{ width: `${progressBarWidth}px` }}
-          className='h-full bg-primary-blue'
-        ></div>
-      </div>
-      <p className='text-sm font-bold font-rosario text-black'>
-        {progressPercent || 0}%
-      </p>
+          ref={progressBarRef}
+          className='w-[120px] h-[10px] bg-primary-tan rounded-sm'
+        >
+          <div
+            style={{ width: `${progressBarWidth}px` }}
+            className='h-full bg-primary-blue'
+          ></div>
+        </div>
+        <p className='text-sm font-bold font-rosario text-black'>
+          {progressPercent || 0}%
+        </p>
+      </SignedIn>
+      <SignedOut>
+        <BookText
+          size={18}
+          className='text-tertiary-black'
+        />
+        <p className='text-sm font-bold font-rosario text-tertiary-black'>
+          Table of Contents
+        </p>
+      </SignedOut>
     </button>
   );
 }
