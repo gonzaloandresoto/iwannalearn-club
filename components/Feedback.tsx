@@ -1,16 +1,17 @@
 'use client';
 import useOutsideClick from '@/hooks/useOutsideClick';
 import useUserContext from '@/hooks/useUserContext';
+import { uploadFeedback } from '@/lib/actions/general.actions';
 import { HelpCircle } from 'lucide-react';
 import { useState } from 'react';
 
 const Feedback = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
-    <div className='z-50 fixed bottom-8 right-8'>
+    <div className='hidden sm:block z-50 fixed bottom-8 right-8'>
       <button
         onClick={() => setIsOpen(true)}
-        className='w-[48px] h-[48px] flex items-center justify-center bg-white border border-primary-tan rounded-full shadow-md'
+        className='w-[48px] h-[48px] flex items-center justify-center bg-white hover:bg-secondary-tan border border-primary-tan rounded-full shadow-md'
       >
         <HelpCircle className='text-tertiary-black' />
       </button>
@@ -33,9 +34,13 @@ const FeedbackCard = ({ setIsOpen }: any) => {
   });
   const { user } = useUserContext();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // await uploadFeedback()
+    const formData = new FormData();
+    formData.append('issue', FeedbackData.issue);
+    formData.append('userId', user?._id || '');
+    formData.append('type', FeedbackData.type);
+    await uploadFeedback(formData);
   };
 
   return (
@@ -44,14 +49,17 @@ const FeedbackCard = ({ setIsOpen }: any) => {
       className='fixed z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[400px] w-full p-4 bg-tertiary-tan rounded-lg shadow-md border-2 border-primary-tan'
     >
       <form
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className='grid gap-4'
       >
         <h2 className='h2 font-rosario'>What's the issue?</h2>
         <textarea
           rows={6}
           placeholder='Please describe the issue you are facing'
-          className='w-full p-2 text-tertiary-black font-rosario'
+          className='w-full p-2 text-tertiary-black font-rosario rounded-md border border-primary-tan outline-none focus:border-primary-tan focus:ring-2 focus:ring-primary-tan '
+          onChange={(e) =>
+            setFeedbackData({ ...FeedbackData, issue: e.target.value })
+          }
         />
         <button
           type='submit'

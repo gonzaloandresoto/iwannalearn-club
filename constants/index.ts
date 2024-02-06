@@ -1,8 +1,8 @@
 export const headerLinks = [
-  // {
-  //   label: 'Generate',
-  //   route: '/generate',
-  // },
+  {
+    label: 'Generate',
+    route: '/',
+  },
   // {
   //   label: 'Explore',
   //   route: '/explore',
