@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import useUserContext from '@/hooks/useUserContext';
 
 import { getCoursesByUserId } from '@/lib/actions/course.actions';
@@ -10,6 +10,7 @@ import LoadingState from './LoadingState';
 
 import CourseCard from '../../Shared/CourseCard/CourseCard';
 import CourseGridPaginationControls from './CourseGridPaginationControls';
+import CourseGridSkeleton from './CourseGridSkeleton';
 
 interface Course {
   _id: string;
@@ -68,16 +69,18 @@ export default function CourseGrid() {
   return (
     <div className='bg-tertiary-tan'>
       <div className='max-w-[1024px] h-max grid lg:grid-cols-2 grid-cols-1 gap-10 px-4 pb-12'>
-        {courses?.map((course) => (
-          <CourseCard
-            key={course._id}
-            courseId={course._id}
-            title={course.title}
-            date={course.createdAt}
-            progress={course.progress}
-            isPublic={false}
-          />
-        ))}
+        <Suspense fallback={<CourseGridSkeleton />}>
+          {courses?.map((course) => (
+            <CourseCard
+              key={course._id}
+              courseId={course._id}
+              title={course.title}
+              date={course.createdAt}
+              progress={course.progress}
+              isPublic={false}
+            />
+          ))}
+        </Suspense>
       </div>
       {((courses.length >= 6 && isNext) || page !== 0) && (
         <CourseGridPaginationControls

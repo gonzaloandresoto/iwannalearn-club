@@ -8,7 +8,7 @@ export default async function CourseContent({
 }: {
   params: { id: string };
 }) {
-  const course = await getCourseById(id);
+  const course = await getCourseById(id, true);
   return (
     <section className='flex grow flex-col items-center bg-tertiary-tan'>
       {course ? (

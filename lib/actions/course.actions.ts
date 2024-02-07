@@ -157,30 +157,31 @@ export async function getCourseContentById(id: string) {
 
 // Get course details by id
 
-export async function getCourseById(id: string) {
+export async function getCourseById(id: string, withTOC = false) {
   try {
     await connectToDatabase();
 
     const course = await Course.findById(id);
 
-    const newTableOfContents = JSON.parse(course.tableOfContents);
-
-    for (const item in newTableOfContents) {
-      const unitName = newTableOfContents[item].title;
-
-      const unit = await Unit.findOne({ title: unitName, courseId: id });
-
-      if (unit && unit._id) {
-        newTableOfContents[item].unitId = unit._id.toString();
-      } else {
-        return;
-      }
-    }
-
-    course.tableOfContents = JSON.stringify(newTableOfContents);
-
     if (!course) throw new Error('Course not found');
 
+    if (withTOC) {
+      const newTableOfContents = JSON.parse(course.tableOfContents);
+
+      for (const item in newTableOfContents) {
+        const unitName = newTableOfContents[item].title;
+
+        const unit = await Unit.findOne({ title: unitName, courseId: id });
+
+        if (unit && unit._id) {
+          newTableOfContents[item].unitId = unit._id.toString();
+        } else {
+          return;
+        }
+      }
+
+      course.tableOfContents = JSON.stringify(newTableOfContents);
+    }
     return JSON.parse(JSON.stringify(course));
   } catch (error) {
     console.log(error);
