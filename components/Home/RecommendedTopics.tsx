@@ -6,13 +6,11 @@ import useUserContext from '@/hooks/useUserContext';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface RecommendedTopicsProps {
-  setIsGenerating: (isGenerating: boolean) => void;
   setTopic: (topic: string) => void;
   setCustomizeDrawer: (customizeDrawer: boolean) => void;
 }
 
 export default function RecommendedTopics({
-  setIsGenerating,
   setTopic,
   setCustomizeDrawer,
 }: RecommendedTopicsProps) {

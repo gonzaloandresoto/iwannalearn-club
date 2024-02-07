@@ -1,11 +1,5 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import TableOfContents from './Other/TableOfContents';
-import {
-  getNextUncompletedUnit,
-  getUnitCompletions,
-} from '@/lib/actions/unit.actions';
+import { getUnitCompletions } from '@/lib/actions/unit.actions';
 
 interface CourseCoverProps {
   courseId: string;
@@ -14,31 +8,13 @@ interface CourseCoverProps {
   tableOfContents: string;
 }
 
-interface UnitCompletionsItem {
-  [key: string]: {
-    status: string;
-    order: string;
-  };
-}
-
-export default function CourseCover({
+export default async function CourseCover({
   courseId,
   title,
   summary,
   tableOfContents,
 }: CourseCoverProps) {
-  const [unitCompletions, setUnitCompletions] = useState<UnitCompletionsItem>(
-    {}
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const completions = await getUnitCompletions(courseId);
-      setUnitCompletions(completions);
-    };
-
-    fetchData();
-  }, [courseId]);
+  const unitCompletions = await getUnitCompletions(courseId);
 
   return (
     <div className='course-card'>

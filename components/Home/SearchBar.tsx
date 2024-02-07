@@ -42,7 +42,7 @@ export default function SearchBar({
         value={topic}
         onChange={handleChange}
         placeholder='Where will your curiosity lead?'
-        className='w-full h-full bg-white outline-none md:text-lg text-base placeholder:text-tertiary-black font-rosario'
+        className='w-full h-full bg-white outline-none md:text-lg text-base placeholder:text-tertiary-black font-rosario pr-4'
       />
       <button
         type='submit'

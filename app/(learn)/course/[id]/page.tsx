@@ -13,7 +13,7 @@ export default async function CourseContent({
     <section className='flex grow flex-col items-center bg-tertiary-tan'>
       {course ? (
         <CourseCover
-          courseId={course?._id.toString()}
+          courseId={course?._id}
           title={course?.title}
           summary={course?.summary}
           tableOfContents={course?.tableOfContents}

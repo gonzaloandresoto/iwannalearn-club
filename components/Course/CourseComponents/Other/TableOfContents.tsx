@@ -1,3 +1,5 @@
+'use client';
+
 import useUserContext from '@/hooks/useUserContext';
 import Link from 'next/link';
 
