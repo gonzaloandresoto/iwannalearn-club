@@ -5,11 +5,11 @@ import useUserContext from '@/hooks/useUserContext';
 
 import { getCoursesByUserId } from '@/lib/actions/course.actions';
 
-import CourseCard from '../Library/CourseCard';
 import EmptyState from './EmptyState';
 import LoadingState from './LoadingState';
 
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import CourseCard from '../../Shared/CourseCard/CourseCard';
+import CourseGridPaginationControls from './CourseGridPaginationControls';
 
 interface Course {
   _id: string;
@@ -73,35 +73,19 @@ export default function CourseGrid() {
             key={course._id}
             courseId={course._id}
             title={course.title}
+            date={course.createdAt}
             progress={course.progress}
-            createdAt={course.createdAt}
-            noAuth={true}
+            isPublic={false}
           />
         ))}
       </div>
       {((courses.length >= 6 && isNext) || page !== 0) && (
-        <div className='w-full flex flex-row gap-3 items-center justify-center pb-12'>
-          <button
-            disabled={page === 0}
-            onClick={() => handlePageChange('prev')}
-            className='flex items-center justify-center gap-2 py-1 px-3 hover:bg-tertiary-black bg-secondary-black text-tertiary-tan font-medium rounded-md disabled:bg-tertiary-black'
-          >
-            <ArrowLeft />
-            <p>Prev</p>
-          </button>
-          <div className='bg-white border-2 border-primary-tan py-1 px-3 rounded-md text-secondary-black'>
-            <p>{page + 1}</p>
-          </div>
-
-          <button
-            disabled={!isNext.current || loading}
-            onClick={() => handlePageChange('next')}
-            className='flex items-center justify-center gap-2 py-1 px-3 hover:bg-tertiary-black bg-secondary-black text-tertiary-tan font-medium rounded-md disabled:bg-tertiary-black'
-          >
-            <p>Next</p>
-            <ArrowRight />
-          </button>
-        </div>
+        <CourseGridPaginationControls
+          page={page}
+          handlePageChange={handlePageChange}
+          isNext={isNext}
+          loading={loading}
+        />
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
 
 import RecommendedTopics from '@/components/Home/RecommendedTopics';
-import SearchBar from '@/components/Home/SearchBar';
+import InputBar from '@/components/Home/InputBar';
 import CustomGenerationModal from '@/components/Home/CustomGeneration/CustomGenerationModal';
 
 const GenerateCourse = () => {
@@ -16,7 +16,7 @@ const GenerateCourse = () => {
       <p className='md:text-5xl text-3xl text-secondary-black font-bold font-sourceSerif'>
         iWannaLearn
       </p>
-      <SearchBar
+      <InputBar
         topic={topic}
         setTopic={setTopic}
         setCustomizeDrawer={setCustomizeDrawer}

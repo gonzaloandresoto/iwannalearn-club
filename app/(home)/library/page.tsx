@@ -1,4 +1,4 @@
-import CourseGrid from '@/components/Library/CourseGrid';
+import CourseGrid from '@/components/Library/Grid/CourseGrid';
 
 export default function Library() {
   return (

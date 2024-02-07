@@ -6,7 +6,7 @@ import { Inter, Source_Serif_4, Rosario } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ToastContainer } from 'react-toastify';
-import Feedback from '@/components/Feedback';
+import Feedback from '@/components/Shared/Feedback';
 import { UserProvider } from '@/context/UserProvider';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -55,7 +55,6 @@ export default function RootLayout({
             <UserProvider>
               <Feedback />
             </UserProvider>
-
             <Analytics />
           </ClerkProvider>
         </section>

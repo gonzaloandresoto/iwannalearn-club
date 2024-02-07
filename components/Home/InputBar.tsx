@@ -5,17 +5,17 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Sparkles } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-interface SearchBarProps {
+interface InputBarProps {
   setCustomizeDrawer: (customizeDrawer: boolean) => void;
   topic: string;
   setTopic: (topic: string) => void;
 }
 
-export default function SearchBar({
+export default function InputBar({
   setCustomizeDrawer,
   topic,
   setTopic,
-}: SearchBarProps) {
+}: InputBarProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTopic(e.target.value);
   };

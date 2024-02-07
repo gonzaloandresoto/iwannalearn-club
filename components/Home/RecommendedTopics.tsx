@@ -1,6 +1,5 @@
 'use client';
 
-import { createCourse } from '@/lib/actions/generate.actions';
 import { recommendedSearches } from '@/constants';
 import useUserContext from '@/hooks/useUserContext';
 import 'react-toastify/dist/ReactToastify.css';
