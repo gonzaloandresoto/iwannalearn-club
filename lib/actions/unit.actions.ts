@@ -69,7 +69,7 @@ export async function getUnitElementsById(id: string) {
 export async function getNextUncompletedUnit(
   courseId: string,
   unitId: string
-): Promise<string | null> {
+): Promise<any | null> {
   try {
     const currentUnit = await Unit.findById(unitId);
     if (!currentUnit) {
@@ -84,10 +84,36 @@ export async function getNextUncompletedUnit(
       { _id: 1 }
     ).sort({ order: 1 });
 
-    return nextUnit ? nextUnit._id.toString() : null;
+    if (!nextUnit) {
+      return null;
+    }
+
+    const firstLesson = await Element.findOne(
+      { unitId: nextUnit?._id },
+      { _id: 1 }
+    );
+
+    return {
+      nextUnit: nextUnit?._id.toString() || null,
+      firstLesson: firstLesson?._id.toString() || null,
+    };
   } catch (error) {
     handleError(error);
     return null;
+  }
+}
+
+export async function getFirstLesson(unitId: string) {
+  try {
+    await connectToDatabase();
+
+    const firstLesson = await Element.findOne({ unitId: unitId }, { _id: 1 });
+
+    if (!firstLesson) return null;
+
+    return firstLesson._id;
+  } catch (error) {
+    handleError(error);
   }
 }
 
@@ -167,3 +193,18 @@ export async function updateUnitStatusBasedOnQuizCompletion(unitId: string) {
     handleError(error);
   }
 }
+
+export const getUnitLessonTitles = async (unitId: string) => {
+  try {
+    await connectToDatabase();
+
+    const unitTitles = await Element.find(
+      { unitId: unitId },
+      { title: 1, order: 1 }
+    ).sort({ order: 1 });
+
+    return JSON.parse(JSON.stringify(unitTitles));
+  } catch (error) {
+    handleError(error);
+  }
+};

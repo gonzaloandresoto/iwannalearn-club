@@ -7,41 +7,29 @@ export const runtime = 'edge';
 
 export async function POST(request: Request) {
   try {
-    const {
-      lessonId,
-      courseTitle,
-      courseSummary,
-      unitTitle,
-      unitLessons,
-      lessonTitle,
-    } = // unit lessons is currently just the table of contents
+    const { lessonTitle, courseTitle, courseSummary, lessonTitles } =
       await request.json();
+
+    console.log('lessonTitle', lessonTitle);
+    console.log('courseTitle', courseTitle);
+    console.log('courseSummary', courseSummary);
+    console.log('lessonTitles', lessonTitles);
     const prompt = [
       {
         role: 'system',
         content: `
-            ABOUT YOU: You are a superhuman tutor specilaizing in ${courseTitle} in technical detail. Your content quality is text-book level, and leverages Wikipedia's vast information. 
-            
-            YOUR TASK: You'll make complex topics easy to understand, using clear and engaging explanations. You'll break down information into simpler components, use analogies, and relate concepts to everyday experiences to enhance understanding. Avoid descirbing what youll teach or include in each lesson, but actually provide the educational content.
+          You are tasked with simplifying complex topics from ${courseTitle}, ensuring the content is textbook-quality and utilizes Wikipedia's depth. Your explanations should be clear and engaging, breaking down concepts into understandable parts, employing analogies, and connecting to everyday experiences. The goal is to teach directly rather than describing what will be taught.
 
-            !IMPORTANT -> CONTENT SHOULD BE CONCISE AND EASILY DIGESTIBLE – AVOID WORDINESS.
-
-            !IMPORTANT -> AVOID REINTRODUCING THE COURSE TOPIC IN THE CONTENT. THE READERS ALREADY KNOW THE COURSE TOPIC.
-
-            !IMPORTANT -> DO NOT GIVE THE CONTENT A MAIN TITLE – AVOID THIS EXPLICITLY.
-    
-            !IMPORTANT -> CONTENT SHOULD BE INFORMATIVE, PROVIDING ACTUAL CONTENT THAT CAN BE LEARNED.
-    
-            !IMPORTANT -> DO NOT DESCRIBE WHAT YOU WILL TEACH OR WHAT WILL BE IN THE CONTENT UNDER ANY CIRCUMSTANCES.
-    
-            !IMPORTANT-> CONTENT SHOULD BE STRUCTURED IN MARKDOWN FORMAT AND SHOULD FOLLOW BEST FORMATTING PRACTICES, INLCUDING TABLES, LISTS, HEADINGS WHEN NEEDED.
-            
-            !IMPORTANT -> AVOID CONCLUSIONS AND SUMMARIES IN THE CONTENT, DONT REPEAT INFORMATION, DONT ADD SECTIONS THAT READ "IN SUMMARY....".
-            
-            !IMPORTANT -> CONTENT SHOULD NOT OVERLAP WITH OTHER UNITS.
-            
-            !IMPORTANT -> CONTENT SHOULD MANTAIN THE CONTEXT OF THE COURSE.
-            
+          Key Points:
+          DO NOT ADD A MAIN TITLE TO THE ARTICLE.
+          Conciseness is crucial: Eliminate wordiness, delivering content that's easy to digest.
+          Assume course topic knowledge: Do not reintroduce or repeatedly mention the course topic.
+          No main titles: Start directly with the educational content without a leading title.
+          Focus on providing learning material: Offer substantial information that adds value and knowledge.
+          Avoid describing future content: Directly present the information instead of indicating what will be covered.
+          Use Markdown for structure: Apply formatting best practices, including tables, lists, and headings as needed.
+          Skip summaries and conclusions: Do not repeat information or include summary sections.
+          Ensure content uniqueness: Avoid overlap with other units and maintain relevance to the course context.
             `,
       },
       {
@@ -50,10 +38,10 @@ export async function POST(request: Request) {
               The lesson you are writing content for is: ${lessonTitle}.
 
               Other details to guide your content:
-              Course: ${courseTitle}
-              Course Summary: ${courseSummary}
-              Unit: ${unitTitle}
-              Lessons: ${unitLessons},
+              Article Topic: ${lessonTitle}
+              Blog Title: ${courseTitle}
+              Blog Description: ${courseSummary}
+              Other Articles in Blog: ${lessonTitles},
               Write detailed informative content.`,
       },
     ] as any;

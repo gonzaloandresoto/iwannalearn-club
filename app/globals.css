@@ -35,6 +35,10 @@
   @apply relative h-max flex flex-col gap-8 justify-between pb-[120px];
 }
 
+.general-container {
+  @apply bg-white border-2 border-primary-tan rounded-xl;
+}
+
 /* BUTTONS */
 
 .main-button {
@@ -73,6 +77,10 @@
 
 .h2 {
   @apply lg:text-2xl text-xl text-tertiary-black font-semibold;
+}
+
+.h3 {
+  @apply text-xl text-tertiary-black font-semibold;
 }
 
 .lesson-text {

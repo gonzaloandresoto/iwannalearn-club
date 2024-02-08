@@ -7,6 +7,7 @@ interface TableofContentsItem {
   id: string;
   title: string;
   unitId: string;
+  firstLessonId: string;
 }
 
 interface UnitCompletionsItem {
@@ -78,8 +79,7 @@ export default function TableOfContents({
 
             <Link
               href={{
-                pathname: `/course/${courseId}/${item.unitId}`,
-                query: { activePage: 0 },
+                pathname: `/course/${courseId}/${item.unitId}/${item.firstLessonId}`,
               }}
               style={{
                 pointerEvents: isDisabled ? 'none' : 'auto',

@@ -172,9 +172,11 @@ export async function getCourseById(id: string, withTOC = false) {
         const unitName = newTableOfContents[item].title;
 
         const unit = await Unit.findOne({ title: unitName, courseId: id });
+        const firstLesson = await Element.findOne({ unitId: unit._id });
 
-        if (unit && unit._id) {
+        if (unit && unit._id && firstLesson) {
           newTableOfContents[item].unitId = unit._id.toString();
+          newTableOfContents[item].firstLessonId = firstLesson._id.toString();
         } else {
           return;
         }

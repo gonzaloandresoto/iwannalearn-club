@@ -5,6 +5,20 @@ import Element from '../database/models/element.model';
 import UserQuiz from '../database/models/userquiz.model';
 import { handleError } from '../utils';
 
+export const getLessonById = async (lessonId: string) => {
+  try {
+    await connectToDatabase();
+
+    const lesson = await Element.findById({ _id: lessonId });
+
+    if (!lesson) throw new Error('Lesson not found');
+
+    return JSON.parse(JSON.stringify(lesson));
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 export const saveGeneratedLessonText = async (
   lessonId: string,
   completion: string
