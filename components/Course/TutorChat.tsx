@@ -1,32 +1,48 @@
 'use client';
 
-import { useState } from 'react';
+import useScrollToBottom from '@/hooks/useScrollToBottom';
+import { useChat } from 'ai/react';
 
-const messages = [
+interface Message {
+  role: string;
+  content: string;
+}
+
+const introMessages = [
+  {
+    role: 'system',
+    content:
+      'You are a a helpful, expert AI tutor who is tasked with ensuring the student understands the topics they ask about. Respond in markdown.',
+  },
   {
     role: 'assistant',
-    message: 'Hello, how can I help you today?',
+    content: 'Hey! How can I help?',
   },
-  {
-    role: 'user',
-    message: 'I need help with my homework',
-  },
-];
+] as Message[];
 
 export default function TutorChat() {
-  //   const [messages, setMessages] = useState<any>([]);
-  const [message, setMessage] = useState<string>('');
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: '/api/tutor-chat',
+    initialMessages: introMessages as any,
+  });
+  const scrollRef = useScrollToBottom([messages]);
+
+  const filteredMessages = messages.filter(
+    (message: any) => message.role !== 'system'
+  );
+
   return (
-    <div className='flex grow flex-col gap-4 w-full general-container p-4'>
+    <div className='flex grow flex-col gap-4 w-full general-container p-4 overflow-hidden'>
       <h2 className='h3 font-rosario'>Tutor</h2>
-      <div className='flex grow flex-col gap-4'>
-        <div className='flex flex-grow flex-col gap-2'>
-          {messages.map((message: any) => (
+      <div className='flex grow flex-col gap-4 overflow-hidden'>
+        {/* -------- */}
+        <div className='flex grow overflow-auto flex-col gap-2'>
+          {filteredMessages.map((message: Message) => (
             <div
-              key={message.message}
+              key={message.content}
               className={`flex  w-full ${
                 message.role === 'assistant' ? 'justify-start' : 'justify-end'
-              }`}
+              } ${message.role === 'system' ? 'hidden' : ''}`}
             >
               <div
                 className={`text-sm p-2 rounded-md ${
@@ -35,17 +51,22 @@ export default function TutorChat() {
                     : 'bg-secondary-tan text-secondary-black rounded-br-none'
                 }`}
               >
-                {message.message}
+                {message.content}
               </div>
             </div>
           ))}
+
+          <div ref={scrollRef}></div>
         </div>
-        <input
-          type='text'
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className='w-full p-2 bg-white rounded-md border-2 border-primary-tan'
-        />
+        {/* -------- */}
+        <form onSubmit={handleSubmit}>
+          <input
+            type='text'
+            value={input}
+            onChange={handleInputChange}
+            className='w-full p-2 bg-white rounded-md border-2 border-primary-tan font-rosario text-base text-secondary-black'
+          />
+        </form>
       </div>
     </div>
   );
