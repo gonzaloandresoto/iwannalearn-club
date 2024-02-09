@@ -1,7 +1,6 @@
 import { handleError } from '@/lib/utils';
 import openai from '@/lib/openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
-import { saveGeneratedLessonText } from '@/lib/actions/element.action';
 
 export const runtime = 'edge';
 
@@ -10,10 +9,6 @@ export async function POST(request: Request) {
     const { lessonTitle, courseTitle, courseSummary, lessonTitles } =
       await request.json();
 
-    console.log('lessonTitle', lessonTitle);
-    console.log('courseTitle', courseTitle);
-    console.log('courseSummary', courseSummary);
-    console.log('lessonTitles', lessonTitles);
     const prompt = [
       {
         role: 'system',
@@ -21,7 +16,7 @@ export async function POST(request: Request) {
           You are tasked with simplifying complex topics from ${courseTitle}, ensuring the content is textbook-quality and utilizes Wikipedia's depth. Your explanations should be clear and engaging, breaking down concepts into understandable parts, employing analogies, and connecting to everyday experiences. The goal is to teach directly rather than describing what will be taught.
 
           Key Points:
-          DO NOT ADD A MAIN TITLE TO THE ARTICLE.
+          DO NOT ADD A MAIN TITLE TO THE ARTICLE OR REPEAT THE ARTICLE TOPIC.
           Conciseness is crucial: Eliminate wordiness, delivering content that's easy to digest.
           Assume course topic knowledge: Do not reintroduce or repeatedly mention the course topic.
           No main titles: Start directly with the educational content without a leading title.
