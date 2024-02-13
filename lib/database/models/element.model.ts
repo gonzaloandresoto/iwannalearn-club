@@ -6,6 +6,7 @@ const ElementSchema = new Schema(
     order: { type: Number, required: true },
     title: { type: String, required: true },
     content: { type: String, required: false },
+    links: { type: String, required: false },
     unitId: { type: Schema.Types.ObjectId, ref: 'Unit' },
   },
   { timestamps: true }

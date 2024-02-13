@@ -1,5 +1,5 @@
-import CourseSidebar from '@/components/Course/CourseSidebar';
-import LessonCard from '@/components/Course/LessonCard';
+import CourseSidebar from '@/components/Course/Sidebar/CourseSidebar';
+import LessonCard from '@/components/Course/Main/LessonCard';
 import { getLessonById } from '@/lib/actions/element.action';
 import { getUnitLessonTitles } from '@/lib/actions/unit.actions';
 
@@ -19,7 +19,7 @@ export default async function Lesson({
         courseId={id}
         unitId={unit}
       />
-      <CourseSidebar />
+      <CourseSidebar lesson={lessonContent} />
     </div>
   );
 }
