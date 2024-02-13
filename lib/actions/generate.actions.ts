@@ -1,26 +1,16 @@
 'use server';
 import { connectToDatabase } from '../database';
 import openai from '../openai/index';
+import { handleError } from '../utils';
 
 import Unit from '../database/models/unit.model';
 import Course from '../database/models/course.model';
 import Element from '../database/models/element.model';
 import UserCourse from '../database/models/usercourse.model';
-
-import { handleError } from '../utils';
 import UserUnit from '../database/models/userunit.model';
+import { CourseDetails, SampleTOC, SampleTopic } from '@/types';
 
-// ----------------- TOOLS ----------------- //
-const lesson_schema = {
-  type: 'object',
-  properties: {
-    title: {
-      type: 'string',
-      description: 'the title of the lesson',
-    },
-  },
-  required: ['title'],
-};
+// ----------------- SCHEMAS ----------------- //
 
 const concepts_schema = {
   type: 'object',
@@ -63,7 +53,7 @@ const toc_schema = {
   },
 };
 
-const custom_course_schema = {
+const course_details_schema = {
   type: 'object',
   properties: {
     title: {
@@ -78,12 +68,25 @@ const custom_course_schema = {
   required: ['title', 'summary'],
 };
 
+const lesson_schema = {
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+      description: 'the title of the lesson',
+    },
+  },
+  required: ['title'],
+};
+
 const lesson_title_schema = {
   type: 'object',
   properties: {
     unit: { type: 'array', items: lesson_schema, minItems: 2, maxItems: 5 },
   },
 };
+
+// ----------------- FUNCTIONS ----------------- //
 
 const suggest_concepts = {
   name: 'suggest_concepts',
@@ -98,10 +101,10 @@ const suggest_TOC = {
   parameters: toc_schema,
 };
 
-const custom_create_course = {
-  name: 'custom_create_course',
-  description: 'creates a new course',
-  parameters: custom_course_schema,
+const create_course_details = {
+  name: 'create_course_details',
+  description: 'Creates a title and summary for a course on a given topic',
+  parameters: course_details_schema,
 };
 
 const custom_create_lesson_titles = {
@@ -111,28 +114,6 @@ const custom_create_lesson_titles = {
 };
 
 // ----------------- TYPES ----------------- //
-
-interface Lesson {
-  title: string;
-  content?: string;
-}
-
-interface Unit {
-  title: string;
-  lessons: Lesson[];
-}
-
-interface Course {
-  title: string;
-  summary: string;
-  table_of_contents: Unit[];
-}
-
-interface CourseDetails {
-  table_of_contents: { title: string; order: number }[];
-  title: string;
-  summary: string;
-}
 
 interface CustomCourse {
   topic: string;
@@ -152,24 +133,20 @@ interface PostLessonsTOC {
   lessons: {
     title: string;
     content: string;
-    quiz: {
-      question: string;
-      options: string[];
-      answer: number;
-    };
   }[];
 }
 
 // ----------------- GENERATE MODAL FLOW ----------------- //
 
-export const generateSampleTopics = async (
+// Function to generate sample concepts for a topic
+export const generateSampleConcepts = async (
   topic: string
-): Promise<string[]> => {
+): Promise<SampleTopic[]> => {
   const prompt = [
     {
       role: 'system',
       content:
-        ' As a highly knowledgeable teacher, please utilize Wikipedia as your main source to identify and provide a list of five fundamental concepts that are crucial for comprehending a specific subject. It is important that each concept is directly linked to the main topic and presented in a concise and informative manner.',
+        'As a highly knowledgeable teacher, please utilize Wikipedia as your main source to identify and provide a list of five fundamental concepts that are crucial for comprehending a specific topic. It is important that each concept is directly linked to the main topic and presented in a concise and informative manner.',
     },
     {
       role: 'user',
@@ -177,7 +154,7 @@ export const generateSampleTopics = async (
     },
   ] as any;
 
-  const res = await openai.chat.completions.create({
+  const response = await openai.chat.completions.create({
     messages: prompt,
     model: 'gpt-3.5-turbo-1106',
     tools: [
@@ -194,31 +171,112 @@ export const generateSampleTopics = async (
     },
   });
 
-  const functioneResponse = JSON.parse(
-    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+  const concepts = JSON.parse(
+    response.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+  )?.concepts;
+
+  return JSON.parse(JSON.stringify(concepts));
+};
+
+export const generateSampleTOC = async (
+  topic: string,
+  concepts: string
+): Promise<SampleTOC[]> => {
+  const prompt = [
+    {
+      role: 'system',
+      content: `Create a logically ordered and comprehensive table of contents comprising four units for the given topic. The table of contents should be based on the concepts given to you. Do not include the word "unit" in the title of the units. `,
+    },
+    {
+      role: 'user',
+      content: `Topic: ${topic}
+                Concepts: ${concepts}.`,
+    },
+  ] as any;
+
+  const response = await openai.chat.completions.create({
+    messages: prompt,
+    model: 'gpt-3.5-turbo-1106',
+    tools: [
+      {
+        type: 'function',
+        function: suggest_TOC,
+      },
+    ],
+    tool_choice: {
+      type: 'function',
+      function: {
+        name: 'suggest_TOC',
+      },
+    },
+  });
+
+  const sampleTOC = JSON.parse(
+    response.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+  )?.tableOfContents;
+
+  return JSON.parse(JSON.stringify(sampleTOC));
+};
+
+// ----------------- MAIN GENERATE ----------------- //
+
+export const generateCourseDetailsCustom = async (
+  topic: string
+): Promise<CourseDetails> => {
+  const prompt = [
+    {
+      role: 'system',
+      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in ${topic}. You will generate a textbook quality course on the topic for them.`,
+    },
+    {
+      role: 'user',
+      content: `Topic: ${topic}.`,
+    },
+  ] as any;
+
+  const response = await openai.chat.completions.create({
+    messages: prompt,
+    model: 'gpt-3.5-turbo-1106',
+    tools: [
+      {
+        type: 'function',
+        function: create_course_details,
+      },
+    ],
+    tool_choice: {
+      type: 'function',
+      function: {
+        name: 'create_course_details',
+      },
+    },
+  });
+
+  const courseDetails = JSON.parse(
+    response.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
 
-  const topics = functioneResponse?.concepts;
-  // console.log('TOPICS WIKI', topics);
-  return topics;
+  // console.log('DONE GENERATING COURSE', courseObject);
+  return JSON.parse(JSON.stringify(courseDetails));
 };
 
 // Function to create lessons for custom TOC given
 async function generateLessonTitlesCustom(
-  toc: PreLessonsTOC[]
+  topic: string,
+  tableOfContents: any
 ): Promise<PostLessonsTOC[]> {
-  const unitTitles = toc.map((unit) => unit.title);
-  const unitPromises = toc.map(async (unit, index) => {
+  const unitTitles = tableOfContents.map((unit) => unit.title);
+  const unitPromises = tableOfContents.map(async (unit, index) => {
     // console.log('UNIT TITLE FOR LESSONS: ', unit.title);
     const prompt = [
       {
         role: 'system',
-        content:
-          'You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. You are generating lesson titles for a course with respect to the unit title you are given. The lesson titles should not overlap with other lessons.',
+        content: `You are a highly qualified teacher extremely knowledgable in ${topic}. You are creating the structure for a course, suggesting lesson titles for lessons in a unit with respect to its course. The lesson titles should not overlap with other lessons.`,
       },
       {
         role: 'user',
-        content: `This is the unit title: ${unit.title}. DOn't overlap with these units under any ciscumstance: ${unitTitles}`,
+        content: `Course: ${topic}
+                  Unit Title: ${unit.title}
+                  Topics to Avoid Overlap With: ${unitTitles}`,
       },
     ] as any;
 
@@ -259,93 +317,6 @@ async function generateLessonTitlesCustom(
   // console.log('DONE GENERATING ALL UNIT LESSONS', newTOC);
   return newTOC;
 }
-
-export const generateSampleTOC = async (
-  topic: string,
-  concepts: string
-): Promise<string[]> => {
-  const prompt = [
-    {
-      role: 'system',
-      content: `Create a meticulously organized and comprehensive table of contents comprising four units. These units should be centered around a specific topic chosen by student, and should effectively incorporate the specific concepts they have provided. It is crucial that the units thoroughly address the requested concepts while maintaining a clear focus on the main topic. Additionally, please ensure that the units are logically arranged to facilitate a coherent and structured learning experience.
-        
-      !IMPORTANT -> UNIT TITLES SHOULD NOT CONTAIN THE WORD UNIT IN THEM, AVOID FORMATS LIKE "UNIT X: TITLE" INSETAD JUST PROVIDE THE TITLE.`,
-    },
-    {
-      role: 'user',
-      content: `I want to learn about this topic: ${topic}, making sure we cover these concepts:${concepts} about it.`,
-    },
-  ] as any;
-
-  const res = await openai.chat.completions.create({
-    messages: prompt,
-    model: 'gpt-3.5-turbo-1106',
-    tools: [
-      {
-        type: 'function',
-        function: suggest_TOC,
-      },
-    ],
-    tool_choice: {
-      type: 'function',
-      function: {
-        name: 'suggest_TOC',
-      },
-    },
-  });
-
-  const functioneResponse = JSON.parse(
-    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
-  );
-
-  const TOC = functioneResponse?.tableOfContents;
-  // console.log('TOCZ', TOC);
-  return TOC;
-};
-
-// ----------------- MAIN GENERATE ----------------- //
-
-export const generateCourseDetailsCustom = async (
-  topic: string
-): Promise<CourseDetails> => {
-  // console.log('START GENERATING COURSE DETAILS OPEN AI');
-
-  const prompt = [
-    {
-      role: 'system',
-      content:
-        'You are a well-rounded, highly qualified teacher extremely knowledgable in a wide variety of subject matter. Your students will ask about some high level topic and you will generate a textbook quality course on the topic for them.',
-    },
-    {
-      role: 'user',
-      content: `I want to learn about this topic: ${topic}.`,
-    },
-  ] as any;
-
-  const res = await openai.chat.completions.create({
-    messages: prompt,
-    model: 'gpt-3.5-turbo-1106',
-    tools: [
-      {
-        type: 'function',
-        function: custom_create_course,
-      },
-    ],
-    tool_choice: {
-      type: 'function',
-      function: {
-        name: 'custom_create_course',
-      },
-    },
-  });
-
-  const courseObject = JSON.parse(
-    res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
-  );
-
-  // console.log('DONE GENERATING COURSE', courseObject);
-  return courseObject;
-};
 
 // Function to create an upload the course
 async function createAndUploadCourseCustom(
@@ -407,6 +378,7 @@ export async function createCourseCustomV2(
       if (!course) throw new Error('Course could not be generated');
 
       const generatedTOC = await generateLessonTitlesCustom(
+        customAttributes.topic,
         customAttributes.tableOfContents
       );
 

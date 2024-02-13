@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import useUserContext from '@/hooks/useUserContext';
 
-import { generateSampleTopics } from '@/lib/actions/generate.actions';
+import { generateSampleConcepts } from '@/lib/actions/generate.actions';
 
 import EmptyState from './EmptyState';
 import GeneratingCourse from '../GeneratingInProgress';
@@ -70,7 +70,7 @@ export default function GenerationType({
     setLoading(true);
 
     // function to generate topics
-    const topics = await generateSampleTopics(customAttributes.topic);
+    const topics = await generateSampleConcepts(customAttributes?.topic);
 
     if (topics) {
       setCustomAttributes({

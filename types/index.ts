@@ -1,3 +1,16 @@
+export interface SampleTopic {
+  item: string;
+}
+
+export interface SampleTOC {
+  item: string;
+}
+
+export interface CourseDetails {
+  title: string;
+  summary: string;
+}
+
 export interface Lesson {
   _id: string;
   title: string;
