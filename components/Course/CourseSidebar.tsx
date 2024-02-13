@@ -3,7 +3,7 @@ import TutorChat from '@/components/Course/TutorChat';
 
 export default function CourseSidebar() {
   return (
-    <div className='w-[320px] h-full flex flex-col gap-4 pb-4'>
+    <div className='w-[320px] h-full hidden lg:flex flex-col gap-4 pb-4'>
       <FurtherReading />
       <TutorChat />
     </div>
