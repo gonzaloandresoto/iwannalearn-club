@@ -1,6 +1,6 @@
 import { TOCProvider } from '@/context/TOCProvider';
 import { UserProvider } from '@/context/UserProvider';
-import NavigationBar from '@/components/Course/CourseNavigation/NavigationBar';
+import NavigationBar from '@/components/Course/Navigation/NavigationBar';
 import type { Metadata } from 'next';
 import { getCourseById } from '@/lib/actions/course.actions';
 

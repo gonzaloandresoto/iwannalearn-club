@@ -1,4 +1,4 @@
-import CourseCompletion from '@/components/Course/CourseComponents/CourseCompletion';
+import CourseCompletion from '@/components/Course/Main/CourseCompletion';
 import { getCourseById } from '@/lib/actions/course.actions';
 
 export default async function CourseCompleted({ params: { id } }: any) {

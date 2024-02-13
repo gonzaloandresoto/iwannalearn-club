@@ -4,9 +4,9 @@ import { connectToDatabase } from '../database';
 import { handleError } from '../utils';
 import Unit from '../database/models/unit.model';
 
-import Quiz from '../database/models/quiz.model';
 import Element from '../database/models/element.model';
 import UserUnit from '../database/models/userunit.model';
+import { UnitLessons } from '@/types';
 
 export async function updateUnitStatus(
   unitId: string,
@@ -47,24 +47,6 @@ export async function getUnitContentById(unitId: string) {
   }
 }
 
-export async function getUnitElementsById(id: string) {
-  try {
-    await connectToDatabase();
-
-    const quizzes = await Quiz.find({ unitId: { $in: id } });
-
-    const elements = await Element.find({ unitId: { $in: id } });
-
-    const unitContent = [...elements, ...quizzes].sort(
-      (a, b) => a.order - b.order
-    );
-
-    return JSON.parse(JSON.stringify(unitContent));
-  } catch (error) {
-    handleError(error);
-  }
-}
-
 // Function to get the next uncompleted unit
 export async function getNextUncompletedUnit(
   courseId: string,
@@ -100,20 +82,6 @@ export async function getNextUncompletedUnit(
   } catch (error) {
     handleError(error);
     return null;
-  }
-}
-
-export async function getFirstLesson(unitId: string) {
-  try {
-    await connectToDatabase();
-
-    const firstLesson = await Element.findOne({ unitId: unitId }, { _id: 1 });
-
-    if (!firstLesson) return null;
-
-    return firstLesson._id;
-  } catch (error) {
-    handleError(error);
   }
 }
 
@@ -159,42 +127,9 @@ export async function getUnitCompletions(courseId: string) {
   }
 }
 
-export async function updateUnitStatusBasedOnQuizCompletion(unitId: string) {
-  try {
-    await connectToDatabase();
-
-    const quizzes = await Quiz.find({ unitId: unitId });
-
-    if (quizzes.length === 0) {
-      return { message: 'No quizzes to evaluate' };
-    }
-
-    const completedQuizzes = quizzes.filter(
-      (quiz) => quiz.status === true
-    ).length;
-
-    let newStatus;
-    if (completedQuizzes === quizzes.length) {
-      newStatus = 'COMPLETED';
-    } else if (completedQuizzes > 0) {
-      newStatus = 'IN-PROGRESS';
-    } else {
-      return { message: 'No quizzes completed' };
-    }
-
-    const updatedUnit = await Unit.findByIdAndUpdate(
-      unitId,
-      { status: newStatus },
-      { new: true }
-    );
-
-    return updatedUnit;
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-export const getUnitLessonTitles = async (unitId: string) => {
+export const getUnitLessonTitles = async (
+  unitId: string
+): Promise<UnitLessons | undefined> => {
   try {
     await connectToDatabase();
 
@@ -208,3 +143,70 @@ export const getUnitLessonTitles = async (unitId: string) => {
     handleError(error);
   }
 };
+
+// export async function getUnitElementsById(id: string) {
+//   try {
+//     await connectToDatabase();
+
+//     const quizzes = await Quiz.find({ unitId: { $in: id } });
+
+//     const elements = await Element.find({ unitId: { $in: id } });
+
+//     const unitContent = [...elements, ...quizzes].sort(
+//       (a, b) => a.order - b.order
+//     );
+
+//     return JSON.parse(JSON.stringify(unitContent));
+//   } catch (error) {
+//     handleError(error);
+//   }
+// }
+
+// export async function getFirstLesson(unitId: string) {
+//   try {
+//     await connectToDatabase();
+
+//     const firstLesson = await Element.findOne({ unitId: unitId }, { _id: 1 });
+
+//     if (!firstLesson) return null;
+
+//     return firstLesson._id;
+//   } catch (error) {
+//     handleError(error);
+//   }
+// }
+
+// export async function updateUnitStatusBasedOnQuizCompletion(unitId: string) {
+//   try {
+//     await connectToDatabase();
+
+//     const quizzes = await Quiz.find({ unitId: unitId });
+
+//     if (quizzes.length === 0) {
+//       return { message: 'No quizzes to evaluate' };
+//     }
+
+//     const completedQuizzes = quizzes.filter(
+//       (quiz) => quiz.status === true
+//     ).length;
+
+//     let newStatus;
+//     if (completedQuizzes === quizzes.length) {
+//       newStatus = 'COMPLETED';
+//     } else if (completedQuizzes > 0) {
+//       newStatus = 'IN-PROGRESS';
+//     } else {
+//       return { message: 'No quizzes completed' };
+//     }
+
+//     const updatedUnit = await Unit.findByIdAndUpdate(
+//       unitId,
+//       { status: newStatus },
+//       { new: true }
+//     );
+
+//     return updatedUnit;
+//   } catch (error) {
+//     handleError(error);
+//   }
+// }

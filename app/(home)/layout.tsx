@@ -1,4 +1,4 @@
-import NavigationBar from '@/components/AppNavigation/NavigationBar';
+import NavigationBar from '@/components/Shared/Navigation/NavigationBar';
 import { UserProvider } from '@/context/UserProvider';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

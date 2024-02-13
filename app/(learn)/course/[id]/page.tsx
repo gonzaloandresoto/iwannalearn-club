@@ -1,4 +1,4 @@
-import CourseCover from '@/components/Course/CourseComponents/CourseCover';
+import CourseCover from '@/components/Course/Main/CourseCover';
 
 import EmptyState from '@/components/Course/EmptyState';
 import { getCourseById } from '@/lib/actions/course.actions';

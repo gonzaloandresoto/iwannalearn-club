@@ -7,11 +7,10 @@ import Course from '../database/models/course.model';
 import UserCourse from '../database/models/usercourse.model';
 import { handleError } from '../utils';
 import Unit from '../database/models/unit.model';
-import UserQuiz from '../database/models/userquiz.model';
+
 import Quiz from '../database/models/quiz.model';
 import { revalidatePath } from 'next/cache';
 import UserUnit from '../database/models/userunit.model';
-import { redirect } from 'next/navigation';
 
 interface CourseForUser {
   _id: string;
@@ -112,27 +111,8 @@ export async function getCourseContentById(id: string) {
     const courseQuizzes = await Quiz.find({ unitId: { $in: unitIds } });
     const courseLessons = await Element.find({ unitId: { $in: unitIds } });
 
-    //Fetching the user quizzes
-    const courseQuizIds = courseQuizzes.map((quiz) => quiz._id);
-    // console.log('🚀 ~ courseQuizIds:', courseQuizIds);
-    const userQuizes = await UserQuiz.find({ quizId: { $in: courseQuizIds } });
-    // console.log('🚀 ~ userQuizes:', userQuizes);
-
-    //Giving each quiz its completion status
-    const mergedQuizes = courseQuizzes.map((quiz) => {
-      const userQuiz = userQuizes.find((userQuiz) =>
-        userQuiz.quizId.equals(quiz._id)
-      );
-      return {
-        ...quiz._doc,
-        completed: userQuiz ? userQuiz.completed : false,
-      };
-    });
-
-    // console.log('🚀 ~ mergedQuizes:', mergedQuizes);
-
     //Merging the quizzes and lessons
-    const mergedCourse = [...courseLessons, ...mergedQuizes].sort(
+    const mergedCourse = [...courseLessons, ...courseQuizzes].sort(
       (a, b) => a.order - b.order
     );
 

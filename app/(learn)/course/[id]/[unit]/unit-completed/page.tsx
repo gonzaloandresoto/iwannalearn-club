@@ -1,7 +1,6 @@
-import UnitCompletion from '@/components/Course/CourseComponents/UnitCompletion';
+import UnitCompletion from '@/components/Course/Main/UnitCompletion';
 import EmptyState from '@/components/Course/EmptyState';
 import {
-  getFirstLesson,
   getNextUncompletedUnit,
   getUnitContentById,
 } from '@/lib/actions/unit.actions';

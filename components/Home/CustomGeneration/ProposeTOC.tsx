@@ -6,12 +6,9 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import {
-  createCourseCustom,
-  createCourseCustomV2,
-} from '@/lib/actions/generate.actions';
+import { createCourseCustomV2 } from '@/lib/actions/generate.actions';
 
-import GeneratingCourse from '../GeneratingCourse';
+import GeneratingCourse from '../GeneratingInProgress';
 const formatSampleTOC = (toc: string[]) => {
   return toc.map((item: any) => `${item.id}. ${item.title}`).join('\n');
 };

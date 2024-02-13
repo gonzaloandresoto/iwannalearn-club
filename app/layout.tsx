@@ -14,10 +14,12 @@ const inter = Inter({ subsets: ['latin'] });
 const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
   variable: '--font-source-serif-4',
+  display: 'swap',
 });
 const rosario = Rosario({
   subsets: ['latin'],
   variable: '--font-rosario',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -37,7 +39,7 @@ export default function RootLayout({
     <html lang='en'>
       <head>
         <LogSnagProvider
-          token='5709588006ef4f56b1a4ab66bf426905'
+          token={process.env.LOGSNAG_TOKEN as string}
           project='iwl'
         />
       </head>

@@ -5,13 +5,10 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import useUserContext from '@/hooks/useUserContext';
 
-import {
-  createCourse,
-  generateSampleTopics,
-} from '@/lib/actions/generate.actions';
+import { generateSampleTopics } from '@/lib/actions/generate.actions';
 
 import EmptyState from './EmptyState';
-import GeneratingCourse from '../GeneratingCourse';
+import GeneratingCourse from '../GeneratingInProgress';
 
 import { Settings2, Zap } from 'lucide-react';
 import { getMostRecentCourse } from '@/lib/actions/course.actions';
@@ -46,26 +43,26 @@ export default function GenerationType({
 
     setGenerating(true);
 
-    // create course with topic and user id
-    const response = await createCourse(
-      customAttributes.topic,
-      user?._id || ''
-    );
+    // // create course with topic and user id
+    // const response = await createCourse(
+    //   customAttributes.topic,
+    //   user?._id || ''
+    // );
 
-    if ('message' in response) {
-      toast(response.message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'dark',
-      });
-    } else {
-      router.push(`/course/${response.courseId}`);
-    }
+    // if ('message' in response) {
+    //   toast(response.message, {
+    //     position: 'top-center',
+    //     autoClose: 3000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: false,
+    //     progress: undefined,
+    //     theme: 'dark',
+    //   });
+    // } else {
+    //   router.push(`/course/${response.courseId}`);
+    // }
   };
 
   const generateTopics = async () => {
