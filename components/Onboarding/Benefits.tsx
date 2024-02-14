@@ -1,24 +1,6 @@
 import Image from 'next/image';
 
-const whyLearnOptions = [
-  {
-    icon: '/course-icons/book.svg',
-    title: 'Learn about ANYTHING',
-    subtitle:
-      'We use AI to generate endless learning paths based on your interests',
-  },
-  {
-    icon: '/course-icons/grad-cap.svg',
-    title: 'Learn at any level',
-    subtitle: 'We break complex topics down to bite-sized lessons',
-  },
-  {
-    icon: '/course-icons/calendar.svg',
-    title: 'Learn at your own pace',
-    subtitle:
-      'No deadlines, no pressure – control your learning journey in a way that suits you best',
-  },
-];
+import { iwlBenefits } from '@/constants';
 
 export default function Benefits() {
   return (
@@ -27,7 +9,7 @@ export default function Benefits() {
         {`Here's why you'll love iWannaLearn`}
       </p>
       <div className='lg:w-[720px] w-full flex flex-col gap-4'>
-        {whyLearnOptions?.map((option, index) => (
+        {iwlBenefits?.map((option, index) => (
           <div
             key={index}
             className='w-full flex items-center gap-8 px-4 py-6 border-2 border-primary-tan rounded-lg'

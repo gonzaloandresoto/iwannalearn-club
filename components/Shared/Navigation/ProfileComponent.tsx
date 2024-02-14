@@ -13,7 +13,7 @@ const ProfileComponent = async () => {
         {userDetails?.photo ? (
           <Image
             src={userDetails.photo}
-            alt={`${userDetails?.name} profile`}
+            alt={`${userDetails?.firstName} profile`}
             width={40}
             height={40}
           />

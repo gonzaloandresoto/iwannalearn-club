@@ -59,7 +59,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     getUserDetails();
   }, [clerkId, retryCount]);
 
-  if (user && !user.onboarding) router.push('/onboarding');
+  useEffect(() => {
+    if (user && !user.onboarding) router.push('/onboarding');
+  }, [user]);
 
   const value = {
     clerkId,

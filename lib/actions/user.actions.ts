@@ -17,7 +17,9 @@ interface CreateUserParams {
   photo: string;
 }
 
-export async function createUser(user: CreateUserParams) {
+export async function createUser(
+  user: CreateUserParams
+): Promise<UserType | undefined> {
   try {
     await connectToDatabase();
 
@@ -48,8 +50,7 @@ export async function updateUserDetails(
   userId: string,
   userInfo: OnboardingUserDetails,
   completed: boolean
-) {
-  if (!userId) return { message: 'User not found' };
+): Promise<void> {
   try {
     await connectToDatabase();
 
@@ -74,27 +75,6 @@ export async function updateUserDetails(
     });
 
     if (!userOnboardingDetails) throw new Error('User onboarding failed');
-
-    return { message: 'User updated successfully' };
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-export async function deleteUser(clerkId: string) {
-  try {
-    await connectToDatabase();
-
-    const userToDelete = await User.findOne({ clerkId });
-
-    if (!userToDelete) {
-      throw new Error('User not found');
-    }
-
-    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-    revalidatePath('/');
-
-    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
   } catch (error) {
     handleError(error);
   }

@@ -1,15 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
+import Image from 'next/image';
 
-const whyLearnOptions = [
-  'Using AI to supplement my education',
-  'Staying productive with my free time',
-  'Receiving personalized learning paths based on my interests',
-  'Learning on a flexible schedule that suits my lifestyle',
-  'Other',
-];
+import { whyLearnOptions } from '@/constants';
 
 interface AttributionProps {
   setUserInfo: (userInfo: any) => void;
