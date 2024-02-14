@@ -442,7 +442,7 @@ export async function createCustomCourse(
 
       // console.log('DONE ASSIGNING COURSE TO USER');
 
-      uploadUnitsAndLessons(generatedTOC, newCourseId, userId);
+      await uploadUnitsAndLessons(generatedTOC, newCourseId, userId);
 
       return JSON.parse(JSON.stringify(newCourseId));
     })();
