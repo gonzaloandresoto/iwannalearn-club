@@ -1,6 +1,7 @@
 'use server';
-import { connectToDatabase } from '../database';
+
 import openai from '../openai/index';
+import { connectToDatabase } from '../database';
 import { handleError } from '../utils';
 
 import Unit from '../database/models/unit.model';
@@ -8,7 +9,14 @@ import Course from '../database/models/course.model';
 import Element from '../database/models/element.model';
 import UserCourse from '../database/models/usercourse.model';
 import UserUnit from '../database/models/userunit.model';
-import { CourseDetails, SampleTOC, SampleTopic } from '@/types';
+
+import {
+  CourseCustomAttributes,
+  CourseDetails,
+  CourseWithLessonTitles,
+  SampleTOC,
+  SampleTopic,
+} from '@/types';
 
 // ----------------- SCHEMAS ----------------- //
 
@@ -43,7 +51,7 @@ const toc_schema = {
           id: {
             type: 'number',
             description: 'the id of the unit',
-            enum: [1, 2, 3, 4],
+            enum: [1, 2, 3, 4, 5, 6],
           },
         },
         required: ['title', 'id'],
@@ -68,21 +76,24 @@ const course_details_schema = {
   required: ['title', 'summary'],
 };
 
-const lesson_schema = {
-  type: 'object',
-  properties: {
-    title: {
-      type: 'string',
-      description: 'the title of the lesson',
-    },
-  },
-  required: ['title'],
-};
-
 const lesson_title_schema = {
   type: 'object',
   properties: {
-    unit: { type: 'array', items: lesson_schema, minItems: 2, maxItems: 5 },
+    unit: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            description: 'the title of the lesson',
+          },
+        },
+        required: ['title'],
+      },
+      minItems: 2,
+      maxItems: 5,
+    },
   },
 };
 
@@ -112,29 +123,6 @@ const custom_create_lesson_titles = {
   description: 'generates lesson titles for a unit',
   parameters: lesson_title_schema,
 };
-
-// ----------------- TYPES ----------------- //
-
-interface CustomCourse {
-  topic: string;
-  concepts: string[];
-  tableOfContents: any;
-  experienceLevel: string | null;
-}
-
-interface PreLessonsTOC {
-  title: string;
-  id: number;
-}
-
-interface PostLessonsTOC {
-  title: string;
-  order: number;
-  lessons: {
-    title: string;
-    content: string;
-  }[];
-}
 
 // ----------------- GENERATE MODAL FLOW ----------------- //
 
@@ -185,7 +173,7 @@ export const generateSampleTOC = async (
   const prompt = [
     {
       role: 'system',
-      content: `Create a logically ordered and comprehensive table of contents comprising four units for the given topic. The table of contents should be based on the concepts given to you. Do not include the word "unit" in the title of the units. `,
+      content: `Create a logically ordered and comprehensive table of contents comprising four units for the given topic. The table of contents should be based on the concepts given to you. Do not include the word "unit" in the title of each unit. The unit titles should be descriptive and should not overlap with eachother.`,
     },
     {
       role: 'user',
@@ -255,32 +243,30 @@ export const generateCourseDetailsCustom = async (
     response.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
   );
 
-  // console.log('DONE GENERATING COURSE', courseObject);
   return JSON.parse(JSON.stringify(courseDetails));
 };
 
 // Function to create lessons for custom TOC given
 async function generateLessonTitlesCustom(
   topic: string,
-  tableOfContents: any
-): Promise<PostLessonsTOC[]> {
+  tableOfContents: SampleTOC[]
+): Promise<CourseWithLessonTitles[]> {
   const unitTitles = tableOfContents.map((unit) => unit.title);
   const unitPromises = tableOfContents.map(async (unit, index) => {
-    // console.log('UNIT TITLE FOR LESSONS: ', unit.title);
     const prompt = [
       {
         role: 'system',
-        content: `You are a highly qualified teacher extremely knowledgable in ${topic}. You are creating the structure for a course, suggesting lesson titles for lessons in a unit with respect to its course. The lesson titles should not overlap with other lessons.`,
+        content: `You are a highly qualified teacher extremely knowledgable in ${topic}. You are assigning lesson titles for the lessons within each unit. The lesson titles should not overlap with other lessons, or with other units. Avoid vague titles, ensure they all reference the overall course topic.`,
       },
       {
         role: 'user',
-        content: `Course: ${topic}
+        content: `Course Topic: ${topic}
                   Unit Title: ${unit.title}
-                  Topics to Avoid Overlap With: ${unitTitles}`,
+                  Other Unit Topics to Avoid Overlap With: ${unitTitles}`,
       },
     ] as any;
 
-    const res = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       messages: prompt,
       model: 'gpt-3.5-turbo-1106',
       tools: [
@@ -298,9 +284,9 @@ async function generateLessonTitlesCustom(
     });
 
     const unitLessons = JSON.parse(
-      res.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
+      response.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     ).unit;
-    // console.log('DONE GENERATING UNIT LESSONS', unitLessons);
+    console.log('DONE GENERATING UNIT LESSON POST YYY', unitLessons);
 
     return {
       title: unit.title,
@@ -310,12 +296,13 @@ async function generateLessonTitlesCustom(
   });
 
   const unitsResults = await Promise.all(unitPromises);
-  const newTOC = unitsResults.map((unitResult) => ({
+
+  const updatedTOC = unitsResults.map((unitResult) => ({
     ...unitResult,
   }));
 
   // console.log('DONE GENERATING ALL UNIT LESSONS', newTOC);
-  return newTOC;
+  return JSON.parse(JSON.stringify(updatedTOC));
 }
 
 // Function to create an upload the course
@@ -323,7 +310,7 @@ async function createAndUploadCourseCustom(
   course: CourseDetails,
   userId: string
 ): Promise<string> {
-  const tableOfContents = course.table_of_contents.map((unit, index) => ({
+  const tableOfContents = course?.tableOfContents?.map((unit, index) => ({
     title: unit.title,
     id: index + 1,
   }));
@@ -334,7 +321,11 @@ async function createAndUploadCourseCustom(
     userId: userId,
   });
 
-  return newCourse._id;
+  if (!newCourse) throw new Error('Course could not be saved to database');
+
+  const courseId = newCourse?._id;
+
+  return JSON.parse(JSON.stringify(courseId));
 }
 
 // Function to assign a course to a user
@@ -357,8 +348,60 @@ async function assignCourseToUser(
   }
 }
 
-export async function createCourseCustomV2(
-  customAttributes: CustomCourse,
+export async function uploadUnitsAndLessons(
+  generatedTOC: CourseWithLessonTitles[],
+  newCourseId: string,
+  userId: string
+): Promise<void> {
+  try {
+    await connectToDatabase();
+    for (let item in generatedTOC) {
+      const unitTitle = generatedTOC[item].title;
+
+      // Uploading the unit to the database
+      const uploadedUnit = await Unit.create({
+        title: unitTitle,
+        courseId: newCourseId,
+        order: generatedTOC[item].order,
+      });
+      if (!uploadedUnit) throw new Error('Unit could not be saved to database');
+
+      const uploadedUserUnit = await UserUnit.create({
+        userId: userId,
+        unitId: uploadedUnit._id,
+        courseId: newCourseId,
+        status: 'NOT_STARTED',
+      });
+
+      if (!uploadedUserUnit)
+        throw new Error('UserUnit could not be saved to database');
+
+      // creating all the lessons for each unit
+      const unitLessons = generatedTOC[item].lessons;
+
+      unitLessons.forEach(async (lesson, index) => {
+        const lessonTitle = lesson.title;
+
+        // Uploading the lesson to the database
+        const uploadedLesson = await Element.create({
+          title: lessonTitle,
+          content: 'generate',
+          type: 'lesson',
+          order: index + 1,
+          unitId: uploadedUnit._id,
+        });
+
+        if (!uploadedLesson)
+          throw new Error('Lesson could not be saved to database');
+      });
+    }
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function createCustomCourse(
+  customAttributes: CourseCustomAttributes,
   userId: string
 ): Promise<any> {
   // console.log('GENERATING CUSTOM COURSE');
@@ -377,69 +420,35 @@ export async function createCourseCustomV2(
       const course = await generateCourseDetailsCustom(customAttributes.topic);
       if (!course) throw new Error('Course could not be generated');
 
+      // console.log('DONE GENERATING COURSE DETAILS');
+
       const generatedTOC = await generateLessonTitlesCustom(
-        customAttributes.topic,
-        customAttributes.tableOfContents
+        customAttributes?.topic,
+        customAttributes?.tableOfContents
       );
 
-      course.table_of_contents = generatedTOC;
+      // console.log('DONE GENERATING TOC');
 
-      if (!course.table_of_contents)
-        throw new Error('Table of contents could not be generated');
+      if (!generatedTOC)
+        throw new Error('Lesson titles could not be generated');
+
+      course.tableOfContents = generatedTOC;
 
       const newCourseId = await createAndUploadCourseCustom(course, userId);
-      // console.log('✅ Uploaded Course', newCourseId);
+
+      // console.log('DONE UPLOADING COURSE');
 
       await assignCourseToUser(userId, newCourseId);
 
-      for (let item in generatedTOC) {
-        const unitTitle = generatedTOC[item].title;
+      // console.log('DONE ASSIGNING COURSE TO USER');
 
-        // Uploading the unit to the database
-        const uploadedUnit = await Unit.create({
-          title: unitTitle,
-          courseId: newCourseId,
-          order: generatedTOC[item].order,
-        });
-        if (!uploadedUnit)
-          throw new Error('Unit could not be saved to database');
+      uploadUnitsAndLessons(generatedTOC, newCourseId, userId);
 
-        const uploadedUserUnit = await UserUnit.create({
-          userId: userId,
-          unitId: uploadedUnit._id,
-          courseId: newCourseId,
-          status: 'NOT_STARTED',
-        });
-
-        if (!uploadedUserUnit)
-          throw new Error('UserUnit could not be saved to database');
-
-        // creating all the lessons for each unit
-        const unitLessons = generatedTOC[item].lessons;
-
-        unitLessons.forEach(async (lesson, index) => {
-          const lessonTitle = lesson.title;
-
-          // Uploading the lesson to the database
-          const uploadedLesson = await Element.create({
-            title: lessonTitle,
-            content: 'generate',
-            type: 'lesson',
-            order: index + 1,
-            unitId: uploadedUnit._id,
-          });
-
-          if (!uploadedLesson)
-            throw new Error('Lesson could not be saved to database');
-        });
-      }
-
-      return { courseId: newCourseId };
+      return JSON.parse(JSON.stringify(newCourseId));
     })();
 
     return await Promise.race([courseCreationPromise, timeoutPromise]);
   } catch (error) {
     handleError(error);
-    throw error;
   }
 }

@@ -3,12 +3,26 @@ export interface SampleTopic {
 }
 
 export interface SampleTOC {
-  item: string;
+  id: number;
+  title: string;
 }
 
 export interface CourseDetails {
   title: string;
   summary: string;
+  tableOfContents?: CourseWithLessonTitles[];
+}
+
+export interface CourseCustomAttributes {
+  topic: string;
+  concepts: string[];
+  tableOfContents: SampleTOC[];
+}
+
+export interface CourseWithLessonTitles {
+  title: string;
+  order: number;
+  lessons: Lesson[];
 }
 
 export interface Lesson {

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { createCourseCustomV2 } from '@/lib/actions/generate.actions';
+import { createCustomCourse } from '@/lib/actions/generate.actions';
 
 import GeneratingCourse from '../GeneratingInProgress';
 const formatSampleTOC = (toc: string[]) => {
@@ -80,7 +80,7 @@ export default function ProposeTOC({
       });
 
       // Call createCourseCustom with updated attributes
-      const response = await createCourseCustomV2(
+      const response = await createCustomCourse(
         {
           ...customAttributes,
           tableOfContents: filteredTableOfContents,
@@ -101,8 +101,8 @@ export default function ProposeTOC({
             theme: 'dark',
           });
           return;
-        } else if (response.courseId) {
-          router.push(`/course/${response.courseId}`);
+        } else if (response) {
+          router.push(`/course/${response}`);
         }
       }
     }
