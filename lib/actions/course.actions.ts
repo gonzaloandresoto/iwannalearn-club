@@ -188,7 +188,9 @@ export const getRecentCourses = async (
       .skip(page * limit)
       .limit(limit);
 
-    return JSON.parse(JSON.stringify(recentCourses)) || [];
+    if (recentCourses.length === 0) return undefined;
+
+    return JSON.parse(JSON.stringify(recentCourses));
   } catch (error) {
     handleError(error);
   }
