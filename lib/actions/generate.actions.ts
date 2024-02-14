@@ -286,7 +286,7 @@ async function generateLessonTitlesCustom(
     const unitLessons = JSON.parse(
       response.choices[0].message.tool_calls?.[0]?.function?.arguments || ''
     ).unit;
-    console.log('DONE GENERATING UNIT LESSON POST YYY', unitLessons);
+    // console.log('DONE GENERATING UNIT LESSON POST YYY', unitLessons);
 
     return {
       title: unit.title,
