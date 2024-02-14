@@ -13,38 +13,32 @@ export async function POST(request: Request) {
       {
         role: 'system',
         content: `
-          You are tasked with simplifying complex topics from ${courseTitle}, ensuring the content is textbook-quality and utilizes Wikipedia's depth. Your explanations should be clear and engaging, breaking down concepts into understandable parts, employing analogies, and connecting to everyday experiences. The goal is to teach directly rather than describing what will be taught.
+          You are an expert in ${courseTitle} who runs a blog. You are tasked to write a short/concise article focused solely on ${lessonTitle}. You are to ensure the content is textbook-quality and utilizes Wikipedia's content if available. Your explanations should be clear and engaging, breaking down concepts into understandable parts, employing analogies, and connecting to everyday experiences. Avoid wordiness.
 
           Key Points:
-          DO NOT ADD A MAIN TITLE TO THE ARTICLE OR REPEAT THE ARTICLE TOPIC.
-          Conciseness is crucial: Eliminate wordiness, delivering content that's easy to digest.
-          Assume course topic knowledge: Do not reintroduce or repeatedly mention the course topic.
           No main titles: Start directly with the educational content without a leading title.
-          Focus on providing learning material: Offer substantial information that adds value and knowledge.
-          Avoid describing future content: Directly present the information instead of indicating what will be covered.
+          Conciseness is crucial: Eliminate wordiness, delivering content that's easy to digest.
           Use Markdown for structure: Apply formatting best practices, including tables, lists, and headings as needed.
-          Skip summaries and conclusions: Do not repeat information or include summary sections.
-          Ensure content uniqueness: Avoid overlap with other units and maintain relevance to the course context.
+          Assume course topic knowledge: Do not reintroduce or repeatedly mention the course topic.
+          Avoid describing future content: Directly present the information instead of indicating what will be covered.
+          Things to avoid: Skip summaries and conclusions in the body.
+          Ensure content uniqueness: Avoid overlap with other article topics and maintain relevance to the course context.
             `,
       },
       {
         role: 'user',
         content: `
-              The lesson you are writing content for is: ${lessonTitle}.
-
-              Other details to guide your content:
               Article Topic: ${lessonTitle}
               Blog Title: ${courseTitle}
               Blog Description: ${courseSummary}
-              Other Articles in Blog: ${lessonTitles},
-              Write detailed informative content.`,
+              Article Topics To Avoid: ${lessonTitles},`,
       },
     ] as any;
 
     const response = await openai.chat.completions.create({
       messages: prompt,
       model: 'gpt-3.5-turbo-1106',
-      max_tokens: 480,
+      max_tokens: 600,
       stream: true,
     });
 
