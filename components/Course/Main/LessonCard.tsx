@@ -18,7 +18,7 @@ export default function LessonCard({
   courseId,
   unitId,
 }: LessonCardProps) {
-  const [generating, setGenerating] = useState(false);
+  const [generating, setGenerating] = useState<boolean>(false);
   return (
     <div className='course-card'>
       <LessonContent

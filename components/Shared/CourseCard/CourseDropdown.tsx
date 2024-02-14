@@ -1,7 +1,7 @@
 'use client';
 
-import useUserContext from '@/hooks/useUserContext';
-import useOutsideClick from '@/hooks/useOutsideClick';
+import useUserContext from '@/lib/hooks/useUserContext';
+import useOutsideClick from '@/lib/hooks/useOutsideClick';
 
 import { Trash2 } from 'lucide-react';
 import { deleteCourseById } from '@/lib/actions/course.actions';

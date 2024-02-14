@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 
 import { useCompletion } from 'ai/react';
-import useUserContext from '@/hooks/useUserContext';
-import useTOCContext from '@/hooks/useTOCContext';
+import useUserContext from '@/lib/hooks/useUserContext';
+import useTOCContext from '@/lib/hooks/useTOCContext';
 
 import { saveGeneratedLessonText } from '@/lib/actions/element.action';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import useScrollToBottom from '@/hooks/useScrollToBottom';
+import useScrollToBottom from '@/lib/hooks/useScrollToBottom';
 import { useChat } from 'ai/react';
 import { ListCollapse } from 'lucide-react';
 import { useState } from 'react';

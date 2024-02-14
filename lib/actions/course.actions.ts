@@ -1,6 +1,5 @@
 'use server';
 
-import openai from '../openai/index';
 import { connectToDatabase } from '../database';
 import { handleError } from '../utils';
 import { revalidatePath } from 'next/cache';
@@ -80,7 +79,7 @@ export async function getCourseProgressById(id: string): Promise<number> {
 
 export async function getCourseContentById(
   id: string
-): Promise<StructuredCourseContent[] | undefined> {
+): Promise<StructuredCourseContent | undefined> {
   try {
     await connectToDatabase();
 

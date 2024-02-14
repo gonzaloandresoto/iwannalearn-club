@@ -1,6 +1,6 @@
 'use client';
-import useOutsideClick from '@/hooks/useOutsideClick';
-import useUserContext from '@/hooks/useUserContext';
+import useOutsideClick from '@/lib/hooks/useOutsideClick';
+import useUserContext from '@/lib/hooks/useUserContext';
 import { uploadFeedback } from '@/lib/actions/general.actions';
 import { HelpCircle } from 'lucide-react';
 import { useState } from 'react';

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 import { Unit, UnitCompletions } from '@/types';
 
 interface UnitExtensions extends Unit {

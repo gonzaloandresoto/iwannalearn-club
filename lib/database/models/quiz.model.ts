@@ -1,16 +1,5 @@
 import { Schema, models, model } from 'mongoose';
 
-export interface IElement extends Document {
-  _id: string;
-  type: string;
-  question: string;
-  order: string;
-  choices: string;
-  answer: string;
-  status: boolean;
-  unitId: { _id: string };
-}
-
 const QuizSchema = new Schema(
   {
     type: { type: String, required: true },

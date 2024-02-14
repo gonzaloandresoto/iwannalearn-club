@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 import { updateUnitStatus } from '@/lib/actions/unit.actions';
 
 import { UnitLessons } from '@/types';

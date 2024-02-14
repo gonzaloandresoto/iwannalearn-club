@@ -5,10 +5,10 @@ import Link from 'next/link';
 
 import { useState, useEffect } from 'react';
 
-import useTOCContext from '@/hooks/useTOCContext';
+import useTOCContext from '@/lib/hooks/useTOCContext';
 import CourseProgress from './CourseProgress';
 import TOCDropdown from './TOCDropdown';
-import useOutsideClick from '@/hooks/useOutsideClick';
+import useOutsideClick from '@/lib/hooks/useOutsideClick';
 
 export default function NavigationBar() {
   const params = useParams<{ id: string; unit: string }>();

@@ -18,8 +18,8 @@ import {
 interface ITOCContext {
   id: string;
   setId: Dispatch<SetStateAction<string>>;
-  tableOfContents: StructuredCourseContent[];
-  setTableOfContents: Dispatch<SetStateAction<StructuredCourseContent[]>>;
+  tableOfContents: StructuredCourseContent;
+  setTableOfContents: Dispatch<SetStateAction<StructuredCourseContent>>;
   courseProgress: number;
   setCourseProgress: Dispatch<SetStateAction<number>>;
   refresh: boolean;
@@ -31,9 +31,8 @@ const TOCContext = createContext<ITOCContext>(null!);
 
 export function TOCProvider({ children }: { children: React.ReactNode }) {
   const [id, setId] = useState<string>('');
-  const [tableOfContents, setTableOfContents] = useState<
-    StructuredCourseContent[]
-  >([]);
+  const [tableOfContents, setTableOfContents] =
+    useState<StructuredCourseContent>({});
   const [courseProgress, setCourseProgress] = useState<number>(0);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [courseDetails, setCourseDetails] = useState<any>({});

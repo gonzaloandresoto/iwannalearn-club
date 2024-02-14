@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 
 import { generateSampleConcepts } from '@/lib/actions/generate.actions';
 

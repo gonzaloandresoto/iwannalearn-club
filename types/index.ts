@@ -73,15 +73,29 @@ export interface Course {
   updatedAt: Date;
 }
 
+export interface StructuredUnitContent {
+  unitName: string;
+  courseId: string;
+  content: Lesson[];
+}
+
 export interface StructuredCourseContent {
-  [key: string]: {
-    unitName: string;
-    courseId: string;
-    content: Lesson[];
-  };
+  [key: string]: StructuredUnitContent;
 }
 
 export interface UserCoursesGrid {
   courses: CourseWithProgress[];
   isNext: boolean;
+}
+
+export interface User {
+  _id: string;
+  clerkId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  photo: string;
+  onboarding: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }

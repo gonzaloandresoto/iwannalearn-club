@@ -1,7 +1,7 @@
 'use client';
 
 import { recommendedSearches } from '@/constants';
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface RecommendedTopicsProps {

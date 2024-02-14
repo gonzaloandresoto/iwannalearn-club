@@ -1,6 +1,6 @@
 'use client';
 
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 import Image from 'next/image';
 import { SignOutButton } from '@clerk/nextjs';
 

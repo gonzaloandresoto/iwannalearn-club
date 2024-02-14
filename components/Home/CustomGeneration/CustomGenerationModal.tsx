@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 // ----- Custom Hooks ----- //
-import useOutsideClick from '@/hooks/useOutsideClick';
+import useOutsideClick from '@/lib/hooks/useOutsideClick';
 
 // ----- Custom Generation Components ----- //
 import GenerationType from './GenerationType';

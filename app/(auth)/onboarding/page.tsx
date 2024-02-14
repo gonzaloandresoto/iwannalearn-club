@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 
 import Attribution from '@/components/Onboarding/Attribution';
 import Benefits from '@/components/Onboarding/Benefits';

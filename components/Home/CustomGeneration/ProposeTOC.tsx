@@ -1,6 +1,6 @@
 'use client';
 
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 import { useLogSnag } from '@logsnag/next';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

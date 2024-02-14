@@ -1,6 +1,6 @@
 'use client';
 
-import useUserContext from '@/hooks/useUserContext';
+import useUserContext from '@/lib/hooks/useUserContext';
 import { markCourseAsComplete } from '@/lib/actions/course.actions';
 import { Course } from '@/types';
 import { useLogSnag } from '@logsnag/next';
