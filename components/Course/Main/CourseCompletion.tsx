@@ -2,10 +2,15 @@
 
 import useUserContext from '@/hooks/useUserContext';
 import { markCourseAsComplete } from '@/lib/actions/course.actions';
+import { Course } from '@/types';
 import { useLogSnag } from '@logsnag/next';
 import { useRouter } from 'next/navigation';
 
-export default function CourseCompletion({ course }: any) {
+interface CourseCompletionProps {
+  course: Course | undefined;
+}
+
+export default function CourseCompletion({ course }: CourseCompletionProps) {
   const { user } = useUserContext();
   const router = useRouter();
   const { track, setUserId, setDebug } = useLogSnag();
@@ -20,14 +25,14 @@ export default function CourseCompletion({ course }: any) {
 
   const completeCourse = async () => {
     if (user?._id) {
-      await markCourseAsComplete(course?._id);
+      await markCourseAsComplete(course?._id || '');
       track({
         channel: 'learn',
         event: 'Course Completed',
         icon: '✅',
         notify: true,
         tags: {
-          title: course?.title,
+          title: course?.title || '',
         },
       });
     }

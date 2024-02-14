@@ -6,7 +6,7 @@ import CourseCardProgress from './CourseCardProgress';
 interface CourseCardProps {
   courseId: string;
   title: string;
-  date: string;
+  date: Date;
   progress?: number;
   isPublic: boolean;
 }
@@ -36,7 +36,7 @@ const CourseCard = ({
           <CourseCardProgress progress={progress} />
         ) : (
           <p className='text-base text-tertiary-black font-medium font-rosario'>
-            {'created on ' + (date && formatDate(date))}
+            {'created on ' + (date && formatDate(date.toString()))}
           </p>
         )}
       </Link>
@@ -45,20 +45,3 @@ const CourseCard = ({
 };
 
 export default CourseCard;
-
-{
-  /* Only show creation date if the course is public */
-}
-{
-  /* {isPublic && (
-  <p className='text-base text-tertiary-black font-medium font-rosario'>
-    {'created on ' + (date && formatDate(date))}
-  </p>
-)} */
-}
-{
-  /* Only show progress if the course is not public */
-}
-{
-  /* {!isPublic && progress && <CourseCardProgress progress={progress} />} */
-}

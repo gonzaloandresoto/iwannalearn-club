@@ -1,26 +1,18 @@
 'use client';
 
-import useUserContext from '@/hooks/useUserContext';
 import Link from 'next/link';
+import useUserContext from '@/hooks/useUserContext';
+import { Unit, UnitCompletions } from '@/types';
 
-interface TableofContentsItem {
-  id: string;
-  title: string;
-  unitId: string;
+interface UnitExtensions extends Unit {
   firstLessonId: string;
-}
-
-interface UnitCompletionsItem {
-  [key: string]: {
-    status: string;
-    order: string;
-  };
+  unitId: string;
 }
 
 interface TableOfContentsProps {
   tableOfContents: string;
   courseId: string;
-  unitCompletions: UnitCompletionsItem | null;
+  unitCompletions: UnitCompletions | undefined;
 }
 
 export default function TableOfContents({
@@ -29,8 +21,8 @@ export default function TableOfContents({
   unitCompletions,
 }: TableOfContentsProps) {
   const { user } = useUserContext();
-  const tableOfContentsArray: TableofContentsItem[] =
-    JSON.parse(tableOfContents);
+
+  const tableOfContentsArray: UnitExtensions[] = JSON.parse(tableOfContents);
 
   const unitStatus = (unitId: string, index: number) => {
     if (!unitCompletions) return 'Locked';
@@ -78,6 +70,7 @@ export default function TableOfContents({
             </div>
 
             <Link
+              prefetch={true}
               href={{
                 pathname: `/course/${courseId}/${item.unitId}/${item.firstLessonId}`,
               }}

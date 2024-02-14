@@ -10,23 +10,24 @@ export async function generateMetadata({
   params,
 }: {
   params: { id: string };
-}): Promise<Metadata> {
+}): Promise<Metadata | undefined> {
   const id = params.id;
 
   const course = await getCourseById(id);
 
-  return {
-    title: course.title,
-    description: course.summary,
-    openGraph: {
-      title: `${course.title} – IWannaLearn`,
+  if (course)
+    return {
+      title: course.title,
       description: course.summary,
-    },
-    twitter: {
-      title: `${course.title} – IWannaLearn`,
-      description: course.summary,
-    },
-  };
+      openGraph: {
+        title: `${course.title} – IWannaLearn`,
+        description: course.summary,
+      },
+      twitter: {
+        title: `${course.title} – IWannaLearn`,
+        description: course.summary,
+      },
+    };
 }
 
 export default function Layout({

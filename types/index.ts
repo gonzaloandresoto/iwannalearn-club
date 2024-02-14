@@ -41,3 +41,47 @@ export interface UnitLessons {
   order: number;
   title: string;
 }
+
+export interface Unit {
+  _id: string;
+  courseId: string;
+  order: number;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UnitCompletions {
+  [key: string]: {
+    order: number;
+    status: string;
+  };
+}
+
+export interface CourseWithProgress extends Course {
+  progress: number;
+}
+
+export interface Course {
+  _id: string;
+  title: string;
+  summary: string;
+  tableOfContents: string;
+  userId: string;
+  doneGenerating: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface StructuredCourseContent {
+  [key: string]: {
+    unitName: string;
+    courseId: string;
+    content: Lesson[];
+  };
+}
+
+export interface UserCoursesGrid {
+  courses: CourseWithProgress[];
+  isNext: boolean;
+}

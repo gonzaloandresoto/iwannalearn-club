@@ -1,8 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import useUserContext from '@/hooks/useUserContext';
 
 import { generateSampleConcepts } from '@/lib/actions/generate.actions';
@@ -11,7 +9,6 @@ import EmptyState from './EmptyState';
 import GeneratingCourse from '../GeneratingInProgress';
 
 import { Settings2, Zap } from 'lucide-react';
-import { getMostRecentCourse } from '@/lib/actions/course.actions';
 
 export default function GenerationType({
   customAttributes,
@@ -21,21 +18,7 @@ export default function GenerationType({
   const [loading, setLoading] = useState<boolean>(false);
   const [generating, setGenerating] = useState<boolean>(false);
 
-  const router = useRouter();
   const { user } = useUserContext();
-
-  useEffect(() => {
-    if (!generating) return;
-
-    const timer = setTimeout(async () => {
-      const response = await getMostRecentCourse(user?._id || '');
-      if (response?.courseId) {
-        router.push(`/course/${response.courseId}`);
-      }
-    }, 30000);
-
-    return () => clearTimeout(timer);
-  }, [generating]);
 
   const fastGeneration = async () => {
     // function to generate course (same as before)

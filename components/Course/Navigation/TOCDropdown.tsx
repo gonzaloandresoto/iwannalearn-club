@@ -1,19 +1,8 @@
+import { StructuredCourseContent } from '@/types';
 import TOCUnit from './TOCUnit';
 
-interface Content {
-  title: string;
-  type: string;
-  unitId: string;
-  status: boolean;
-  completed: boolean;
-}
-
 interface TableOfContentsProps {
-  tableOfContents: {
-    unitName: string;
-    courseId: string;
-    content: Content[];
-  }[];
+  tableOfContents: StructuredCourseContent[];
 }
 
 export default function TOCDropdown({ tableOfContents }: TableOfContentsProps) {

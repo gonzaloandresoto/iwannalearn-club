@@ -1,30 +1,41 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { convertMarkdownToHtml } from '@/lib/utils';
 import { useCompletion } from 'ai/react';
-import { saveGeneratedLessonText } from '@/lib/actions/element.action';
 import useUserContext from '@/hooks/useUserContext';
+import useTOCContext from '@/hooks/useTOCContext';
+
+import { saveGeneratedLessonText } from '@/lib/actions/element.action';
+
 import { remark } from 'remark';
 import html from 'remark-html';
 import gfm from 'remark-gfm';
-import useTOCContext from '@/hooks/useTOCContext';
+
+import { Lesson, UnitLessons } from '@/types';
+
+interface LessonContentProps {
+  lesson: Lesson | undefined;
+  lessonTitles: UnitLessons[] | undefined;
+  setGenerating: (value: boolean) => void;
+}
 
 export default function LessonContent({
   lesson,
   lessonTitles,
   setGenerating,
-}: any) {
+}: LessonContentProps) {
   const { user } = useUserContext();
   const { courseDetails } = useTOCContext();
-  const [lessonContent, setLessonContent] = useState<string>(lesson.content);
+  const [lessonContent, setLessonContent] = useState<string>(
+    lesson?.content || ''
+  );
   const [htmlContent, setHtmlContent] = useState<string>('');
 
   const { completion, complete } = useCompletion({
     api: '/api/generate-lesson-text',
     body: {
-      lessonTitle: lesson.title,
+      lessonTitle: lesson?.title,
       courseTitle: courseDetails.title,
       courseSummary: courseDetails.summary,
       lessonTitles: JSON.stringify(lessonTitles),
@@ -36,7 +47,7 @@ export default function LessonContent({
       setGenerating(true);
       const completion = await complete('dont respond');
       if (completion) {
-        await saveGeneratedLessonText(lesson._id, completion);
+        await saveGeneratedLessonText(lesson?._id || '', completion);
         setLessonContent(completion);
 
         setGenerating(false);

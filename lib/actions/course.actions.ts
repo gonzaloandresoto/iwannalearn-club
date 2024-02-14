@@ -10,31 +10,18 @@ import Course from '../database/models/course.model';
 import UserCourse from '../database/models/usercourse.model';
 import UserUnit from '../database/models/userunit.model';
 import Unit from '../database/models/unit.model';
-import Quiz from '../database/models/quiz.model';
 
-interface CourseForUser {
-  _id: string;
-  title: string;
-  progress: number;
-  createdAt: string;
-}
-
-interface UserCoursesResponse {
-  courses: CourseForUser[];
-  isNext: boolean;
-}
-
-interface UserCoursesParams {
-  userId: string;
-  page: number;
-  limit: number;
-}
+import {
+  Course as CourseType,
+  StructuredCourseContent,
+  UserCoursesGrid,
+} from '@/types';
 
 export async function getCoursesByUserId(
-  params: UserCoursesParams
-): Promise<UserCoursesResponse> {
-  const { userId, page, limit } = params;
-
+  userId: string,
+  page: number,
+  limit: number
+): Promise<UserCoursesGrid> {
   if (!userId) return { courses: [], isNext: false };
   try {
     await connectToDatabase();
@@ -44,7 +31,6 @@ export async function getCoursesByUserId(
     const userCourses = await UserCourse.find({ userId: userId })
       .populate({
         path: 'courseId',
-        select: 'title completed updatedAt createdAt',
       })
       .skip(page * limit)
       .limit(limit)
@@ -85,20 +71,19 @@ export async function getCourseProgressById(id: string): Promise<number> {
     let completed = completedUnits.length;
     const progress = Math.round((completed / total) * 100);
 
-    if (progress) {
-      return progress;
-    } else {
-      return 0;
-    }
+    return progress || 0;
   } catch (error) {
     handleError(error);
     return 0;
   }
 }
 
-export async function getCourseContentById(id: string) {
+export async function getCourseContentById(
+  id: string
+): Promise<StructuredCourseContent[] | undefined> {
   try {
     await connectToDatabase();
+
     const units = await Unit.find({
       courseId: { $in: id },
     }).sort({ order: 1 });
@@ -107,28 +92,22 @@ export async function getCourseContentById(id: string) {
 
     const unitIds = units.map((unit) => unit._id);
 
-    //Fetching quizzes and lessons
-    const courseQuizzes = await Quiz.find({ unitId: { $in: unitIds } });
     const courseLessons = await Element.find({ unitId: { $in: unitIds } });
 
-    //Merging the quizzes and lessons
-    const mergedCourse = [...courseLessons, ...courseQuizzes].sort(
-      (a, b) => a.order - b.order
-    );
-
-    // console.log('🚀 ~ mergedCourse:', mergedCourse);
+    if (!courseLessons) throw new Error('Lessons not found');
 
     // Strucuture the course content by unit
     const groupedCourse = units.reduce((acc, unit) => {
       acc[unit._id.toString()] = {
         unitName: unit.title,
         courseId: unit.courseId,
-        content: mergedCourse.filter((content) =>
+        content: courseLessons.filter((content) =>
           content.unitId.equals(unit._id)
         ),
       };
       return acc;
     }, {});
+
     return JSON.parse(JSON.stringify(groupedCourse));
   } catch (error) {
     handleError(error);
@@ -137,7 +116,10 @@ export async function getCourseContentById(id: string) {
 
 // Get course details by id
 
-export async function getCourseById(id: string, withTOC = false) {
+export async function getCourseById(
+  id: string,
+  withTOC = false
+): Promise<CourseType | undefined> {
   try {
     await connectToDatabase();
 
@@ -195,77 +177,19 @@ export async function deleteCourseById(
   }
 }
 
-export async function getMostRecentCourse(userId: string) {
-  if (!userId) return;
+export const getRecentCourses = async (
+  page: number,
+  limit: number
+): Promise<CourseType | undefined> => {
   try {
     await connectToDatabase();
-
-    const mostRecentCourse = await UserCourse.find({ userId: userId })
-      .sort({ createdAt: -1 })
-      .limit(1);
-
-    if (!mostRecentCourse) return { message: 'No course found' };
-
-    return { courseId: mostRecentCourse[0].courseId };
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-export const goDeeper = async (
-  lesson: any,
-  unitId: string,
-  comment: string
-): Promise<string> => {
-  const prompt = [
-    {
-      role: 'system',
-      content: `You are a well-rounded, highly qualified teacher extremely knowledgable in ${unitId}. You are to expand on the given paragraph, providing more detail. Cover what the student is asking about, and anything else you think is relevant.`,
-    },
-    {
-      role: 'user',
-      content: `Respond using markdown format. This is the unit: ${unitId},
-                This is the lesson: ${lesson.title},
-                This is what I would like to know more about: ${comment}
-                This is the paragraph: ${lesson.content}.
-               `,
-    },
-  ] as any;
-
-  const response = await openai.chat.completions.create({
-    messages: prompt,
-    model: 'gpt-3.5-turbo-1106',
-    max_tokens: 600,
-  });
-
-  const result = response.choices[0].message.content;
-
-  // upload
-  await connectToDatabase();
-
-  await Element.findOneAndUpdate({ _id: lesson._id }, { content: result });
-
-  return 'Reload';
-};
-
-export const getRecentCourses = async ({ page, limit }: any) => {
-  try {
-    await connectToDatabase();
-
-    // await Course.updateMany({}, { $set: { doneGenerating: false } })
-    //   .then((result) => {
-    //     console.log('Update result:', result);
-    //   })
-    //   .catch((err) => {
-    //     console.error('Update error:', err);
-    //   });
 
     const recentCourses = await Course.find({ doneGenerating: true })
       .sort({ createdAt: -1 })
       .skip(page * limit)
       .limit(limit);
 
-    return JSON.parse(JSON.stringify(recentCourses));
+    return JSON.parse(JSON.stringify(recentCourses)) || [];
   } catch (error) {
     handleError(error);
   }
@@ -288,8 +212,6 @@ export const markCourseAsComplete = async (courseId: string): Promise<void> => {
     );
 
     if (!userCourse) throw new Error('Course progress could not be saved');
-
-    // redirect(`/course/${courseId}`);
   } catch (error) {
     handleError(error);
   }

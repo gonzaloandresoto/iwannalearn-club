@@ -7,7 +7,7 @@ import { Lesson, UnitLessons } from '@/types';
 
 interface LessonCardProps {
   lesson: Lesson | undefined;
-  unitLessons: UnitLessons | undefined;
+  unitLessons: UnitLessons[] | undefined;
   courseId: string;
   unitId: string;
 }
@@ -27,7 +27,7 @@ export default function LessonCard({
         setGenerating={setGenerating}
       />
       <LessonControls
-        lessonId={lesson?._id}
+        lessonId={lesson?._id || ''}
         unitLessons={unitLessons}
         courseId={courseId}
         unitId={unitId}

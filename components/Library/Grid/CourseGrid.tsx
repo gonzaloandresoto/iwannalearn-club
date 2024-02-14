@@ -12,28 +12,20 @@ import CourseCard from '../../Shared/CourseCard/CourseCard';
 import CourseGridPaginationControls from './CourseGridPaginationControls';
 import CourseGridSkeleton from './CourseGridSkeleton';
 
-interface Course {
-  _id: string;
-  title: string;
-  progress: number;
-  createdAt: string;
-}
+import { CourseWithProgress } from '@/types';
 
 export default function CourseGrid() {
+  const [courses, setCourses] = useState<CourseWithProgress[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [courses, setCourses] = useState<Course[]>([]);
   const [page, setPage] = useState<number>(0);
+
   const isNext = useRef<boolean>(false);
   const { user } = useUserContext();
 
   const getCourses = async () => {
     if (!user) return;
     setLoading(true);
-    const fetchedCourses = await getCoursesByUserId({
-      userId: user?._id,
-      page: page,
-      limit: 6,
-    });
+    const fetchedCourses = await getCoursesByUserId(user?._id, page, 6);
 
     if (fetchedCourses.courses) {
       setCourses(fetchedCourses.courses);

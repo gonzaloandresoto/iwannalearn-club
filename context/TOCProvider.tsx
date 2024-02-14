@@ -5,6 +5,7 @@ import {
   getCourseContentById,
   getCourseProgressById,
 } from '@/lib/actions/course.actions';
+import { StructuredCourseContent } from '@/types';
 
 import {
   createContext,
@@ -17,8 +18,8 @@ import {
 interface ITOCContext {
   id: string;
   setId: Dispatch<SetStateAction<string>>;
-  tableOfContents: ITableOfContents[];
-  setTableOfContents: Dispatch<SetStateAction<ITableOfContents[]>>;
+  tableOfContents: StructuredCourseContent[];
+  setTableOfContents: Dispatch<SetStateAction<StructuredCourseContent[]>>;
   courseProgress: number;
   setCourseProgress: Dispatch<SetStateAction<number>>;
   refresh: boolean;
@@ -26,26 +27,13 @@ interface ITOCContext {
   courseDetails: any;
 }
 
-interface ITableOfContents {
-  unitName: string;
-  courseId: string;
-  content: {
-    title: string;
-    type: string;
-    unitId: string;
-    status: boolean;
-    completed: boolean;
-  }[];
-}
-[];
-
 const TOCContext = createContext<ITOCContext>(null!);
 
 export function TOCProvider({ children }: { children: React.ReactNode }) {
   const [id, setId] = useState<string>('');
-  const [tableOfContents, setTableOfContents] = useState<ITableOfContents[]>(
-    []
-  );
+  const [tableOfContents, setTableOfContents] = useState<
+    StructuredCourseContent[]
+  >([]);
   const [courseProgress, setCourseProgress] = useState<number>(0);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [courseDetails, setCourseDetails] = useState<any>({});

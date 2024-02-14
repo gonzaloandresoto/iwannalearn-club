@@ -1,14 +1,8 @@
+import { Course } from '@/types';
 import CourseCard from '../Shared/CourseCard/CourseCard';
 
-interface Course {
-  _id: string;
-  title: string;
-  createdAt: string;
-  date: string;
-}
-
 interface CourseGridProps {
-  courses: Course[];
+  courses: Course[] | undefined;
 }
 
 const CourseGrid = async ({ courses }: CourseGridProps) => {

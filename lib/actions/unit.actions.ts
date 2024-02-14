@@ -6,13 +6,13 @@ import Unit from '../database/models/unit.model';
 
 import Element from '../database/models/element.model';
 import UserUnit from '../database/models/userunit.model';
-import { UnitLessons } from '@/types';
+import { Unit as UnitType, UnitCompletions, UnitLessons } from '@/types';
 
 export async function updateUnitStatus(
   unitId: string,
   userId: string,
   status: string
-) {
+): Promise<void> {
   if (!unitId || !userId) return;
   try {
     await connectToDatabase();
@@ -24,22 +24,20 @@ export async function updateUnitStatus(
     );
 
     if (!updatedUnit) throw new Error('Unit could not be updated');
-
-    return;
   } catch (error) {
     handleError(error);
   }
 }
 
-export async function getUnitContentById(unitId: string) {
+export async function getUnitContentById(
+  unitId: string
+): Promise<UnitType | undefined> {
   try {
     await connectToDatabase();
 
     const unit = await Unit.findById(unitId);
 
-    if (!unit) {
-      return { message: 'No unit found' };
-    }
+    if (!unit) throw new Error('Unit not found');
 
     return JSON.parse(JSON.stringify(unit));
   } catch (error) {
@@ -86,7 +84,9 @@ export async function getNextUncompletedUnit(
 }
 
 // Function to get the status of all units in a course
-export async function getUnitCompletions(courseId: string) {
+export async function getUnitCompletions(
+  courseId: string
+): Promise<UnitCompletions | undefined> {
   if (!courseId) return;
   try {
     await connectToDatabase();
@@ -96,7 +96,7 @@ export async function getUnitCompletions(courseId: string) {
       { unitId: 1, status: 1 }
     );
 
-    if (!userUnits.length) return { message: 'No units found for this course' };
+    if (!userUnits) throw new Error('No units found for this course');
 
     const userUnitsIndexed: any = {};
     for (const userUnit of userUnits) {
@@ -108,8 +108,7 @@ export async function getUnitCompletions(courseId: string) {
       { _id: 1, order: 1 }
     );
 
-    if (!unitDetails.length)
-      return { message: 'No units found for this course' };
+    if (!unitDetails) throw new Error('No units found for this course');
 
     const unitCompletions: any = {};
     unitDetails
@@ -121,7 +120,7 @@ export async function getUnitCompletions(courseId: string) {
         };
       });
 
-    return unitCompletions;
+    return JSON.parse(JSON.stringify(unitCompletions));
   } catch (error) {
     handleError(error);
   }
@@ -129,7 +128,7 @@ export async function getUnitCompletions(courseId: string) {
 
 export const getUnitLessonTitles = async (
   unitId: string
-): Promise<UnitLessons | undefined> => {
+): Promise<UnitLessons[] | undefined> => {
   try {
     await connectToDatabase();
 

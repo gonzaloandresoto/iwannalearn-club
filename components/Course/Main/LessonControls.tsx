@@ -1,27 +1,37 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import useUserContext from '@/hooks/useUserContext';
 import { updateUnitStatus } from '@/lib/actions/unit.actions';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { UnitLessons } from '@/types';
+
+interface LessonControlsProps {
+  lessonId: string;
+  unitLessons: UnitLessons[] | undefined;
+  courseId: string;
+  unitId: string;
+  generating: boolean;
+}
+
 export default function LessonControls({
   lessonId,
   unitLessons,
   courseId,
   unitId,
   generating,
-}: any) {
+}: LessonControlsProps) {
   const router = useRouter();
   const { user } = useUserContext();
-  const currentIndex = unitLessons.findIndex(
-    (lesson: any) => lesson._id === lessonId
-  );
+
+  const currentIndex =
+    unitLessons?.findIndex((lesson) => lesson._id === lessonId) ?? -1;
   const prevLessonId =
-    currentIndex > 0 ? unitLessons[currentIndex - 1]._id : null;
+    currentIndex > 0 ? unitLessons?.[currentIndex - 1]?._id : null;
   const nextLessonId =
-    currentIndex < unitLessons.length - 1
-      ? unitLessons[currentIndex + 1]._id
+    currentIndex >= 0 && currentIndex < (unitLessons?.length ?? 0) - 1
+      ? unitLessons?.[currentIndex + 1]._id
       : 'unit-completed';
 
   const handleNext = async () => {
@@ -29,7 +39,7 @@ export default function LessonControls({
 
     if (userId) {
       if (nextLessonId === 'unit-completed') {
-        await updateUnitStatus(unitId, userId, 'COMPLETE');
+        updateUnitStatus(unitId, userId, 'COMPLETE');
       } else if (!prevLessonId) {
         updateUnitStatus(unitId, userId, 'IN_PROGRESS');
       }

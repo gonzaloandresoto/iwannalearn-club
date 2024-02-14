@@ -4,9 +4,7 @@ import Link from 'next/link';
 interface UnitContentItem {
   _id: string;
   title: string;
-  imageUrl: string;
-  status: string;
-  order: string;
+  order: number;
   courseId: string;
 }
 

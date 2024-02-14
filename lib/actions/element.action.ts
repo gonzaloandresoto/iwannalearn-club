@@ -2,8 +2,9 @@
 
 import { Lesson } from '@/types';
 import { connectToDatabase } from '../database';
-import Element from '../database/models/element.model';
 import { handleError } from '../utils';
+
+import Element from '../database/models/element.model';
 
 export const getLessonById = async (
   lessonId: string
@@ -33,9 +34,7 @@ export const saveGeneratedLessonText = async (
       { content: completion }
     );
 
-    if (!newLesson) {
-      throw new Error('Lesson not found');
-    }
+    if (!newLesson) throw new Error('Lesson not found');
   } catch (error) {
     handleError(error);
   }
