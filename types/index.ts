@@ -99,3 +99,10 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface OnboardingUserDetails {
+  firstName: string;
+  lastName: string;
+  attribution: string;
+  whyLearn: string;
+}

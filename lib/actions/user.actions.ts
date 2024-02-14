@@ -1,12 +1,13 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-
-import { connectToDatabase } from '@/lib/database';
-import User from '@/lib/database/models/user.model';
-
 import { handleError } from '@/lib/utils';
+import { revalidatePath } from 'next/cache';
+import { connectToDatabase } from '@/lib/database';
+
+import User from '@/lib/database/models/user.model';
 import UserOnboarding from '../database/models/useronboarding.model';
+
+import { OnboardingUserDetails, User as UserType } from '@/types';
 
 interface CreateUserParams {
   clerkId: string;
@@ -27,31 +28,25 @@ export async function createUser(user: CreateUserParams) {
   }
 }
 
-export async function getUserById(userId: string) {
+export async function getUserById(
+  userId: string
+): Promise<UserType | undefined> {
   try {
     await connectToDatabase();
 
-    const user = await User.findOne({ clerkId: { $in: userId } });
+    const user = await User.findOne({ clerkId: userId });
 
-    if (!user) return { message: 'User not found' };
+    if (!user) return undefined;
 
-    return user;
+    return JSON.parse(JSON.stringify(user));
   } catch (error) {
     handleError(error);
-    throw error;
   }
-}
-
-interface UpdateUserParams {
-  firstName: string;
-  lastName: string;
-  attribution: string;
-  whyLearn: string;
 }
 
 export async function updateUserDetails(
   userId: string,
-  userInfo: UpdateUserParams,
+  userInfo: OnboardingUserDetails,
   completed: boolean
 ) {
   if (!userId) return { message: 'User not found' };
