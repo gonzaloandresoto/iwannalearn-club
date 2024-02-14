@@ -179,7 +179,7 @@ export async function deleteCourseById(
 export const getRecentCourses = async (
   page: number,
   limit: number
-): Promise<CourseType | undefined> => {
+): Promise<CourseType[] | undefined> => {
   try {
     await connectToDatabase();
 

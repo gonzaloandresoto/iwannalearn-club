@@ -13,7 +13,7 @@ export default async function Generate() {
         <GenerateCourse />
 
         <SignedOut>
-          <CourseGrid courses={courses && [courses]} />
+          <CourseGrid courses={courses} />
         </SignedOut>
       </div>
     </section>
