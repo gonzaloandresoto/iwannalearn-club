@@ -1,16 +1,16 @@
 'use server';
 
-import { connectToDatabase } from '../database';
 import openai from '../openai/index';
+import { connectToDatabase } from '../database';
+import { handleError } from '../utils';
+import { revalidatePath } from 'next/cache';
+
 import Element from '../database/models/element.model';
 import Course from '../database/models/course.model';
 import UserCourse from '../database/models/usercourse.model';
-import { handleError } from '../utils';
-import Unit from '../database/models/unit.model';
-
-import Quiz from '../database/models/quiz.model';
-import { revalidatePath } from 'next/cache';
 import UserUnit from '../database/models/userunit.model';
+import Unit from '../database/models/unit.model';
+import Quiz from '../database/models/quiz.model';
 
 interface CourseForUser {
   _id: string;
