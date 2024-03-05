@@ -67,6 +67,9 @@ function OnboardingMain() {
       notify: true,
       tags: {
         atrribution: userInfo.attribution,
+        why: userInfo.whyLearn,
+        user: userInfo?.firstName + userInfo?.lastName || '',
+        id: userId,
       },
     });
   };

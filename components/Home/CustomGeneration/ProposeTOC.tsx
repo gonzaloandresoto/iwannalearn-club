@@ -74,8 +74,9 @@ export default function ProposeTOC({
         icon: '📚',
         notify: true,
         tags: {
-          type: 'custom',
-          generation: 'v2',
+          course: customAttributes.title,
+          user: user?.firstName + user?.lastName || '',
+          id: user?._id || '',
         },
       });
 
